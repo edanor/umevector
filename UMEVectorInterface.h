@@ -1,14 +1,12 @@
 #ifndef UME_VECTOR_INTERFACE_H_
 #define UME_VECTOR_INTERFACE_H_
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#include <stdlib.h>
-
 #include <cassert>
 
 namespace UME {
 namespace BLAS {
+
+#include "UMEVectorExpressions.h"
 
     template<typename SCALAR_TYPE, int VEC_LEN, int STRIDE> class RowVector;
     template<typename SCALAR_TYPE, int VEC_LEN, int STRIDE> class ColumnVector;
@@ -131,15 +129,28 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
         typename DERIVED_VECTOR_TYPE,
         typename SCALAR_TYPE,
         int STRIDE>
-    class ArithmeticVectorInterface {
+    class ArithmeticVectorInterface :
+        public ArithmeticExpression<DERIVED_VECTOR_TYPE> {
     private:
-        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> SIMD_TYPE;
-        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1>      SIMD1_TYPE;
 
     protected:
         ~ArithmeticVectorInterface() {}
 
     public:
+        // Can we make this private?
+        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> SIMD_TYPE;
+        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1>      SIMD1_TYPE;
+
+        template<typename E2>
+        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> add(E2 & srcB) {
+            return ArithmeticADDExpression < SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        }
+        // Special case for scalars:
+        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> add(SCALAR_TYPE srcB) {
+            return ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE>((*this), srcB);
+        }
+
+        /*
         inline DERIVED_VECTOR_TYPE & add(DERIVED_VECTOR_TYPE const & srcB, DERIVED_VECTOR_TYPE & dst) const {
             DERIVED_VECTOR_TYPE const & srcA = static_cast<DERIVED_VECTOR_TYPE const &>(*this);
             BINARY_VEC_VEC_OPERATION(srcA, srcB, dst, add, SIMD_TYPE, SIMD1_TYPE );
@@ -150,7 +161,7 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
             DERIVED_VECTOR_TYPE const & srcA = static_cast<DERIVED_VECTOR_TYPE const &>(*this);
             BINARY_VEC_SCALAR_OPERATION(srcA, srcB, dst, add, SIMD_TYPE, SIMD1_TYPE);
             return dst;
-        }
+        }*/
 
         inline DERIVED_VECTOR_TYPE & adda(DERIVED_VECTOR_TYPE const & srcB) {
             assert(mLength == srcB.mLength);
@@ -200,6 +211,8 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
     {
     public:
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> SIMD_TYPE;
+        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD1_TYPE;
+
         inline int LENGTH() const { return VEC_LEN; }
         inline int LOOP_COUNT() const { return VEC_LEN / STRIDE; }
         inline int PEEL_COUNT() const { return VEC_LEN % STRIDE; }
@@ -211,6 +224,27 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
         RowVector() { }
         RowVector(SCALAR_TYPE x) {
             for (int i = 0; i < VEC_LEN; i++) elements[i] = x;
+        }
+        RowVector(SCALAR_TYPE *p) {
+            for (int i = 0; i < VEC_LEN; i++) elements[i] = p[i];
+        }
+
+        // Terminal call for SIMD version of expression template expressions. 
+        // Every expression evaluation starts with loading values from memory 
+        // storage into proper SIMD vectors.
+        inline SIMD_TYPE evaluate_SIMD(int index) {
+            SIMD_TYPE t0;
+            t0.loada(&elements[index]);
+            return t0;
+        }
+
+        // Terminal call for scalar version of expression template expressions.
+        // Every expression evaluation starts with loading values from memory
+        // storage into proper scalar equivalent.
+        inline SIMD1_TYPE evaluate_scalar(int index) {
+            SIMD1_TYPE t0;
+            t0.load(&elements[index]);
+            return t0;
         }
 
         // Cast operator to convert from static to dynamic form. Because of
@@ -233,13 +267,34 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
             for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
             return *this;
         }
+
+        // Initialize with expression template evaluation
+        template<typename E>
+        //RowVector(ArithmeticExpression<E> & vec) {
+        RowVector& operator= (ArithmeticExpression<E> & vec)
+        {
+            // Need to reinterpret vec to E to propagate to proper expression
+            // evaluator.
+            E & reinterpret_vec = static_cast<E &>(vec);
+            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
+                t0.storea(&elements[i]);
+            }
+
+            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
+                t1.store(&elements[i]);
+            }
+            return *this;
+        }
+
     };
 
-    /* Dynamic vector template. The main difference with static vectors is, that
-       the the length may not be known at compile time. For that reason stack allocation
-       is not possible. Hence, the data needs to be stored on heap. This class can still use
-       ArithmeticVectorInterface, but it require some additional functionality to support
-       type conversions between static and dynamic vectors.*/
+    // Dynamic vector template. The main difference with static vectors is, that
+    // the the length may not be known at compile time. For that reason stack allocation
+    // is not possible and the data needs to be stored on heap. This class can still use
+    // ArithmeticVectorInterface, but it require some additional user-invisible functionality
+    // to support type conversions between static and dynamic vectors.
     template<typename SCALAR_TYPE, int STRIDE>
     class RowVector<SCALAR_TYPE, STRIDE, DYNAMIC_LENGTH> : public ArithmeticVectorInterface<
         RowVector<SCALAR_TYPE, STRIDE, DYNAMIC_LENGTH>,
@@ -299,6 +354,24 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
             UME::DynamicMemory::AlignedFree(elements);
         }
 
+        // Terminal call for SIMD version of expression template expressions. 
+        // Every expression evaluation starts with loading values from memory 
+        // storage into proper SIMD vectors.
+        inline SIMD_TYPE evaluate_SIMD(int index) {
+            SIMD_TYPE t0;
+            t0.loada(&elements[index]);
+            return t0;
+        }
+
+        // Terminal call for scalar version of expression template expressions.
+        // Every expression evaluation starts with loading values from memory
+        // storage into proper scalar equivalent.
+        inline SIMD1_TYPE evaluate_scalar(int index) {
+            SIMD1_TYPE t0;
+            t0.load(&elements[index]);
+            return t0;
+        }
+
         RowVector& operator= (RowVector & origin) {
             if (mLength != origin.mLength) {
                 // Dimensions do not match - reallocate
@@ -316,6 +389,26 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
             UME::DynamicMemory::AlignedFree(elements);
             elements = origin.elements;
             origin.elements = NULL;
+            return *this;
+        }
+
+        // Initialize with expression template evaluation
+        template<typename E>
+        //RowVector(ArithmeticExpression<E> & vec) {
+        RowVector& operator= (ArithmeticExpression<E> & vec)
+        {
+            // Need to reinterpret vec to E to propagate to proper expression
+            // evaluator.
+            E & reinterpret_vec = static_cast<E &>(vec);
+            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
+                t0.storea(&elements[i]);
+            }
+
+            for (int i = LOOP_PEEL_OFFSET(); i < mLength; i++) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
+                t1.store(&elements[i]);
+            }
             return *this;
         }
     };
