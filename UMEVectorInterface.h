@@ -141,48 +141,50 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> SIMD_TYPE;
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1>      SIMD1_TYPE;
 
-        template<typename E2>
-        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> add(E2 & srcB) {
-            return ArithmeticADDExpression < SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
-        }
-        // Special case for scalars:
         inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> add(SCALAR_TYPE srcB) {
             return ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE>((*this), srcB);
         }
 
+        template<typename E2>
+        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> add(E2 & srcB) {
+            return ArithmeticADDExpression < SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        }
+
+        template<typename E2>
+        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> add(E2 && srcB) {
+            return ArithmeticADDExpression < SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        }
+
+        inline ArithmeticMULExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> mul(SCALAR_TYPE srcB) {
+            return ArithmeticMULExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE>((*this), srcB);
+        }
+
+        template<typename E2>
+        inline ArithmeticMULExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> mul(E2 & srcB) {
+            return ArithmeticMULExpression <SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        }
+
+        template<typename E2>
+        inline ArithmeticMULExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> mul(E2 && srcB) {
+            return ArithmeticMULExpression <SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        }
+
+        template<typename E2, typename E3>
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(E2 const & srcB, E3 const & srcC) const {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, E3>((*this), srcB, srcC);
+        }
+
+        inline ArithmeticPOSTINCExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE> postinc() {
+            return ArithmeticPOSTINCExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE>((*this));
+        }
         /*
-        inline DERIVED_VECTOR_TYPE & add(DERIVED_VECTOR_TYPE const & srcB, DERIVED_VECTOR_TYPE & dst) const {
-            DERIVED_VECTOR_TYPE const & srcA = static_cast<DERIVED_VECTOR_TYPE const &>(*this);
-            BINARY_VEC_VEC_OPERATION(srcA, srcB, dst, add, SIMD_TYPE, SIMD1_TYPE );
-            return dst;
-        }
-
-        inline DERIVED_VECTOR_TYPE & add(SCALAR_TYPE srcB, DERIVED_VECTOR_TYPE & dst) const {
-            DERIVED_VECTOR_TYPE const & srcA = static_cast<DERIVED_VECTOR_TYPE const &>(*this);
-            BINARY_VEC_SCALAR_OPERATION(srcA, srcB, dst, add, SIMD_TYPE, SIMD1_TYPE);
-            return dst;
-        }*/
-
-        inline DERIVED_VECTOR_TYPE & adda(DERIVED_VECTOR_TYPE const & srcB) {
-            assert(mLength == srcB.mLength);
-            DERIVED_VECTOR_TYPE const & srcA = static_cast<DERIVED_VECTOR_TYPE &>(*this);
-            BINARY_VEC_VEC_OPERATION_ASSIGN(srcA, srcB, adda, SIMD_TYPE, SIMD1_TYPE);
-            return *this;
-        }
-
-        inline DERIVED_VECTOR_TYPE & adda(SCALAR_TYPE srcB) {
-            DERIVED_VECTOR_TYPE const & srcA = static_cast<DERIVED_VECTOR_TYPE &>(*this);
-            BINARY_VEC_SCALAR_OPERATION_ASSIGN(srcA, srcB, adda, SIMD_TYPE, SIMD1_TYPE);
-            return *this;
-        }
-
         inline DERIVED_VECTOR_TYPE & postinc(DERIVED_VECTOR_TYPE & dst) {
             //        UNARY_POSTFIX_VEC_OPERATION(
             //           static_cast<DERIVED_VECTOR_TYPE const &>(*this),
             //          dst, postinc, ++,
             //         srcB.LOOP_COUNT(), srcB.LOOP_PEEL_OFFSET(), STRIDE, srcB.LENGTH(), SIMD_TYPE);
             return dst;
-        }
+        }*/
 
         inline SCALAR_TYPE dotProduct(DERIVED_VECTOR_TYPE const & srcB) const {
             SIMD_TYPE A, B, C(SCALAR_TYPE(0));
@@ -229,10 +231,27 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
             for (int i = 0; i < VEC_LEN; i++) elements[i] = p[i];
         }
 
+        template<typename E>
+        RowVector<SCALAR_TYPE, STRIDE, VEC_LEN>(ArithmeticExpression<E> && vec)
+        {
+            // Need to reinterpret vec to E to propagate to proper expression
+            // evaluator.
+            E & reinterpret_vec = static_cast<E &>(vec);
+            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
+                t0.storea(&elements[i]);
+            }
+
+            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
+                t1.store(&elements[i]);
+            }
+        }
+
         // Terminal call for SIMD version of expression template expressions. 
         // Every expression evaluation starts with loading values from memory 
         // storage into proper SIMD vectors.
-        inline SIMD_TYPE evaluate_SIMD(int index) {
+        inline SIMD_TYPE evaluate_SIMD(int index) const {
             SIMD_TYPE t0;
             t0.loada(&elements[index]);
             return t0;
@@ -241,10 +260,21 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
         // Terminal call for scalar version of expression template expressions.
         // Every expression evaluation starts with loading values from memory
         // storage into proper scalar equivalent.
-        inline SIMD1_TYPE evaluate_scalar(int index) {
+        inline SIMD1_TYPE evaluate_scalar(int index) const {
             SIMD1_TYPE t0;
             t0.load(&elements[index]);
             return t0;
+        }
+
+        // Terminal call for scalar version of expression template expressions.
+        // Some operations require implicit assignment. This assignment needs to
+        // be propagated from evaluated register, back to vector data localization.
+        inline void update_SIMD(SIMD_TYPE & x, int index) {
+            x.storea(&elements[index]);
+        }
+
+        inline void update_scalar(SIMD1_TYPE & x, int index) {
+            x.store(&elements[index]);
         }
 
         // Cast operator to convert from static to dynamic form. Because of
@@ -271,7 +301,7 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
         // Initialize with expression template evaluation
         template<typename E>
         //RowVector(ArithmeticExpression<E> & vec) {
-        RowVector& operator= (ArithmeticExpression<E> & vec)
+        RowVector& operator= (ArithmeticExpression<E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -287,7 +317,6 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
             }
             return *this;
         }
-
     };
 
     // Dynamic vector template. The main difference with static vectors is, that
@@ -309,6 +338,7 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
 
     public:
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> SIMD_TYPE;
+        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1>      SIMD1_TYPE;
 
         inline int LENGTH() const { return mLength; }
         inline int LOOP_COUNT() const { return mLength / STRIDE; }
@@ -357,7 +387,7 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
         // Terminal call for SIMD version of expression template expressions. 
         // Every expression evaluation starts with loading values from memory 
         // storage into proper SIMD vectors.
-        inline SIMD_TYPE evaluate_SIMD(int index) {
+        inline SIMD_TYPE evaluate_SIMD(int index) const {
             SIMD_TYPE t0;
             t0.loada(&elements[index]);
             return t0;
@@ -366,7 +396,7 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
         // Terminal call for scalar version of expression template expressions.
         // Every expression evaluation starts with loading values from memory
         // storage into proper scalar equivalent.
-        inline SIMD1_TYPE evaluate_scalar(int index) {
+        inline SIMD1_TYPE evaluate_scalar(int index) const {
             SIMD1_TYPE t0;
             t0.load(&elements[index]);
             return t0;
@@ -395,7 +425,7 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
         // Initialize with expression template evaluation
         template<typename E>
         //RowVector(ArithmeticExpression<E> & vec) {
-        RowVector& operator= (ArithmeticExpression<E> & vec)
+        RowVector& operator= (ArithmeticExpression<E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
