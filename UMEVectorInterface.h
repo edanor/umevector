@@ -20,110 +20,194 @@ namespace BLAS {
     // compiler to perform additional code optimizations.
     const int DYNAMIC_LENGTH = -1;
 
-#define UNARY_PREFIX_VEC_OPERATION(vecA, vecDst, SIMD_OP, SCALAR_OP) \
-        VEC_TYPE A, B, C; \
-\
-    for (int i = 0; i < LOOP_COUNT; i++) { \
-        A.loada(&vecA.elements[i*STRIDE]); \
-        B.loada(&vecB.elements[i*STRIDE]); \
-        C = A.SIMD_OP(); \
-        C.storea(&vecDst.elements[i*STRIDE]); \
-    } \
-\
-for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
-    vecDst.elements[i] = SCALAR_OP elements[i]; \
-}
+    template<
+        typename DERIVED_MASK_TYPE,
+        int STRIDE>
+    class MaskInterface :
+        public LogicalExpression<DERIVED_MASK_TYPE> {
+    protected:
+        ~MaskInterface() {}
 
-#define UNARY_POSTFIX_VEC_OPERATION(vecDst, SIMD_OP, SCALAR_OP) \
-        VEC_TYPE A, B; \
-\
-    for (int i = 0; i < LOOP_COUNT; i++) { \
-        A.loada(&elements[i*STRIDE]); \
-        B = A.SIMD_OP(); \
-        B.storea(&vecDst.elements[i*STRIDE]); \
-    } \
-\
-for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
-    vecDst.elements[i] = elements[i] SCALAR_OP; \
-}
+    public: 
+        typedef UME::SIMD::SIMDVecMask<STRIDE> SIMD_TYPE;
 
-    // Performs binary operation of the form:
-    //
-    //  vecDst = vecA.SIMD_OP(vecB);
-    //
-    // For loop peeled elements, SIMD1 is used.
+        inline LogicalANDExpression<STRIDE, DERIVED_MASK_TYPE, bool> land(bool srcB) {
+            return LogicalANDExpression<STRIDE, DERIVED_MASK_TYPE, bool>((*this), srcB);
+        }
+        inline LogicalANDExpression<STRIDE, DERIVED_MASK_TYPE, bool> operator& (bool srcB) {
+            return LogicalANDExpression<STRIDE, DERIVED_MASK_TYPE, bool>((*this), srcB);
+        }
 
-#define BINARY_VEC_VEC_OPERATION(vecA, vecB, vecDst, SIMD_OP, SIMD_TYPE, SIMD1_TYPE) \
-        assert((vecA).LENGTH() == (vecB).LENGTH()); \
-        assert((vecA).LENGTH() == (vecDst).LENGTH()); \
-        SIMD_TYPE A, B, C; \
-\
-    for (int i = 0; i < (vecA).LOOP_COUNT(); i++) { \
-        A.loada(&(vecA).elements[i*(vecA).SIMD_STRIDE()]); \
-        B.loada(&(vecB).elements[i*(vecA).SIMD_STRIDE()]); \
-        C = A.SIMD_OP(B); \
-        C.storea(&(vecDst).elements[i*(vecA).SIMD_STRIDE()]); \
-    } \
-\
-    SIMD1_TYPE A1, B1, C1; \
-    for (int i = (vecA).LOOP_PEEL_OFFSET(); i < (vecA).LENGTH(); i++) { \
-        A1.load(&(vecA).elements[i]); \
-        B1.load(&(vecB).elements[i]); \
-        C1 = A1.SIMD_OP(B1); \
-        C1.store(&(vecDst).elements[i]); \
-    }
+        template<typename E2>
+        inline LogicalANDExpression<STRIDE, DERIVED_MASK_TYPE, E2> land(E2 & srcB) {
+            return LogicalANDExpression <STRIDE, DERIVED_MASK_TYPE, E2>((*this), srcB);
+        }
 
-#define BINARY_VEC_SCALAR_OPERATION(vecA, scalarB, vecDst, SIMD_OP, SIMD_TYPE, SIMD1_TYPE) \
-        assert(vecA.LENGTH() == (vecDst).LENGTH()); \
-        SIMD_TYPE A, B(scalarB), C; \
-\
-    for (int i = 0; i < (vecA).LOOP_COUNT(); i++) { \
-        A.loada(&(vecA).elements[i*(vecA).SIMD_STRIDE()]); \
-        C = A.SIMD_OP(B); \
-        C.storea(&(vecDst).elements[i*(vecA).SIMD_STRIDE()]); \
-    } \
-\
-    SIMD1_TYPE A1, B1(scalarB), C1; \
-    for (int i = (vecA).LOOP_PEEL_OFFSET(); i < (vecA).LENGTH(); i++) { \
-        A1.load(&(vecA).elements[i]); \
-        C1 = A1.SIMD_OP(B1); \
-        C1.store(&(vecDst).elements[i]); \
-    }
+        template<typename E2>
+        inline LogicalANDExpression<STRIDE, DERIVED_MASK_TYPE, E2> operator& (E2 & srcB) {
+            return land(srcB);
+        }
 
-#define BINARY_VEC_VEC_OPERATION_ASSIGN(vecA, vecB, SIMD_OP, SIMD_TYPE, SIMD1_TYPE) \
-        assert((vecA).LENGTH() == (vecB).LENGTH()); \
-        SIMD_TYPE A, B; \
-\
-    for (int i = 0; i < LOOP_COUNT; i++) { \
-        A.loada(&(vecA).elements[i*STRIDE]); \
-        B.loada(&(vecB).elements[i*STRIDE]); \
-        A.SIMD_OP(B); \
-        A.storea(&(vecA).elements[i*STRIDE]); \
-    } \
-\
-    SIMD1_TYPE A2, B2; \
-    for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
-        A2.load(&(vecA).elements[i*STRIDE]); \
-        B2.load(&(vecB).elements[i*STRIDE]); \
-        A2.SIMD_OP(B2); \
-        A2.store(&(vecA).elements[i*STRIDE]); \
-    }
+        template<typename E2>
+        inline LogicalANDExpression<STRIDE, DERIVED_MASK_TYPE, E2> operator&& (E2 & srcB) {
+            return land(srcB);
+        }
 
-#define BINARY_VEC_SCALAR_OPERATION_ASSIGN(vecA, scalarB, SIMD_OP, SIMD_TYPE, SIMD1_TYPE) \
-        SIMD_TYPE A, B(scalarB); \
-\
-    for (int i = 0; i < LOOP_COUNT; i++) { \
-        A.loada(&(vecA).elements[i*STRIDE]); \
-        A.SIMD_OP(B); \
-        A.storea(&(vecA).elements[i*STRIDE]); \
-    } \
-\
-    SIMD1_TYPE A2, B2(scalarB); \
-    for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
-        A2.load(&(vecA).elements[i*STRIDE]); \
-        A2.SIMD_OP(B2); \
-        A2.store(&(vecA).elements[i*STRIDE]); \
-    }
+
+        inline LogicalORExpression<STRIDE, DERIVED_MASK_TYPE, bool> lor(bool srcB) {
+            return LogicalOrExpression<STRIDE, DERIVED_MASK_TYPE, bool>((*this), srcB);
+        }
+        inline LogicalORExpression<STRIDE, DERIVED_MASK_TYPE, bool> operator| (bool srcB) {
+            return LogicalORExpression<STRIDE, DERIVED_MASK_TYPE, bool>((*this), srcB);
+        }
+
+        template<typename E2>
+        inline LogicalORExpression<STRIDE, DERIVED_MASK_TYPE, E2> lor(E2 & srcB) {
+            return LogicalORExpression <STRIDE, DERIVED_MASK_TYPE, E2>((*this), srcB);
+        }
+
+        template<typename E2>
+        inline LogicalORExpression<STRIDE, DERIVED_MASK_TYPE, E2> operator| (E2 & srcB) {
+            return lor(srcB);
+        }
+
+        template<typename E2>
+        inline LogicalORExpression<STRIDE, DERIVED_MASK_TYPE, E2> operator|| (E2 & srcB) {
+            return lor(srcB);
+        }
+    };
+
+
+    template<int STRIDE = 4, int VEC_LEN = DYNAMIC_LENGTH>
+    class MaskVector : public MaskInterface<
+        MaskVector<STRIDE, VEC_LEN>,
+        STRIDE>
+    {
+    public:
+        typedef UME::SIMD::SIMDVecMask<STRIDE>  SIMD_TYPE;
+        typedef UME::SIMD::SIMDVecMask<1>       SIMD1_TYPE;
+
+        inline int LENGTH() const { return VEC_LEN; }
+        inline int LOOP_COUNT() const { return VEC_LEN / STRIDE; }
+        inline int PEEL_COUNT() const { return VEC_LEN % STRIDE; }
+        inline int LOOP_PEEL_OFFSET() const { return LOOP_COUNT() * STRIDE; }
+        inline int SIMD_STRIDE() const { return STRIDE; }
+
+        alignas(SIMD_TYPE::alignment()) bool elements[VEC_LEN];
+
+        MaskVector() { }
+        MaskVector(bool x) {
+            for (int i = 0; i < VEC_LEN; i++) elements[i] = x;
+        }
+        MaskVector(bool *p) {
+            for (int i = 0; i < VEC_LEN; i++) elements[i] = p[i];
+        }
+
+        template<typename E>
+        MaskVector<STRIDE, VEC_LEN>(LogicalExpression<E> && vec)
+        {
+            // Need to reinterpret vec to E to propagate to proper expression
+            // evaluator.
+            E & reinterpret_vec = static_cast<E &>(vec);
+            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
+                SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                t0.storea(&elements[i]);
+            }
+
+            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+                SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                t1.store(&elements[i]);
+            }
+        }
+
+        // Terminal call for SIMD version of expression template expressions. 
+        // Every expression evaluation starts with loading values from memory 
+        // storage into proper SIMD vectors.
+        inline SIMD_TYPE evaluate_SIMD(int index) const {
+            SIMD_TYPE t0;
+            t0.loada(&elements[index]);
+            return t0;
+        }
+
+        // Terminal call for scalar version of expression template expressions.
+        // Every expression evaluation starts with loading values from memory
+        // storage into proper scalar equivalent.
+        inline SIMD1_TYPE evaluate_scalar(int index) const {
+            SIMD1_TYPE t0;
+            t0.load(&elements[index]);
+            return t0;
+        }
+
+        // Terminal call for scalar version of expression template expressions.
+        // Some operations require implicit assignment. This assignment needs to
+        // be propagated from evaluated register, back to vector data localization.
+        inline void update_SIMD(SIMD_TYPE & x, int index) {
+            x.storea(&elements[index]);
+        }
+
+        inline void update_scalar(SIMD1_TYPE & x, int index) {
+            x.store(&elements[index]);
+        }
+
+        // Cast operator to convert from static to dynamic form. Because of
+        // different allocation method, the data needs to be copied from stack-organized
+        // to heap-organized. 
+        inline operator MaskVector<STRIDE, DYNAMIC_LENGTH>() {
+            // Create dynamic Row vector, and copy data
+            MaskVector<STRIDE, DYNAMIC_LENGTH> temp(VEC_LEN);
+            for (int i = 0; i < VEC_LEN;i++) temp.elements[i] = elements[i];
+            return temp;
+        }
+
+        MaskVector& operator= (MaskVector & origin) {
+            for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
+            return *this;
+        }
+
+        MaskVector& operator= (MaskVector<STRIDE, DYNAMIC_LENGTH> & origin) {
+            assert(VEC_LEN == origin.LENGTH()); // Cannot re-allocate static
+            for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
+            return *this;
+        }
+
+        // Initialize with expression template evaluation
+        template<typename E>
+        //RowVector(ArithmeticExpression<E> & vec) {
+        MaskVector& operator= (LogicalExpression<E> && vec)
+        {
+            // Need to reinterpret vec to E to propagate to proper expression
+            // evaluator.
+            E & reinterpret_vec = static_cast<E &>(vec);
+            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
+                SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                t0.storea(&elements[i]);
+            }
+
+            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+                SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                t1.store(&elements[i]);
+            }
+            return *this;
+        }
+
+        MaskVector& operator= (bool x) {
+            SIMD_TYPE t0(x);
+            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
+                t0.storea(&elements[i]);
+            }
+            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+                elements[i] = x;
+            }
+            return *this;
+        }
+
+        MaskVector& operator= (bool* x) {
+            for (int i = 0; i < VEC_LEN; i++) {
+                elements[i] = x[i];
+            }
+            return *this;
+        }
+    };
 
     template<
         typename DERIVED_VECTOR_TYPE,
@@ -131,8 +215,6 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
         int STRIDE>
     class ArithmeticVectorInterface :
         public ArithmeticExpression<DERIVED_VECTOR_TYPE> {
-    private:
-
     protected:
         ~ArithmeticVectorInterface() {}
 
@@ -140,9 +222,14 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
         // Can we make this private?
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> SIMD_TYPE;
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1>      SIMD1_TYPE;
+        typedef UME::SIMD::SIMDVecMask<STRIDE>          MASK_TYPE;
+        typedef UME::SIMD::SIMDVecMask<1>               MASK1_TYPE;
 
         inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> add(SCALAR_TYPE srcB) {
             return ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE>((*this), srcB);
+        }
+        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> operator+ (SCALAR_TYPE srcB) {
+            return add(srcB);
         }
 
         template<typename E2>
@@ -151,10 +238,27 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
         }
 
         template<typename E2>
+        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> operator+ (E2 & srcB) {
+            return add(srcB);
+        }
+
+        template<typename E2>
         inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> add(E2 && srcB) {
             return ArithmeticADDExpression < SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
         }
 
+        template<typename E2>
+        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> operator+ (E2 && srcB) {
+            return add(srcB);
+        }
+
+        // MADD
+        template<typename E1, typename E2>
+        inline ArithmeticMADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E1, E2> add(E1 & mask, E2 & srcB) {
+            return ArithmeticMADDExpression < SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E1, E2>((*this), mask, srcB);
+        }
+
+        // MUL
         inline ArithmeticMULExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> mul(SCALAR_TYPE srcB) {
             return ArithmeticMULExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE>((*this), srcB);
         }
@@ -169,8 +273,36 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
             return ArithmeticMULExpression <SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
         }
 
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, SCALAR_TYPE> fmuladd(SCALAR_TYPE srcB, SCALAR_TYPE srcC) {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, E3>((*this), srcB, srcC);
+        }
+
+        template<typename E2>
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE> fmuladd(E2 & srcB, SCALAR_TYPE srcC) {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE>((*this), srcB, srcC);
+        }
+
+        template<typename E2>
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE> fmuladd(E2 && srcB, SCALAR_TYPE srcC) {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE>((*this), srcB, srcC);
+        }
+
+        template<typename E3>
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3> fmuladd(SCALAR_TYPE srcB, E3 & srcC) {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3>((*this), srcB, srcC);
+        }
+        template<typename E3>
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3> fmuladd(SCALAR_TYPE srcB, E3 && srcC) {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3>((*this), srcB, srcC);
+        }
+
         template<typename E2, typename E3>
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(E2 const & srcB, E3 const & srcC) const {
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(E2 & srcB, E3 & srcC) {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, E3>((*this), srcB, srcC);
+        }
+
+        template<typename E2, typename E3>
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(E2 && srcB, E3 && srcC) {
             return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, E3>((*this), srcB, srcC);
         }
 
@@ -317,6 +449,24 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
             }
             return *this;
         }
+
+        RowVector& operator= (SCALAR_TYPE x) {
+            UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> t0(x);
+            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
+                t0.storea(&elements[i]);
+            }
+            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+                elements[i] = x;
+            }
+            return *this;
+        }
+
+        RowVector& operator= (SCALAR_TYPE* x) {
+            for (int i = 0; i < VEC_LEN; i++) {
+                elements[i] = x[i];
+            }
+            return *this;
+        }
     };
 
     // Dynamic vector template. The main difference with static vectors is, that
@@ -438,6 +588,24 @@ for (int i = LOOP_PEEL_OFFSET; i < VEC_LEN; i++) { \
             for (int i = LOOP_PEEL_OFFSET(); i < mLength; i++) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
                 t1.store(&elements[i]);
+            }
+            return *this;
+        }
+
+        RowVector& operator= (SCALAR_TYPE x) {
+            UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> t0(x);
+            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
+                t0.storea(&elements[i]);
+            }
+            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+                elements[i] = x;
+            }
+            return *this;
+        }
+
+        RowVector& operator= (SCALAR_TYPE* x) {
+            for (int i = 0; i < VEC_LEN; i++) {
+                elements[i] = x[i];
             }
             return *this;
         }
