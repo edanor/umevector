@@ -82,6 +82,17 @@ public:
     }
 };
 
+template<int SIMD_STRIDE>
+class ArithmeticEvaluatorHelper<double, SIMD_STRIDE, double> {
+public:
+    static inline UME::SIMD::SIMDVec<double, SIMD_STRIDE> evaluate_SIMD(double element, int index) {
+        return  UME::SIMD::SIMDVec<double, SIMD_STRIDE>(element);
+    }
+    static inline UME::SIMD::SIMDVec<double, 1> evaluate_scalar(double element, int index) {
+        return UME::SIMD::SIMDVec<double, 1>(element);
+    }
+};
+
 template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E>
 class ArithmeticExpression {
 public:
