@@ -55,7 +55,7 @@ namespace BLAS {
 
 
         inline LogicalORExpression<STRIDE, DERIVED_MASK_TYPE, bool> lor(bool srcB) {
-            return LogicalOrExpression<STRIDE, DERIVED_MASK_TYPE, bool>((*this), srcB);
+            return LogicalORExpression<STRIDE, DERIVED_MASK_TYPE, bool>((*this), srcB);
         }
         inline LogicalORExpression<STRIDE, DERIVED_MASK_TYPE, bool> operator| (bool srcB) {
             return LogicalORExpression<STRIDE, DERIVED_MASK_TYPE, bool>((*this), srcB);
@@ -212,102 +212,107 @@ namespace BLAS {
     template<
         typename DERIVED_VECTOR_TYPE,
         typename SCALAR_TYPE,
-        int STRIDE>
+        int SIMD_STRIDE>
     class ArithmeticVectorInterface :
-        public ArithmeticExpression<DERIVED_VECTOR_TYPE> {
+        public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE> {
     protected:
         ~ArithmeticVectorInterface() {}
 
     public:
         // Can we make this private?
-        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> SIMD_TYPE;
+        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1>      SIMD1_TYPE;
-        typedef UME::SIMD::SIMDVecMask<STRIDE>          MASK_TYPE;
+        typedef UME::SIMD::SIMDVecMask<SIMD_STRIDE>          MASK_TYPE;
         typedef UME::SIMD::SIMDVecMask<1>               MASK1_TYPE;
 
-        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> add(SCALAR_TYPE srcB) {
-            return ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE>((*this), srcB);
+        //inline ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> add(SCALAR_TYPE srcB) {
+        //    return ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE>((*this), srcB);
+        //}
+        //inline ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> operator+ (SCALAR_TYPE srcB) {
+        //    return add(srcB);
+        //}
+
+        template<typename E2>
+        inline ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> add(E2 & srcB) {
+            return ArithmeticADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
         }
-        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> operator+ (SCALAR_TYPE srcB) {
+
+        template<typename E2>
+        inline ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> operator+ (E2 & srcB) {
             return add(srcB);
         }
 
         template<typename E2>
-        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> add(E2 & srcB) {
-            return ArithmeticADDExpression < SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        inline ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> add(E2 && srcB) {
+            return ArithmeticADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
         }
 
         template<typename E2>
-        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> operator+ (E2 & srcB) {
-            return add(srcB);
-        }
-
-        template<typename E2>
-        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> add(E2 && srcB) {
-            return ArithmeticADDExpression < SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
-        }
-
-        template<typename E2>
-        inline ArithmeticADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> operator+ (E2 && srcB) {
+        inline ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> operator+ (E2 && srcB) {
             return add(srcB);
         }
 
         // MADD
         template<typename E1, typename E2>
-        inline ArithmeticMADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E1, E2> add(E1 & mask, E2 & srcB) {
-            return ArithmeticMADDExpression < SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E1, E2>((*this), mask, srcB);
+        inline ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2> add(E1 & mask, E2 & srcB) {
+            return ArithmeticMADDExpression < SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2>((*this), mask, srcB);
+        }
+
+        template<typename E1, typename E2>
+        inline ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2> add(E1 && mask, E2 && srcB) {
+            return ArithmeticMADDExpression < SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2>((*this), mask, srcB);
         }
 
         // MUL
-        inline ArithmeticMULExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> mul(SCALAR_TYPE srcB) {
-            return ArithmeticMULExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE>((*this), srcB);
+        //inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> mul(SCALAR_TYPE srcB) {
+        //    return ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE>((*this), srcB);
+        //}
+
+        template<typename E2>
+        inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> mul(E2 & srcB) {
+            return ArithmeticMULExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
         }
 
         template<typename E2>
-        inline ArithmeticMULExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> mul(E2 & srcB) {
-            return ArithmeticMULExpression <SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> mul(E2 && srcB) {
+            return ArithmeticMULExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        }
+        /*
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, SCALAR_TYPE> fmuladd(SCALAR_TYPE srcB, SCALAR_TYPE srcC) {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3>((*this), srcB, srcC);
         }
 
         template<typename E2>
-        inline ArithmeticMULExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2> mul(E2 && srcB) {
-            return ArithmeticMULExpression <SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
-        }
-
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, SCALAR_TYPE> fmuladd(SCALAR_TYPE srcB, SCALAR_TYPE srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, E3>((*this), srcB, srcC);
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE> fmuladd(E2 & srcB, SCALAR_TYPE srcC) {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE>((*this), srcB, srcC);
         }
 
         template<typename E2>
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE> fmuladd(E2 & srcB, SCALAR_TYPE srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE>((*this), srcB, srcC);
-        }
-
-        template<typename E2>
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE> fmuladd(E2 && srcB, SCALAR_TYPE srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE>((*this), srcB, srcC);
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE> fmuladd(E2 && srcB, SCALAR_TYPE srcC) {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE>((*this), srcB, srcC);
         }
 
         template<typename E3>
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3> fmuladd(SCALAR_TYPE srcB, E3 & srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3>((*this), srcB, srcC);
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3> fmuladd(SCALAR_TYPE srcB, E3 & srcC) {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3>((*this), srcB, srcC);
         }
         template<typename E3>
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3> fmuladd(SCALAR_TYPE srcB, E3 && srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3>((*this), srcB, srcC);
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3> fmuladd(SCALAR_TYPE srcB, E3 && srcC) {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3>((*this), srcB, srcC);
         }
 
         template<typename E2, typename E3>
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(E2 & srcB, E3 & srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, E3>((*this), srcB, srcC);
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(E2 & srcB, E3 & srcC) {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3>((*this), srcB, srcC);
         }
 
         template<typename E2, typename E3>
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(E2 && srcB, E3 && srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE, E2, E3>((*this), srcB, srcC);
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(E2 && srcB, E3 && srcC) {
+            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3>((*this), srcB, srcC);
         }
-
-        inline ArithmeticPOSTINCExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE> postinc() {
-            return ArithmeticPOSTINCExpression<SCALAR_TYPE, STRIDE, DERIVED_VECTOR_TYPE>((*this));
+        */
+        inline ArithmeticPOSTINCExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE> postinc() {
+            return ArithmeticPOSTINCExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>((*this));
         }
         /*
         inline DERIVED_VECTOR_TYPE & postinc(DERIVED_VECTOR_TYPE & dst) {
@@ -322,8 +327,8 @@ namespace BLAS {
             SIMD_TYPE A, B, C(SCALAR_TYPE(0));
 
             for (int i = 0; i < srcB.LOOP_COUNT(); i++) {
-                A.loada(&(static_cast<DERIVED_VECTOR_TYPE const &>(*this)).elements[i*STRIDE]);
-                B.loada(&srcB.elements[i*STRIDE]);
+                A.loada(&(static_cast<DERIVED_VECTOR_TYPE const &>(*this)).elements[i*SIMD_STRIDE]);
+                B.loada(&srcB.elements[i*SIMD_STRIDE]);
                 C = A.fmuladd(B, C);
             }
             SCALAR_TYPE result = C.hadd();
@@ -337,21 +342,21 @@ namespace BLAS {
     };
 
     /* Static vector template. This template*/
-    template<typename SCALAR_TYPE, int STRIDE = 4, int VEC_LEN = DYNAMIC_LENGTH>
+    template<typename SCALAR_TYPE, int SIMD_STRIDE = 4, int VEC_LEN = DYNAMIC_LENGTH>
     class RowVector : public ArithmeticVectorInterface<
-        RowVector<SCALAR_TYPE, STRIDE, VEC_LEN>,
+        RowVector<SCALAR_TYPE, SIMD_STRIDE, VEC_LEN>,
         SCALAR_TYPE,
-        STRIDE>
+        SIMD_STRIDE>
     {
     public:
-        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> SIMD_TYPE;
+        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD1_TYPE;
 
         inline int LENGTH() const { return VEC_LEN; }
-        inline int LOOP_COUNT() const { return VEC_LEN / STRIDE; }
-        inline int PEEL_COUNT() const { return VEC_LEN % STRIDE; }
-        inline int LOOP_PEEL_OFFSET() const { return LOOP_COUNT() * STRIDE; }
-        inline int SIMD_STRIDE() const { return STRIDE; }
+        inline int LOOP_COUNT() const { return VEC_LEN / SIMD_STRIDE; }
+        inline int PEEL_COUNT() const { return VEC_LEN % SIMD_STRIDE; }
+        inline int LOOP_PEEL_OFFSET() const { return LOOP_COUNT() * SIMD_STRIDE; }
+        //inline int SIMD_STRIDE() const { return SIMD_STRIDE; }
 
         alignas(SIMD_TYPE::alignment()) SCALAR_TYPE elements[VEC_LEN];
 
@@ -364,13 +369,13 @@ namespace BLAS {
         }
 
         template<typename E>
-        RowVector<SCALAR_TYPE, STRIDE, VEC_LEN>(ArithmeticExpression<E> && vec)
+        RowVector (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
-                UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
+            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
                 t0.storea(&elements[i]);
             }
 
@@ -412,9 +417,9 @@ namespace BLAS {
         // Cast operator to convert from static to dynamic form. Because of
         // different allocation method, the data needs to be copied from stack-organized
         // to heap-organized. 
-        inline operator RowVector<SCALAR_TYPE, STRIDE, DYNAMIC_LENGTH>() {
+        inline operator RowVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH>() {
             // Create dynamic Row vector, and copy data
-            RowVector<SCALAR_TYPE, STRIDE, DYNAMIC_LENGTH> temp(VEC_LEN);
+            RowVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> temp(VEC_LEN);
             memcpy(temp.elements, elements, VEC_LEN*sizeof(SCALAR_TYPE));
             return temp;
         }
@@ -424,7 +429,7 @@ namespace BLAS {
             return *this;
         }
 
-        RowVector& operator= (RowVector<SCALAR_TYPE, STRIDE, DYNAMIC_LENGTH> & origin) {
+        RowVector& operator= (RowVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> & origin) {
             assert(VEC_LEN == origin.LENGTH()); // Cannot re-allocate static
             for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
             return *this;
@@ -433,13 +438,13 @@ namespace BLAS {
         // Initialize with expression template evaluation
         template<typename E>
         //RowVector(ArithmeticExpression<E> & vec) {
-        RowVector& operator= (ArithmeticExpression<E> && vec)
+        RowVector& operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
-                UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
+            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
                 t0.storea(&elements[i]);
             }
 
@@ -451,8 +456,8 @@ namespace BLAS {
         }
 
         RowVector& operator= (SCALAR_TYPE x) {
-            UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> t0(x);
-            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
+            UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
+            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
                 t0.storea(&elements[i]);
             }
             for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
@@ -474,11 +479,11 @@ namespace BLAS {
     // is not possible and the data needs to be stored on heap. This class can still use
     // ArithmeticVectorInterface, but it require some additional user-invisible functionality
     // to support type conversions between static and dynamic vectors.
-    template<typename SCALAR_TYPE, int STRIDE>
-    class RowVector<SCALAR_TYPE, STRIDE, DYNAMIC_LENGTH> : public ArithmeticVectorInterface<
-        RowVector<SCALAR_TYPE, STRIDE, DYNAMIC_LENGTH>,
+    template<typename SCALAR_TYPE, int SIMD_STRIDE>
+    class RowVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> : public ArithmeticVectorInterface<
+        RowVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH>,
         SCALAR_TYPE,
-        STRIDE>
+        SIMD_STRIDE>
     {
     private:
         int mLength;
@@ -487,14 +492,14 @@ namespace BLAS {
         //friend class RowVector<SCALAR_TYPE, STRIDE, L>;
 
     public:
-        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> SIMD_TYPE;
+        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1>      SIMD1_TYPE;
 
         inline int LENGTH() const { return mLength; }
-        inline int LOOP_COUNT() const { return mLength / STRIDE; }
-        inline int PEEL_COUNT() const { return mLength % STRIDE; }
-        inline int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*STRIDE; }
-        inline int SIMD_STRIDE() const { return STRIDE; }
+        inline int LOOP_COUNT() const { return mLength / SIMD_STRIDE; }
+        inline int PEEL_COUNT() const { return mLength % SIMD_STRIDE; }
+        inline int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*SIMD_STRIDE; }
+        //inline int SIMD_STRIDE() const { return STRIDE; }
 
         SCALAR_TYPE* elements;
 
@@ -575,13 +580,13 @@ namespace BLAS {
         // Initialize with expression template evaluation
         template<typename E>
         //RowVector(ArithmeticExpression<E> & vec) {
-        RowVector& operator= (ArithmeticExpression<E> && vec)
+        RowVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
-                UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
+            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
                 t0.storea(&elements[i]);
             }
 
@@ -593,18 +598,18 @@ namespace BLAS {
         }
 
         RowVector& operator= (SCALAR_TYPE x) {
-            UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> t0(x);
-            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
+            UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
+            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
                 t0.storea(&elements[i]);
             }
-            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+            for (int i = LOOP_PEEL_OFFSET(); i < mLength(); i++) {
                 elements[i] = x;
             }
             return *this;
         }
 
         RowVector& operator= (SCALAR_TYPE* x) {
-            for (int i = 0; i < VEC_LEN; i++) {
+            for (int i = 0; i < mLength(); i++) {
                 elements[i] = x[i];
             }
             return *this;

@@ -54,121 +54,187 @@ public:
     }
 };
 
+template <typename SCALAR_TYPE, int SIMD_STRIDE, typename T>
+class ArithmeticEvaluatorHelper {
+public:
+    static inline auto evaluate_SIMD(T & element, int index)  ->
+        decltype (element.evaluate_SIMD(index))
+    {
+        return element.evaluate_SIMD(index);
+    }
 
+    static inline auto evaluate_scalar(T & element, int index)  ->
+        decltype (element.evaluate_scalar(index))
+    {
+        return element.evaluate_scalar(index);
+    }
+};
 
+// Define specializations for scalar types:
+template<int SIMD_STRIDE>
+class ArithmeticEvaluatorHelper<float, SIMD_STRIDE, float> {
+public:
+    static inline UME::SIMD::SIMDVec<float, SIMD_STRIDE> evaluate_SIMD(float element, int index) {
+        return  UME::SIMD::SIMDVec<float, SIMD_STRIDE>(element);
+    }
+    static inline UME::SIMD::SIMDVec<float, 1> evaluate_scalar(float element, int index) {
+        return UME::SIMD::SIMDVec<float, 1>(element);
+    }
+};
 
-template <typename E>
+template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E>
 class ArithmeticExpression {
 public:
     int LOOP_COUNT() { return static_cast<E&>(*this).LOOP_COUNT(); }
+    //static constexpr int SIMD_STRIDE() { return SIMD_STRIDE; }
+
+    static constexpr int TEST_SIMD_VALUE() { return SIMD_STRIDE; }
 
     operator E&() { return static_cast<E&>(*this); }
     operator E const&() const { return static_cast<const E&>(*this); }
 };
-
-template <typename SCALAR_TYPE, int STRIDE, typename E1, typename E2>
-class ArithmeticADDExpression : public ArithmeticExpression<ArithmeticADDExpression<SCALAR_TYPE, STRIDE, E1, E2> > {
-    E1 & _u;
-    E2 & _v;
+/*
+template<typename SCALAR_T>
+class ScalarExpression : ArithmeticExpression<SCALAR_T> {
+    SCALAR_T _v;
 
 public:
-    ArithmeticADDExpression(ArithmeticExpression<E1> & u, ArithmeticExpression<E2> & v) : _u(u), _v(v) {
+    ScalarExpression(SCALAR_T v) : _v(v) {};
+
+    SCALAR_T evaluate_SIMD() {
+
+    }
+};*/
+
+template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2>
+class ArithmeticADDExpression : public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> > {
+
+    E1 & _e1;
+    E2 & _e2;
+
+public:
+    ArithmeticADDExpression(E1 & e1, E2 & e2) : _e1(e1), _e2(e2) {}
+
+    inline auto evaluate_SIMD(int index) ->
+        decltype (
+            ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_SIMD(_e1, index).add(
+                ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E2>::evaluate_SIMD(_e2, index))
+            )
+    {
+        auto t0 = ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_SIMD(_e1, index);
+        auto t1 = ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E2>::evaluate_SIMD(_e2, index);
+        return t0.add(t1);
     }
 
-    inline UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> evaluate_SIMD(int index) {
-        return (_u.evaluate_SIMD(index)).add(_v.evaluate_SIMD(index));
-    }
-    inline UME::SIMD::SIMDVec<SCALAR_TYPE, 1> evaluate_scalar(int index) { 
-        auto t0 = _u.evaluate_scalar(index);
-        auto t1 = _v.evaluate_scalar(index);
-        auto t2 = t0.add(t1);
-        return t2;
+    inline auto evaluate_scalar(int index) ->
+        decltype (
+            ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_scalar(_e1, index).add(
+                ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E2>::evaluate_scalar(_e2, index))
+            )
+    {
+        auto t0 = ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_scalar(_e1, index);
+        auto t1 = ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E2>::evaluate_scalar(_e2, index);
+        return t0.add(t1);
     }
 };
 
-template <typename SCALAR_TYPE, int STRIDE, typename E1>
-class ArithmeticADDExpression<SCALAR_TYPE, STRIDE, E1, SCALAR_TYPE> : 
-    public ArithmeticExpression<ArithmeticADDExpression<SCALAR_TYPE, STRIDE, E1, SCALAR_TYPE> >
+template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2>
+class ArithmeticMADDExpression : 
+    public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> >
 {
-    E1 & _u;
-    SCALAR_TYPE _v;
-
-public:
-    ArithmeticADDExpression(ArithmeticExpression<E1> & u, SCALAR_TYPE v) : _u(u), _v(v) {
-    }
-
-    inline UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> evaluate_SIMD(int index) {
-        return (_u.evaluate_SIMD(index)).add(_v);
-    }
-    inline UME::SIMD::SIMDVec<SCALAR_TYPE, 1> evaluate_scalar(int index) {
-        return (_u.evaluate_scalar(index)).add(_v);
-    }
-};
-
-template <typename SCALAR_TYPE, int STRIDE, typename E1, typename E_MASK, typename E2>
-class ArithmeticMADDExpression : public ArithmeticExpression<ArithmeticMADDExpression<SCALAR_TYPE, STRIDE, E1, E_MASK, E2> > {
     E1 & _e1;
     E_MASK & _e_mask;
     E2 & _e2;
 
 public:
-    ArithmeticMADDExpression(ArithmeticExpression<E1> & e1, LogicalExpression<E_MASK> & e_mask, ArithmeticExpression<E2> & e2) : _e1(e1), _e_mask(e_mask), _e2(e2) {}
+    ArithmeticMADDExpression(E1 & e1, E_MASK & e_mask, E2 & e2) : _e1(e1), _e_mask(e_mask), _e2(e2) {}
 
-    inline UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> evaluate_SIMD(int index) {
-        auto t0 = _e1.evaluate_SIMD(index);
-        auto t1 = _e_mask.evaluate_SIMD(index);
-        auto t2 = _e2.evaluate_SIMD(index);
+    inline auto evaluate_SIMD(int index) ->
+        decltype (
+            ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_SIMD(_e1, index).add(
+                ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E_MASK>::evaluate_SIMD(_e_mask, index),
+                ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E2>::evaluate_SIMD(_e2, index)
+                )
+            )
+    {
+        auto t0 = ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_SIMD(_e1, index);
+        auto t1 = ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E_MASK>::evaluate_SIMD(_e_mask, index);
+        auto t2 = ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E2>::evaluate_SIMD(_e2, index);
         auto t3 = t0.add(t1, t2);
         return t3;
     }
-    inline UME::SIMD::SIMDVec<SCALAR_TYPE, 1> evaluate_scalar(int index) {
-        auto t0 = _e1.evaluate_scalar(index);
-        auto t1 = _e_mask.evaluate_scalar(index);
-        auto t2 = _e2.evaluate_scalar(index);
+
+    inline auto evaluate_scalar(int index) ->
+        decltype (
+            ArithmeticEvaluatorHelper<SCALAR_TYPE, 1, E1>::evaluate_scalar(_e1, index).add(
+                ArithmeticEvaluatorHelper<SCALAR_TYPE, 1, E_MASK>::evaluate_scalar(_e_mask, index),
+                ArithmeticEvaluatorHelper<SCALAR_TYPE, 1, E2>::evaluate_scalar(_e2, index)
+                )
+            )
+    {
+        auto t0 = ArithmeticEvaluatorHelper<SCALAR_TYPE, 1, E1>::evaluate_scalar(_e1, index);
+        auto t1 = ArithmeticEvaluatorHelper<SCALAR_TYPE, 1, E_MASK>::evaluate_scalar(_e_mask, index);
+        auto t2 = ArithmeticEvaluatorHelper<SCALAR_TYPE, 1, E2>::evaluate_scalar(_e2, index);
         auto t3 = t0.add(t1, t2);
         return t3;
     }
 };
 
-template <typename SCALAR_TYPE, int STRIDE, typename E1, typename E2>
-class ArithmeticMULExpression : public ArithmeticExpression<ArithmeticMULExpression<SCALAR_TYPE, STRIDE, E1, E2> > {
-    E1 & _u;
-    E2 & _v;
+template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2>
+class ArithmeticMULExpression : public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> > {
+    E1 & _e1;
+    E2 & _e2;
 
 public:
-    ArithmeticMULExpression(ArithmeticExpression<E1> & u, ArithmeticExpression<E2> & v) : _u(u), _v(v) {
+    ArithmeticMULExpression(E1 & e1, E2 & e2) : _e1(e1), _e2(e2) {
     }
 
-    inline UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> evaluate_SIMD(int index) {
-        return (_u.evaluate_SIMD(index)).mul(_v.evaluate_SIMD(index));
+    inline auto evaluate_SIMD(int index) ->
+        decltype (
+            ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_SIMD(_e1, index).mul(
+                ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E2>::evaluate_SIMD(_e2, index))
+            )
+    {
+        auto t0 = ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_SIMD(_e1, index);
+        auto t1 = ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E2>::evaluate_SIMD(_e2, index);
+        return t0.mul(t1);
     }
-    inline UME::SIMD::SIMDVec<SCALAR_TYPE, 1> evaluate_scalar(int index) {
-        return (_u.evaluate_scalar(index)).mul(_v.evaluate_scalar(index));
+
+    inline auto evaluate_scalar(int index) ->
+        decltype (
+            ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_scalar(_e1, index).mul(
+                ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E2>::evaluate_scalar(_e2, index))
+            )
+    {
+        auto t0 = ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_scalar(_e1, index);
+        auto t1 = ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E2>::evaluate_scalar(_e2, index);
+        return t0.mul(t1);
     }
 };
 
-template <typename SCALAR_TYPE, int STRIDE, typename E1>
-class ArithmeticMULExpression<SCALAR_TYPE, STRIDE, E1, SCALAR_TYPE> :
-    public ArithmeticExpression<ArithmeticMULExpression<SCALAR_TYPE, STRIDE, E1, SCALAR_TYPE> >
+/*
+template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1>
+class ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, SCALAR_TYPE> :
+    public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, SCALAR_TYPE> >
 {
     E1 & _u;
     SCALAR_TYPE _v;
 
 public:
-    ArithmeticMULExpression(ArithmeticExpression<E1> & u, SCALAR_TYPE v) : _u(u), _v(v) {
+    ArithmeticMULExpression(E1 & u, SCALAR_TYPE v) : _u(u), _v(v) {
     }
 
-    inline UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> evaluate_SIMD(int index) {
+    inline UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> evaluate_SIMD(int index) {
         return (_u.evaluate_SIMD(index)).mul(_v);
     }
     inline UME::SIMD::SIMDVec<SCALAR_TYPE, 1> evaluate_scalar(int index) {
         return (_u.evaluate_scalar(index)).mul(_v);
     }
-};
-
+};*/
+/*
 // FMULADD(VEC, VEC, VEC)
-template <typename SCALAR_TYPE, int STRIDE, typename E1, typename E2, typename E3>
-class ArithmeticFMULADDExpression : public ArithmeticExpression<ArithmeticFMULADDExpression<SCALAR_TYPE, STRIDE, E1, E2, E3> > {
+template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3>
+class ArithmeticFMULADDExpression : public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3> > {
     E1 & _u;
     E2 & _v;
     E3 & _w;
@@ -283,25 +349,35 @@ public:
     inline UME::SIMD::SIMDVec<SCALAR_TYPE, 1> evaluate_scalar(int index) {
         return (_u.evaluate_scalar(index)).fmuladd(_v, _w);
     }
-};
+};*/
 
-template <typename SCALAR_TYPE, int STRIDE, typename E1>
-class ArithmeticPOSTINCExpression : public ArithmeticExpression<ArithmeticPOSTINCExpression<SCALAR_TYPE, STRIDE, E1> > {
-    E1 & _u;
+template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1>
+class ArithmeticPOSTINCExpression : public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTINCExpression<SCALAR_TYPE, SIMD_STRIDE, E1> > {
+    E1 & _e1;
 
 public:
-    ArithmeticPOSTINCExpression(ArithmeticExpression<E1> & u) : _u(u) {}
+    ArithmeticPOSTINCExpression(E1 & e1) : _e1(e1) {}
 
-    inline UME::SIMD::SIMDVec<SCALAR_TYPE, STRIDE> evaluate_SIMD(int index) {
-        auto t0 = _u.evaluate_SIMD(index);
+
+    inline auto evaluate_SIMD(int index) ->
+        decltype (
+                ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_SIMD(_e1, index).postinc()
+            )
+    {
+        auto t0 = ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_SIMD(_e1, index);
         auto t1 = t0.postinc();
-        _u.update_SIMD(t0, index);
+        _e1.update_SIMD(t0, index);
         return t1;
     }
-    inline UME::SIMD::SIMDVec<SCALAR_TYPE, 1> evaluate_scalar(int index) {
-        auto t0 = _u.evaluate_scalar(index);
+
+    inline auto evaluate_scalar(int index) ->
+        decltype (
+            ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_scalar(_e1, index).postinc()
+            )
+    {
+        auto t0 = ArithmeticEvaluatorHelper<SCALAR_TYPE, SIMD_STRIDE, E1>::evaluate_scalar(_e1, index);
         auto t1 = t0.postinc();
-        _u.update_scalar(t0, index);
+        _e1.update_scalar(t0, index);
         return t1;
     }
 };
