@@ -236,8 +236,8 @@ namespace BLAS {
         }
 
         // Explicitly specialize to support RH scalar operand
-        inline ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> add(SCALAR_TYPE srcB) {
-            return ArithmeticADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE>((*this), srcB);
+        inline ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > add(SCALAR_TYPE srcB) {
+            return ArithmeticADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         // MADD
@@ -264,8 +264,8 @@ namespace BLAS {
         }
 
         // Explicitly specialize to support RH scalar operand
-        inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> mul(SCALAR_TYPE srcB) {
-            return ArithmeticMULExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE>((*this), srcB);
+        inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>> mul(SCALAR_TYPE srcB) {
+            return ArithmeticMULExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         /*
@@ -452,9 +452,9 @@ namespace BLAS {
             return *this;
         }
 
-        // Initialize with expression template evaluation
+        // Initialize with expression template evaluation. This is necessary for using
+        // RVALUE expressions on the right hand of assignment operator.
         template<typename E>
-        //RowVector(ArithmeticExpression<E> & vec) {
         RowVector& operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
@@ -469,9 +469,36 @@ namespace BLAS {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
                 t1.store(&elements[i]);
             }
+
+            // Dispose of the expression and release all temporary storage.
+            reinterpret_vec.dispose();
             return *this;
         }
 
+        // Initialize with expression template evaluation. This is necessary for using
+        // 'auto' variable on the right hand of assignment operator.
+        template<typename E>
+        RowVector& operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> & vec)
+        {
+            // Need to reinterpret vec to E to propagate to proper expression
+            // evaluator.
+            E & reinterpret_vec = static_cast<E &>(vec);
+            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
+                t0.storea(&elements[i]);
+            }
+
+            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
+                t1.store(&elements[i]);
+            }
+
+            // Dispose of the expression and release all temporary storage.
+            reinterpret_vec.dispose();
+            return *this;
+        }
+
+        // Broadcast scalar value to all elements of the vector.
         RowVector& operator= (SCALAR_TYPE x) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
             for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
@@ -483,6 +510,7 @@ namespace BLAS {
             return *this;
         }
 
+        // Copy values from memory location
         RowVector& operator= (SCALAR_TYPE* x) {
             for (int i = 0; i < VEC_LEN; i++) {
                 elements[i] = x[i];
