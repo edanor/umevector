@@ -268,66 +268,91 @@ namespace BLAS {
             return ArithmeticMULExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
-        /*
-        template<typename E2>
-        inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> mul(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB) {
-            return ArithmeticMULExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
-        }
-        template<typename E2>
-        inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> operator* (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB) {
-            return mul(srcB);
-        }
-
-        template<typename E2>
-        inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> mul(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB) {
-            return ArithmeticMULExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
-        }
-
-        template<typename E2>
-        inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> operator* (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB) {
-            return mul(srcB);
-        }
-
-        inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> mul(SCALAR_TYPE srcB) {
-            return ArithmeticMULExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE>((*this), srcB);
-        }
-        inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE> operator* (SCALAR_TYPE & srcB) {
-            return mul(srcB);
-        }
-        /*
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, SCALAR_TYPE> fmuladd(SCALAR_TYPE srcB, SCALAR_TYPE srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3>((*this), srcB, srcC);
-        }
-
-        template<typename E2>
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE> fmuladd(E2 & srcB, SCALAR_TYPE srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE>((*this), srcB, srcC);
-        }
-
-        template<typename E2>
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE> fmuladd(E2 && srcB, SCALAR_TYPE srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, SCALAR_TYPE>((*this), srcB, srcC);
-        }
-
-        template<typename E3>
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3> fmuladd(SCALAR_TYPE srcB, E3 & srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3>((*this), srcB, srcC);
-        }
-        template<typename E3>
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3> fmuladd(SCALAR_TYPE srcB, E3 && srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, SCALAR_TYPE, E3>((*this), srcB, srcC);
-        }
-
+        // FMULADD
         template<typename E2, typename E3>
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(E2 & srcB, E3 & srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3>((*this), srcB, srcC);
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB,
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E3> & srcC) {
+            return ArithmeticFMULADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3>(
+                (*this),
+                srcB,
+                srcC);
+        }
+        template<typename E2, typename E3>
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB,
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E3> && srcC) {
+            return ArithmeticFMULADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3>(
+                (*this),
+                srcB,
+                srcC);
+        }
+        template<typename E2, typename E3>
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB,
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E3> & srcC) {
+            return ArithmeticFMULADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3>(
+                (*this),
+                srcB,
+                srcC);
+        }
+        template<typename E2, typename E3>
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB,
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E3> && srcC) {
+            return ArithmeticFMULADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3>(
+                (*this), 
+                srcB, 
+                srcC);
         }
 
-        template<typename E2, typename E3>
-        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3> fmuladd(E2 && srcB, E3 && srcC) {
-            return ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, E3>((*this), srcB, srcC);
+        // Partially specialize to support RH scalar operand
+        template<typename E2>
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>> fmuladd (
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB,
+            SCALAR_TYPE srcC)
+        {
+            return ArithmeticFMULADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>(
+                (*this),
+                srcB,
+                ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcC));
         }
-        */
+        template<typename E2>
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>> fmuladd(
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB,
+            SCALAR_TYPE srcC)
+        {
+            return ArithmeticFMULADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>(
+                (*this),
+                srcB,
+                ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcC));
+        }
+        template<typename E3>
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>, E3> fmuladd(
+            SCALAR_TYPE srcB,
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E3> & srcC) 
+        {
+            return ArithmeticFMULADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>, E3>(
+                (*this),
+                ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB),
+                srcC);
+        }
+        template<typename E3>
+        inline ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>, E3> fmuladd(
+            SCALAR_TYPE srcB,
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E3> && srcC)
+        {
+            return ArithmeticFMULADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>, E3>(
+                (*this),
+                ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB),
+                srcC);
+        }
+
+        // Explicitly specialize to support RH scalar operand
+        //inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>> mul(SCALAR_TYPE srcB) {
+        //    return ArithmeticMULExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
+        //}
+
         inline ArithmeticPOSTINCExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE> postinc() {
             return ArithmeticPOSTINCExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>((*this));
         }

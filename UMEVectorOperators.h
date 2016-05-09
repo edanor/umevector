@@ -14,6 +14,25 @@ namespace UME
         {
             return ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
         }
+
+        // Operators to handle "Exp1 + RVALUE Exp2" expressions.
+        template<typename SCALAR_TYPE, typename E1, typename E2>
+        inline ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2> operator+ (
+            ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> & srcA,
+            ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> && srcB)
+        {
+            return ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
+        }
+
+        // Operators to handle "RVALUE Exp1 + Exp2" expressions.
+        template<typename SCALAR_TYPE, typename E1, typename E2>
+        inline ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2> operator+ (
+            ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> && srcA,
+            ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
+        {
+            return ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
+        }
+
         // Operators to handle "RVALUE Exp1 + RVALUE Exp2" expressions
         template<typename SCALAR_TYPE, typename E1, typename E2>
         inline ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2> operator+ (
