@@ -6,6 +6,8 @@ class LogicalExpression{
 public:
     operator E&() { return static_cast<E&>(*this); }
     operator E const&() const { return static_cast<const E&>(*this); }
+    
+    void dispose() {}
 };
 
 template<int STRIDE, typename E1, typename E2>
@@ -66,7 +68,6 @@ public:
 
     void dispose() {}
 };
-
 
 template<typename SCALAR_TYPE, int SIMD_STRIDE>
 class ScalarExpression : public ArithmeticExpression < SCALAR_TYPE, SIMD_STRIDE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> >
@@ -153,8 +154,85 @@ class ArithmeticMADDExpression :
     E_MASK & _e_mask;
     E2 & _e2;
 
+    bool _e1_ownership;
+    bool _e_mask_ownership;
+    bool _e2_ownership;
+
 public:
-    ArithmeticMADDExpression(E1 & e1, E_MASK & e_mask, E2 & e2) : _e1(e1), _e_mask(e_mask), _e2(e2) {}
+    ArithmeticMADDExpression(E1 & e1, E_MASK & e_mask, E2 & e2) :
+        _e1(e1),
+        _e_mask(e_mask),
+        _e2(e2),
+        _e1_ownership(false),
+        _e_mask_ownership(false),
+        _e2_ownership(false) {}
+
+    ArithmeticMADDExpression(E1 && e1, E_MASK & e_mask, E2 & e2) :
+        _e1(*(new E1(e1))),
+        _e_mask(e_mask),
+        _e2(e2),
+        _e1_ownership(true),
+        _e_mask_ownership(false),
+        _e2_ownership(false) {}
+
+    ArithmeticMADDExpression(E1 & e1, E_MASK && e_mask, E2 & e2) :
+        _e1(e1),
+        _e_mask(*(new E_MASK(e_mask))),
+        _e2(e2),
+        _e1_ownership(false),
+        _e_mask_ownership(true),
+        _e2_ownership(false) {}
+
+    ArithmeticMADDExpression(E1 & e1, E_MASK & e_mask, E2 && e2) :
+        _e1(e1),
+        _e_mask(e_mask),
+        _e2(*(new E2(e2))),
+        _e1_ownership(false),
+        _e_mask_ownership(false),
+        _e2_ownership(true) {}
+
+    ArithmeticMADDExpression(E1 && e1, E_MASK && e_mask, E2 & e2) :
+        _e1(*(new E1(e1))),
+        _e_mask(*(new E_MASK(e_mask))),
+        _e2(e2),
+        _e1_ownership(true),
+        _e_mask_ownership(true),
+        _e2_ownership(false) {}
+
+    ArithmeticMADDExpression(E1 && e1, E_MASK & e_mask, E2 && e2) :
+        _e1(*(new E1(e1))),
+        _e_mask(e_mask),
+        _e2(*(new E2(e2))),
+        _e1_ownership(true),
+        _e_mask_ownership(false),
+        _e2_ownership(true) {}
+
+    ArithmeticMADDExpression(E1 & e1, E_MASK && e_mask, E2 && e2) :
+        _e1(e1),
+        _e_mask(*(new E_MASK(e_mask))),
+        _e2(*(new E2(e2))),
+        _e1_ownership(false),
+        _e_mask_ownership(true),
+        _e2_ownership(true) {}
+
+    ArithmeticMADDExpression(E1 && e1, E_MASK && e_mask, E2 && e2) :
+        _e1(*(new E1(e1))),
+        _e_mask(*(new E_MASK(e_mask))),
+        _e2(*(new E2(e2))),
+        _e1_ownership(false),
+        _e_mask_ownership(true),
+        _e2_ownership(true) {}
+
+
+    void dispose() {
+        if (_e1_ownership) delete &_e1;
+        else _e1.dispose();
+        if (_e_mask_ownership) delete &_e_mask;
+        else _e_mask.dispose();
+        if (_e2_ownership) delete &_e2;
+        else _e2.dispose();
+    }
+
 
     inline SIMD_TYPE evaluate_SIMD(int index)
     {
@@ -362,6 +440,90 @@ public:
         auto t1 = t0.postinc();
         _e1.update_scalar(t0, index); // For postinc expression, the _e1 subexpression should be a proper lvalue.
         return t1;
+    }
+};
+
+template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1>
+class ArithmeticHADDExpression : public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticHADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> > {
+    typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
+    typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
+
+    E1 & _e1;
+
+    bool _e1_ownership;
+
+    // Value of this expression has to be calculated only once, and can be returned for every 
+    // call to 'evaluate_SIMD' or 'evaluate_scalar'.
+    bool _evaluated;
+    SCALAR_TYPE _value; // This value is correct only if 'evaluated == true'
+
+public:
+    ArithmeticHADDExpression(E1 & e1) :
+        _e1(e1),
+        _e1_ownership(false),
+        _evaluated(false) {}
+
+    ArithmeticHADDExpression(E1 && e1) :
+        _e1(*(new E1(e1))),
+        _e1_ownership(true),
+        _evaluated(false) {}
+
+    void dispose() {
+        if (_e1_ownership) delete &_e1;
+        else _e1.dispose();
+    }
+
+    // First reduce to scalar and then return
+    inline SIMD_TYPE evaluate_SIMD(int index)
+    {
+        if (!_evaluated) {
+            SIMD_TYPE A(SCALAR_TYPE(0));
+            int loop_count = _e1.LOOP_PEEL_OFFSET();
+            for (int i = 0; i < loop_count; i += SIMD_STRIDE) {
+                SIMD_TYPE t0 = _e1.evaluate_SIMD(i);
+                A.adda(t0);
+            }
+            _value = A.hadd();
+            for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
+                SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
+                _value += t1[0];
+            }
+            _evaluated = true;
+        }
+        return SIMD_TYPE(_value);
+    }
+    inline SIMD_1_TYPE evaluate_scalar(int index)
+    {
+        if (!_evaluated)
+        {
+            SIMD_TYPE A(SCALAR_TYPE(0));
+            for (int i = 0; i < _e1.LOOP_COUNT(); i += SIMD_STRIDE) {
+                SIMD_TYPE t0 = _e1.evaluate_SIMD(i);
+                A.adda(t0);
+            }
+            _value = A.hadd();
+            for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
+                SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
+                _value += t1[0];
+            }
+            _evaluated = true;
+        }
+        return SIMD_1_TYPE(_value);
+    }
+
+    // Reduction operations require to be cast-able into scalar types.
+    inline operator SCALAR_TYPE() {
+        SIMD_TYPE A(SCALAR_TYPE(0));
+        for (int i = 0; i < _e1.LOOP_COUNT(); i += SIMD_STRIDE) {
+            SIMD_TYPE t0 = _e1.evaluate_SIMD(i);
+            A.adda(t0);
+        }
+        float B = A.hadd();
+        for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
+            SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
+            B += t1[0];
+        }
+        return B;
     }
 };
 

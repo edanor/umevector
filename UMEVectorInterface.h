@@ -77,7 +77,6 @@ namespace BLAS {
         }
     };
 
-
     template<int STRIDE = 4, int VEC_LEN = DYNAMIC_LENGTH>
     class MaskVector : public MaskInterface<
         MaskVector<STRIDE, VEC_LEN>,
@@ -109,7 +108,7 @@ namespace BLAS {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
+            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += STRIDE) {
                 SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
                 t0.storea(&elements[i]);
             }
@@ -178,7 +177,7 @@ namespace BLAS {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
+            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += STRIDE) {
                 SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
                 t0.storea(&elements[i]);
             }
@@ -192,7 +191,7 @@ namespace BLAS {
 
         MaskVector& operator= (bool x) {
             SIMD_TYPE t0(x);
-            for (int i = 0; i < LOOP_COUNT(); i += STRIDE) {
+            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += STRIDE) {
                 t0.storea(&elements[i]);
             }
             for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
@@ -203,6 +202,182 @@ namespace BLAS {
 
         MaskVector& operator= (bool* x) {
             for (int i = 0; i < VEC_LEN; i++) {
+                elements[i] = x[i];
+            }
+            return *this;
+        }
+    };
+
+    template<int SIMD_STRIDE>
+    class MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH> : public MaskInterface<
+        MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH>,
+        SIMD_STRIDE>
+    {
+    private:
+        int mLength;
+
+    public:
+        typedef UME::SIMD::SIMDVecMask<SIMD_STRIDE>  SIMD_TYPE;
+        typedef UME::SIMD::SIMDVecMask<1>       SIMD1_TYPE;
+
+        inline int LENGTH() const { return mLength; }
+        inline int LOOP_COUNT() const { return mLength / SIMD_STRIDE; }
+        inline int PEEL_COUNT() const { return mLength % SIMD_STRIDE; }
+        inline int LOOP_PEEL_OFFSET() const { return LOOP_COUNT() * SIMD_STRIDE; }
+        //inline int SIMD_STRIDE() const { return SIMD_STRIDE; }
+
+        bool* elements;
+
+        MaskVector(int length) : mLength(length) 
+        { 
+            elements = (bool*)UME::DynamicMemory::AlignedMalloc(
+                length*sizeof(bool),
+                SIMD_TYPE::alignment());
+        }
+        MaskVector(int length, bool value) : mLength(length)
+        {
+            elements = (bool*)UME::DynamicMemory::AlignedMalloc(
+                length*sizeof(bool),
+                SIMD_TYPE::alignment());
+            for (int i = 0; i < length; i++) elements[i] = value;
+        }
+        MaskVector(int length, bool *p) : mLength(length)
+        {
+            elements = (bool*)UME::DynamicMemory::AlignedMalloc(
+                length*sizeof(bool),
+                SIMD_TYPE::alignment());
+            for (int i = 0; i < length; i++) elements[i] = p[i];
+        }
+
+        MaskVector(MaskVector && origin) {
+            elements = origin.elements;
+            mLength = origin.mLength;
+            origin.elements = NULL;
+        }
+
+        ~MaskVector() {
+            UME::DynamicMemory::AlignedFree(elements);
+        }
+
+        // Terminal call for SIMD version of expression template expressions. 
+        // Every expression evaluation starts with loading values from memory 
+        // storage into proper SIMD vectors.
+        inline SIMD_TYPE evaluate_SIMD(int index) const {
+            SIMD_TYPE t0;
+            t0.loada(&elements[index]);
+            return t0;
+        }
+
+        // Terminal call for scalar version of expression template expressions.
+        // Every expression evaluation starts with loading values from memory
+        // storage into proper scalar equivalent.
+        inline SIMD1_TYPE evaluate_scalar(int index) const {
+            SIMD1_TYPE t0;
+            t0.load(&elements[index]);
+            return t0;
+        }
+
+        // Terminal call for scalar version of expression template expressions.
+        // Some operations require implicit assignment. This assignment needs to
+        // be propagated from evaluated register, back to vector data localization.
+        inline void update_SIMD(SIMD_TYPE & x, int index) {
+            x.storea(&elements[index]);
+        }
+
+        inline void update_scalar(SIMD1_TYPE & x, int index) {
+            x.store(&elements[index]);
+        }
+
+
+        template<typename E>
+        MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH>(LogicalExpression<E> && vec)
+        {
+            // Need to reinterpret vec to E to propagate to proper expression
+            // evaluator.
+            E & reinterpret_vec = static_cast<E &>(vec);
+            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                t0.storea(&elements[i]);
+            }
+
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                t1.store(&elements[i]);
+            }
+
+            reinterpret_vec.dispose();
+        }
+
+        // Cast operator to convert from static to dynamic form. Because of
+        // different allocation method, the data needs to be copied from stack-organized
+        // to heap-organized. 
+        inline operator MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH>() {
+            // Create dynamic Row vector, and copy data
+            MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH> temp(LENGTH());
+            for (int i = 0; i < LENGTH();i++) temp.elements[i] = elements[i];
+            return temp;
+        }
+
+        MaskVector& operator= (MaskVector & origin) {
+            for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
+            return *this;
+        }
+
+        // Initialize with expression template evaluation
+        template<typename E>
+        //RowVector(ArithmeticExpression<E> & vec) {
+        MaskVector& operator= (LogicalExpression<E> && vec)
+        {
+            // Need to reinterpret vec to E to propagate to proper expression
+            // evaluator.
+            E & reinterpret_vec = static_cast<E &>(vec);
+            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                t0.storea(&elements[i]);
+            }
+
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                t1.store(&elements[i]);
+            }
+
+            reinterpret_vec.dispose();
+            return *this;
+        }
+
+        // Initialize with expression template evaluation
+        template<typename E>
+        //RowVector(ArithmeticExpression<E> & vec) {
+        MaskVector& operator= (LogicalExpression<E> & vec)
+        {
+            // Need to reinterpret vec to E to propagate to proper expression
+            // evaluator.
+            E & reinterpret_vec = static_cast<E &>(vec);
+            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                t0.storea(&elements[i]);
+            }
+
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                t1.store(&elements[i]);
+            }
+            return *this;
+        }
+
+        MaskVector& operator= (bool x) {
+            SIMD_TYPE t0(x);
+            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                t0.storea(&elements[i]);
+            }
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                elements[i] = x;
+            }
+            return *this;
+        }
+
+        MaskVector& operator= (bool* x) {
+            for (int i = 0; i < LENGTH(); i++) {
                 elements[i] = x[i];
             }
             return *this;
@@ -251,8 +426,17 @@ namespace BLAS {
             return ArithmeticMADDExpression < SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2>((*this), mask, srcB);
         }
 
-        // MUL
+        // Partially specialize to support RH scalar operand
+        template<typename E1>
+        inline ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > add(LogicalExpression<E1> & mask, SCALAR_TYPE srcB) {
+            return ArithmeticMADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), mask, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
+        }
+        template<typename E1>
+        inline ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > add(LogicalExpression<E1> && mask, SCALAR_TYPE srcB) {
+            return ArithmeticMADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), mask, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
+        }
 
+        // MUL
         template<typename E2>
         inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> mul(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB) {
             return ArithmeticMULExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
@@ -348,38 +532,43 @@ namespace BLAS {
                 srcC);
         }
 
-        // Explicitly specialize to support RH scalar operand
-        //inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>> mul(SCALAR_TYPE srcB) {
-        //    return ArithmeticMULExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
-        //}
-
         inline ArithmeticPOSTINCExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE> postinc() {
             return ArithmeticPOSTINCExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>((*this));
         }
         /*
-        inline DERIVED_VECTOR_TYPE & postinc(DERIVED_VECTOR_TYPE & dst) {
-            //        UNARY_POSTFIX_VEC_OPERATION(
-            //           static_cast<DERIVED_VECTOR_TYPE const &>(*this),
-            //          dst, postinc, ++,
-            //         srcB.LOOP_COUNT(), srcB.LOOP_PEEL_OFFSET(), STRIDE, srcB.LENGTH(), SIMD_TYPE);
-            return dst;
-        }*/
-
         inline SCALAR_TYPE dotProduct(DERIVED_VECTOR_TYPE const & srcB) const {
             SIMD_TYPE A, B, C(SCALAR_TYPE(0));
 
-            for (int i = 0; i < srcB.LOOP_COUNT(); i++) {
+            for (int i = 0; i < LOOP_COUNT(); i++) {
                 A.loada(&(static_cast<DERIVED_VECTOR_TYPE const &>(*this)).elements[i*SIMD_STRIDE]);
                 B.loada(&srcB.elements[i*SIMD_STRIDE]);
                 C = A.fmuladd(B, C);
             }
             SCALAR_TYPE result = C.hadd();
 
-            for (int i = srcB.LOOP_PEEL_OFFSET(); i < srcB.LENGTH(); i++) {
+            for (int i = srcB.LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
                 result += (static_cast<DERIVED_VECTOR_TYPE const &>(*this)).elements[i] * srcB.elements[i];
             }
 
             return result;
+        }*/
+
+        inline ArithmeticHADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE> hadd() {
+            return ArithmeticHADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>((*this));
+            /*
+            SIMD_TYPE A, B(SCALAR_TYPE(0));
+
+            for (int i = 0; i < LOOP_COUNT(); i++) {
+                A.loada(elements[i*SIMD_STRIDE]);
+                B.adda(A);
+            }
+            SCALAR_TYPE result = B.hadd();
+
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                result += elements[i];
+            }
+
+            return result;*/
         }
     };
 
@@ -416,7 +605,7 @@ namespace BLAS {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
                 t0.storea(&elements[i]);
             }
@@ -485,7 +674,7 @@ namespace BLAS {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
                 t0.storea(&elements[i]);
             }
@@ -508,7 +697,7 @@ namespace BLAS {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
                 t0.storea(&elements[i]);
             }
@@ -526,7 +715,7 @@ namespace BLAS {
         // Broadcast scalar value to all elements of the vector.
         RowVector& operator= (SCALAR_TYPE x) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
-            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 t0.storea(&elements[i]);
             }
             for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
@@ -557,9 +746,6 @@ namespace BLAS {
     {
     private:
         int mLength;
-
-        //template<int L> 
-        //friend class RowVector<SCALAR_TYPE, STRIDE, L>;
 
     public:
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
@@ -627,6 +813,13 @@ namespace BLAS {
             return t0;
         }
 
+        RowVector& operator= (RowVector&& origin) {
+            UME::DynamicMemory::AlignedFree(elements);
+            elements = origin.elements;
+            origin.elements = NULL;
+            return *this;
+        }
+
         RowVector& operator= (RowVector & origin) {
             if (mLength != origin.mLength) {
                 // Dimensions do not match - reallocate
@@ -640,13 +833,6 @@ namespace BLAS {
             return *this;
         }
 
-        RowVector& operator= (RowVector&& origin) {
-            UME::DynamicMemory::AlignedFree(elements);
-            elements = origin.elements;
-            origin.elements = NULL;
-            return *this;
-        }
-
         // Initialize with expression template evaluation
         template<typename E>
         //RowVector(ArithmeticExpression<E> & vec) {
@@ -655,7 +841,7 @@ namespace BLAS {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
                 t0.storea(&elements[i]);
             }
@@ -669,7 +855,7 @@ namespace BLAS {
 
         RowVector& operator= (SCALAR_TYPE x) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
-            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 t0.storea(&elements[i]);
             }
             for (int i = LOOP_PEEL_OFFSET(); i < mLength(); i++) {
