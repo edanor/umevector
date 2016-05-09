@@ -2,5 +2,5 @@
 #define UME_BLAS_H_
 
 #include "UMEVectorInterface.h"
-#include "UMEVectorScalarOperators.h"
+#include "UMEVectorOperators.h"
 #endif

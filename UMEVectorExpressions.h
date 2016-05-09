@@ -97,25 +97,12 @@ template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E>
 class ArithmeticExpression {
 public:
     int LOOP_COUNT() { return static_cast<E&>(*this).LOOP_COUNT(); }
-    //static constexpr int SIMD_STRIDE() { return SIMD_STRIDE; }
 
-    static constexpr int TEST_SIMD_VALUE() { return SIMD_STRIDE; }
+    static constexpr int GET_SIMD_STRIDE() { return SIMD_STRIDE; }
 
     operator E&() { return static_cast<E&>(*this); }
     operator E const&() const { return static_cast<const E&>(*this); }
 };
-/*
-template<typename SCALAR_T>
-class ScalarExpression : ArithmeticExpression<SCALAR_T> {
-    SCALAR_T _v;
-
-public:
-    ScalarExpression(SCALAR_T v) : _v(v) {};
-
-    SCALAR_T evaluate_SIMD() {
-
-    }
-};*/
 
 template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2>
 class ArithmeticADDExpression : public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> > {
