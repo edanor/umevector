@@ -436,6 +436,23 @@ namespace BLAS {
             return ArithmeticMADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), mask, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
+
+        template<typename E2>
+        inline ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> sub(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB) {
+            return ArithmeticSUBExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        }
+
+        template<typename E2>
+        inline ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> sub(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB) {
+            return ArithmeticSUBExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        }
+
+        // Explicitly specialize to support RH scalar operand
+        inline ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > sub(SCALAR_TYPE srcB) {
+            return ArithmeticSUBExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
+        }
+
+
         // MUL
         template<typename E2>
         inline ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> mul(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB) {
