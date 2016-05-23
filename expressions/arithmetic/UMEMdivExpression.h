@@ -102,7 +102,7 @@ namespace VECTOR {
             return t3;
         }
 
-        inline SIMD_1_TYPE evaluate_scalar(int index)
+        UME_FORCE_INLINE SIMD_1_TYPE evaluate_scalar(int index)
         {
             auto t0 = _e1.evaluate_scalar(index);
             auto t1 = _e_mask.evaluate_scalar(index);
