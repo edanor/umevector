@@ -20,7 +20,7 @@ namespace VECTOR {
         bool _e2_ownership;
 
     public:
-        ArithmeticMADDExpression(E1 & e1, E_MASK & e_mask, E2 & e2) :
+        UME_FORCE_INLINE ArithmeticMADDExpression(E1 & e1, E_MASK & e_mask, E2 & e2) :
             _e1(e1),
             _e_mask(e_mask),
             _e2(e2),
@@ -28,7 +28,7 @@ namespace VECTOR {
             _e_mask_ownership(false),
             _e2_ownership(false) {}
 
-        ArithmeticMADDExpression(E1 && e1, E_MASK & e_mask, E2 & e2) :
+        UME_FORCE_INLINE ArithmeticMADDExpression(E1 && e1, E_MASK & e_mask, E2 & e2) :
             _e1(*(new E1(e1))),
             _e_mask(e_mask),
             _e2(e2),
@@ -36,7 +36,7 @@ namespace VECTOR {
             _e_mask_ownership(false),
             _e2_ownership(false) {}
 
-        ArithmeticMADDExpression(E1 & e1, E_MASK && e_mask, E2 & e2) :
+        UME_FORCE_INLINE ArithmeticMADDExpression(E1 & e1, E_MASK && e_mask, E2 & e2) :
             _e1(e1),
             _e_mask(*(new E_MASK(e_mask))),
             _e2(e2),
@@ -44,7 +44,7 @@ namespace VECTOR {
             _e_mask_ownership(true),
             _e2_ownership(false) {}
 
-        ArithmeticMADDExpression(E1 & e1, E_MASK & e_mask, E2 && e2) :
+        UME_FORCE_INLINE ArithmeticMADDExpression(E1 & e1, E_MASK & e_mask, E2 && e2) :
             _e1(e1),
             _e_mask(e_mask),
             _e2(*(new E2(e2))),
@@ -52,7 +52,7 @@ namespace VECTOR {
             _e_mask_ownership(false),
             _e2_ownership(true) {}
 
-        ArithmeticMADDExpression(E1 && e1, E_MASK && e_mask, E2 & e2) :
+        UME_FORCE_INLINE ArithmeticMADDExpression(E1 && e1, E_MASK && e_mask, E2 & e2) :
             _e1(*(new E1(e1))),
             _e_mask(*(new E_MASK(e_mask))),
             _e2(e2),
@@ -60,7 +60,7 @@ namespace VECTOR {
             _e_mask_ownership(true),
             _e2_ownership(false) {}
 
-        ArithmeticMADDExpression(E1 && e1, E_MASK & e_mask, E2 && e2) :
+        UME_FORCE_INLINE ArithmeticMADDExpression(E1 && e1, E_MASK & e_mask, E2 && e2) :
             _e1(*(new E1(e1))),
             _e_mask(e_mask),
             _e2(*(new E2(e2))),
@@ -68,7 +68,7 @@ namespace VECTOR {
             _e_mask_ownership(false),
             _e2_ownership(true) {}
 
-        ArithmeticMADDExpression(E1 & e1, E_MASK && e_mask, E2 && e2) :
+        UME_FORCE_INLINE ArithmeticMADDExpression(E1 & e1, E_MASK && e_mask, E2 && e2) :
             _e1(e1),
             _e_mask(*(new E_MASK(e_mask))),
             _e2(*(new E2(e2))),
@@ -76,7 +76,7 @@ namespace VECTOR {
             _e_mask_ownership(true),
             _e2_ownership(true) {}
 
-        ArithmeticMADDExpression(E1 && e1, E_MASK && e_mask, E2 && e2) :
+        UME_FORCE_INLINE ArithmeticMADDExpression(E1 && e1, E_MASK && e_mask, E2 && e2) :
             _e1(*(new E1(e1))),
             _e_mask(*(new E_MASK(e_mask))),
             _e2(*(new E2(e2))),
@@ -84,7 +84,7 @@ namespace VECTOR {
             _e_mask_ownership(true),
             _e2_ownership(true) {}
 
-        void dispose() {
+        UME_FORCE_INLINE void dispose() {
             if (_e1_ownership) delete &_e1;
             else _e1.dispose();
             if (_e_mask_ownership) delete &_e_mask;
@@ -93,7 +93,7 @@ namespace VECTOR {
             else _e2.dispose();
         }
 
-        inline SIMD_TYPE evaluate_SIMD(int index)
+        UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)
         {
             auto t0 = _e1.evaluate_SIMD(index);
             auto t1 = _e_mask.evaluate_SIMD(index);
