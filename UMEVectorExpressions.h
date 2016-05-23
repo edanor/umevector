@@ -36,6 +36,9 @@
 
 // Unary reduction expressions
 #include "expressions\arithmetic\UMEHaddExpression.h"
-
+#include "expressions\arithmetic\UMEHmulExpression.h"
+#include "expressions\arithmetic\UMEHbandExpression.h"
+#include "expressions\arithmetic\UMEHborExpression.h"
+#include "expressions\arithmetic\UMEHbxorExpression.h"
 
 #endif
