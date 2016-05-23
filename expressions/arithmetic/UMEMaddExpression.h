@@ -84,7 +84,6 @@ namespace VECTOR {
             _e_mask_ownership(true),
             _e2_ownership(true) {}
 
-
         void dispose() {
             if (_e1_ownership) delete &_e1;
             else _e1.dispose();
@@ -93,7 +92,6 @@ namespace VECTOR {
             if (_e2_ownership) delete &_e2;
             else _e2.dispose();
         }
-
 
         inline SIMD_TYPE evaluate_SIMD(int index)
         {

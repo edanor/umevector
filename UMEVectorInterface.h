@@ -80,9 +80,6 @@ namespace VECTOR {
 }
 }
 
-#include "expressions\UMEStaticMask.h"
-#include "expressions\UMEDynamicMask.h"
-
 namespace UME {
     namespace VECTOR {
 
@@ -276,8 +273,5 @@ namespace UME {
 
 }
 }
-
-#include "expressions\UMEStaticArithmeticVector.h"
-#include "expressions\UMEDynamicArithmeticVector.h"
 
 #endif

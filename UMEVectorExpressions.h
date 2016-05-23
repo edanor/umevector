@@ -3,6 +3,7 @@
 
 #include "expressions\UMEExpressionInterface.h"
 
+// Terminal symbols:
 // Scalar expression is a necessary wrapper for scalar types.
 #include "expressions\UMEScalarExpression.h"
 

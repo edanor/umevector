@@ -5,13 +5,16 @@ namespace UME {
 namespace VECTOR {
 
     template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1>
-    class ArithmeticPOSTINCExpression : public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTINCExpression<SCALAR_TYPE, SIMD_STRIDE, E1> > {
+    class ArithmeticPOSTINCExpression :
+    public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTINCExpression<SCALAR_TYPE, SIMD_STRIDE, E1> >
+    {
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
         E1 & _e1;
 
     public:
+
         ArithmeticPOSTINCExpression(E1 & e1) : _e1(e1) {}
 
         inline SIMD_TYPE evaluate_SIMD(int index)
