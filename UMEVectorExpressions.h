@@ -29,7 +29,10 @@
 #include "expressions\arithmetic\UMEMdivExpression.h"
 
 // Ternary expressions
-#include "expressions\arithmetic\UMEFmaddExpression.h"
+#include "expressions\arithmetic\UMEFmuladdExpression.h"
+#include "expressions\arithmetic\UMEFaddmulExpression.h"
+#include "expressions\arithmetic\UMEFmulsubExpression.h"
+#include "epxressions\arithmetic\UMEFsubmulExpression.h"
 
 // Unary reduction expressions
 #include "expressions\arithmetic\UMEHaddExpression.h"
