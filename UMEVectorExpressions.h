@@ -24,6 +24,9 @@
 
 // Binary expressions with mask
 #include "expressions\arithmetic\UMEMaddExpression.h"
+#include "expressions\arithmetic\UMEMsubExpression.h"
+#include "expressions\arithmetic\UMEMmulExpression.h"
+#include "expressions\arithmetic\UMEMdivExpression.h"
 
 // Ternary expressions
 #include "expressions\arithmetic\UMEFmaddExpression.h"
