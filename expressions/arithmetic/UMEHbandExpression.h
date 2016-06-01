@@ -13,8 +13,6 @@ namespace VECTOR {
 
         E1 & _e1;
 
-        bool _e1_ownership;
-
         // Value of this expression has to be calculated only once, and can be returned for every
         // call to 'evaluate_SIMD' or 'evaluate_scalar'.
         bool _evaluated;
@@ -22,19 +20,12 @@ namespace VECTOR {
 
     public:
         UME_FORCE_INLINE ArithmeticHBANDExpression(E1 & e1) :
-            _e1(e1),
-            _e1_ownership(false),
+            _e1(e1), 
             _evaluated(false) {}
 
         UME_FORCE_INLINE ArithmeticHBANDExpression(E1 && e1) :
-            _e1(*(new E1(e1))),
-            _e1_ownership(true),
+            _e1(std::move(e1)),
             _evaluated(false) {}
-
-        UME_FORCE_INLINE void dispose() {
-            if (_e1_ownership) delete &_e1;
-            else _e1.dispose();
-        }
 
         // First reduce to scalar and then return
         UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)

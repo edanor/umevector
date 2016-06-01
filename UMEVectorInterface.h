@@ -135,16 +135,6 @@ namespace UME {
             return ArithmeticMADDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), mask, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
-        template<typename E2>
-        UME_FORCE_INLINE ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> sub(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB) {
-            return ArithmeticSUBExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
-        }
-
-        template<typename E2>
-        UME_FORCE_INLINE ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> sub(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB) {
-            return ArithmeticSUBExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
-        }
-
         // Explicitly specialize to support RH scalar operand
         UME_FORCE_INLINE ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > sub(SCALAR_TYPE srcB) {
             return ArithmeticSUBExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
@@ -181,6 +171,22 @@ namespace UME {
         UME_FORCE_INLINE ArithmeticDIVExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>> div(SCALAR_TYPE srcB) {
             return ArithmeticDIVExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
+
+        // SUB
+        template<typename E2>
+        UME_FORCE_INLINE ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> sub(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB) {
+            return ArithmeticSUBExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        }
+
+        template<typename E2>
+        UME_FORCE_INLINE ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> sub(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB) {
+            return ArithmeticSUBExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        }
+
+        // Explicitly specialize to support RH scalar operand
+        //UME_FORCE_INLINE ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > sub(SCALAR_TYPE srcB) {
+        //    return ArithmeticSUBExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
+        //}
 
         // FMULADD
         template<typename E2, typename E3>

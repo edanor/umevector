@@ -15,85 +15,48 @@ namespace VECTOR {
         E2 & _e2;
         E3 & _e3;
 
-        bool _e1_ownership;
-        bool _e2_ownership;
-        bool _e3_ownership;
-
     public:
         UME_FORCE_INLINE ArithmeticFMULADDExpression(E1 & e1,
             E2 & e2,
             E3 & e3) :
             _e1(e1),
             _e2(e2),
-            _e3(e3),
-            _e1_ownership(false),
-            _e2_ownership(false),
-            _e3_ownership(false) {}
+            _e3(e3) {}
 
         UME_FORCE_INLINE ArithmeticFMULADDExpression(E1 && e1, E2 & e2, E3 & e3) :
-            _e1(*(new E1(e1))),
+            _e1(std::move(e1)),
             _e2(e2),
-            _e3(e3),
-            _e1_ownership(true),
-            _e2_ownership(false),
-            _e3_ownership(false) {}
+            _e3(e3) {}
 
         UME_FORCE_INLINE ArithmeticFMULADDExpression(E1 & e1, E2 && e2, E3 & e3) :
             _e1(e1),
-            _e2(*(new E2(e2))),
-            _e3(e3),
-            _e1_ownership(false),
-            _e2_ownership(true),
-            _e3_ownership(false) {}
+            _e2(std::move(e2)),
+            _e3(e3) {}
 
         UME_FORCE_INLINE ArithmeticFMULADDExpression(E1 & e1, E2 & e2, E3 && e3) :
             _e1(e1),
             _e2(e2),
-            _e3(*(new E3(e3))),
-            _e1_ownership(false),
-            _e2_ownership(false),
-            _e3_ownership(true) {}
+            _e3(std::move(e3)) {}
 
         UME_FORCE_INLINE ArithmeticFMULADDExpression(E1 && e1, E2 && e2, E3 & e3) :
-            _e1(*(new E1(e1))),
-            _e2(*(new E2(e2))),
-            _e3(e3),
-            _e1_ownership(true),
-            _e2_ownership(true),
-            _e3_ownership(false) {}
+            _e1(std::move(e1)),
+            _e2(std::move(e2)),
+            _e3(e3) {}
 
         UME_FORCE_INLINE ArithmeticFMULADDExpression(E1 && e1, E2 & e2, E3 && e3) :
-            _e1(*(new E1(e1))),
+            _e1(std::move(e1)),
             _e2(e2),
-            _e3(*(new E3(e3))),
-            _e1_ownership(true),
-            _e2_ownership(false),
-            _e3_ownership(true) {}
+            _e3(std::move(e3)) {}
 
         UME_FORCE_INLINE ArithmeticFMULADDExpression(E1 & e1, E2 && e2, E3 && e3) :
             _e1(e1),
-            _e2(*(new E2(e2))),
-            _e3(*(new E3(e3))),
-            _e1_ownership(false),
-            _e2_ownership(true),
-            _e3_ownership(true) {}
+            _e2(std::move(e2)),
+            _e3(std::move(e3)) {}
 
         UME_FORCE_INLINE ArithmeticFMULADDExpression(E1 && e1, E2 && e2, E3 && e3) :
-            _e1(*(new E1(e1))),
-            _e2(*(new E2(e2))),
-            _e3(*(new E3(e3))),
-            _e1_ownership(true),
-            _e2_ownership(true),
-            _e3_ownership(true) {}
-
-        UME_FORCE_INLINEvoid dispose() {
-            if (_e1_ownership) delete &_e1;
-            else _e1.dispose();
-            if (_e2_ownership) delete &_e2;
-            else _e2.dispose();
-            if (_e3_ownership) delete &_e3;
-            else _e3.dispose();
-            }
+            _e1(std::move(e1)),
+            _e2(std::move(e2)),
+            _e3(std::move(e3)) {}
 
         UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index) {
             auto t0 = _e1.evaluate_SIMD(index);

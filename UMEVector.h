@@ -3,9 +3,11 @@
 
 #include "UMEVectorInterface.h"
 
-#include "expressions\UMEStaticMask.h"
-#include "expressions\UMEDynamicMask.h"
-#include "expressions\UMEStaticArithmeticVector.h"
-#include "expressions\UMEDynamicArithmeticVector.h"
+#include "expressions/UMEStaticMask.h"
+#include "expressions/UMEDynamicMask.h"
+#include "expressions/UMEStaticArithmeticVector.h"
+#include "expressions/UMEDynamicArithmeticVector.h"
+
+//#include "UMEVectorOperators.h"
 
 #endif

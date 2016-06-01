@@ -1,44 +1,44 @@
 #ifndef UME_VECTOR_EXPRESSIONS_H_
 #define UME_VECTOR_EXPRESSIONS_H_
 
-#include "expressions\UMEExpressionInterface.h"
+#include "expressions/UMEExpressionInterface.h"
 
 // Terminal symbols:
 // Scalar expression is a necessary wrapper for scalar types.
-#include "expressions\UMEScalarExpression.h"
+#include "expressions/UMEScalarExpression.h"
 
 // Logical expressions should be included before arithmetic expressions
 
 // Binary expressions
-#include "expressions\logical\UMELandExpression.h"
-#include "expressions\logical\UMELorExpression.h"
+#include "expressions/logical/UMELandExpression.h"
+#include "expressions/logical/UMELorExpression.h"
 
 // Unary expressions
-#include "expressions\arithmetic\UMEPostincExpression.h"
+#include "expressions/arithmetic/UMEPostincExpression.h"
 
 // Binary expressions
-#include "expressions\arithmetic\UMEAddExpression.h"
-#include "expressions\arithmetic\UMESubExpression.h"
-#include "expressions\arithmetic\UMEMulExpression.h"
-#include "expressions\arithmetic\UMEDivExpression.h"
+#include "expressions/arithmetic/UMEAddExpression.h"
+#include "expressions/arithmetic/UMESubExpression.h"
+#include "expressions/arithmetic/UMEMulExpression.h"
+#include "expressions/arithmetic/UMEDivExpression.h"
 
 // Binary expressions with mask
-#include "expressions\arithmetic\UMEMaddExpression.h"
-#include "expressions\arithmetic\UMEMsubExpression.h"
-#include "expressions\arithmetic\UMEMmulExpression.h"
-#include "expressions\arithmetic\UMEMdivExpression.h"
+#include "expressions/arithmetic/UMEMaddExpression.h"
+#include "expressions/arithmetic/UMEMsubExpression.h"
+#include "expressions/arithmetic/UMEMmulExpression.h"
+#include "expressions/arithmetic/UMEMdivExpression.h"
 
 // Ternary expressions
-#include "expressions\arithmetic\UMEFmuladdExpression.h"
-#include "expressions\arithmetic\UMEFaddmulExpression.h"
-#include "expressions\arithmetic\UMEFmulsubExpression.h"
-#include "epxressions\arithmetic\UMEFsubmulExpression.h"
+#include "expressions/arithmetic/UMEFmuladdExpression.h"
+#include "expressions/arithmetic/UMEFaddmulExpression.h"
+#include "expressions/arithmetic/UMEFmulsubExpression.h"
+#include "expressions/arithmetic/UMEFsubmulExpression.h"
 
 // Unary reduction expressions
-#include "expressions\arithmetic\UMEHaddExpression.h"
-#include "expressions\arithmetic\UMEHmulExpression.h"
-#include "expressions\arithmetic\UMEHbandExpression.h"
-#include "expressions\arithmetic\UMEHborExpression.h"
-#include "expressions\arithmetic\UMEHbxorExpression.h"
+#include "expressions/arithmetic/UMEHaddExpression.h"
+#include "expressions/arithmetic/UMEHmulExpression.h"
+#include "expressions/arithmetic/UMEHbandExpression.h"
+#include "expressions/arithmetic/UMEHborExpression.h"
+#include "expressions/arithmetic/UMEHbxorExpression.h"
 
 #endif

@@ -14,38 +14,22 @@ namespace VECTOR {
         E1 & _e1;
         E2 & _e2;
 
-        bool _e1_ownership;
-        bool _e2_ownership;
-
     public:
+
         UME_FORCE_INLINE ArithmeticSUBExpression(E1 & e1, E2 & e2) :
-            _e1(e1), _e2(e2), _e1_ownership(false), _e2_ownership(false) {
-        }
+            _e1(e1), _e2(e2) {}
 
         UME_FORCE_INLINE ArithmeticSUBExpression(E1 & e1, E2 && e2) :
             _e1(e1),
-            _e2(*(new E2(e2))),
-            _e1_ownership(false),
-            _e2_ownership(true) {}
+            _e2(std::move(e2)) {}
 
         UME_FORCE_INLINE ArithmeticSUBExpression(E1 && e1, E2 & e2) :
-            _e1(*(new E1(e1))),
-            _e2(e2),
-            _e1_ownership(true),
-            _e2_ownership(false) {}
+            _e1(std::move(e1)),
+            _e2(e2) {}
 
         UME_FORCE_INLINE ArithmeticSUBExpression(E1 && e1, E2 && e2) :
-            _e1(*(new E1(e1))),
-            _e2(*(new E2(e2))),
-            _e1_ownership(true),
-            _e2_ownership(true) {}
-
-        UME_FORCE_INLINE void dispose() {
-            if (_e1_ownership) delete &_e1;
-            else _e1.dispose();
-            if (_e2_ownership) delete &_e2;
-            else _e2.dispose();
-        }
+            _e1(std::move(e1)),
+            _e2(std::move(e2)) {}
 
         UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)
         {
