@@ -86,7 +86,7 @@ namespace VECTOR {
 
 
         template<typename E>
-        MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH>(LogicalExpression<E> && vec)
+        UME_FORCE_INLINE MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH>(LogicalExpression<E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.

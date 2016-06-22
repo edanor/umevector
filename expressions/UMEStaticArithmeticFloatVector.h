@@ -1,13 +1,13 @@
-#ifndef UME_STATIC_ARITHMETIC_VECTOR_H_
-#define UME_STATIC_ARITHMETIC_VECTOR_H_
+#ifndef UME_STATIC_ARITHMETIC_FLOAT_VECTOR_H_
+#define UME_STATIC_ARITHMETIC_FLOAT_VECTOR_H_
 
 namespace UME {
 namespace VECTOR {
 
     /* Static vector template. This template*/
     template<typename SCALAR_TYPE, int SIMD_STRIDE = 4, int VEC_LEN = DYNAMIC_LENGTH>
-    class Vector : public ArithmeticVectorInterface<
-        Vector<SCALAR_TYPE, SIMD_STRIDE, VEC_LEN>,
+    class FloatVector : public ArithmeticFloatVectorInterface<
+        FloatVector<SCALAR_TYPE, SIMD_STRIDE, VEC_LEN>,
         SCALAR_TYPE,
         SIMD_STRIDE>
     {
@@ -22,17 +22,20 @@ namespace VECTOR {
         //UME_FORCE_INLINE int SIMD_STRIDE() const { return SIMD_STRIDE; }
 
         SCALAR_TYPE *elements;
+    private:
+        // Vector class should be intialized with proper user-managed memory buffer.
+        UME_FORCE_INLINE FloatVector() {}
 
-        UME_FORCE_INLINE Vector() { }
-        UME_FORCE_INLINE Vector(SCALAR_TYPE x) {
-            for (int i = 0; i < VEC_LEN; i++) elements[i] = x;
-        }
+    public:
         // p should be properly aligned!
-        UME_FORCE_INLINE Vector(SCALAR_TYPE *p) : elements(p) {
+        UME_FORCE_INLINE FloatVector(SCALAR_TYPE *p) : elements(p) {
+        }
+        UME_FORCE_INLINE FloatVector(FloatVector && origin) {
+            for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
         }
 
         template<typename E>
-        UME_FORCE_INLINE Vector(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
+        UME_FORCE_INLINE FloatVector(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -80,22 +83,27 @@ namespace VECTOR {
         // Cast operator to convert from static to dynamic form. Because of
         // different allocation method, the data needs to be copied from stack-organized
         // to heap-organized. 
-        UME_FORCE_INLINE operator Vector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH>() {
+        UME_FORCE_INLINE operator FloatVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH>() {
             // TODO:
             // Create dynamic Row vector, and copy data
-            Vector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> temp(VEC_LEN);
-            //memcpy(temp.elements, elements, VEC_LEN*sizeof(SCALAR_TYPE));
+            FloatVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> temp(LENGTH());
+            //memcpy(temp.elements, elements, LENGTH()*sizeof(SCALAR_TYPE));
             return temp;
         }
 
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
-        UME_FORCE_INLINE Vector& operator= (Vector & origin) {
+        UME_FORCE_INLINE FloatVector& operator= (FloatVector & origin) {
+            for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
+            return *this;
+        }
+
+        UME_FORCE_INLINE FloatVector& operator= (FloatVector&& origin) {
             for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
             return *this;
         }
 
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
-        UME_FORCE_INLINE Vector& operator= (Vector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> & origin) {
+        UME_FORCE_INLINE FloatVector& operator= (FloatVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> & origin) {
             assert(VEC_LEN == origin.LENGTH()); // Cannot re-allocate static
             for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
             return *this;
@@ -104,7 +112,7 @@ namespace VECTOR {
         // Initialize with expression template evaluation. This is necessary for using
         // RVALUE expressions on the right hand of assignment operator.
         template<typename E>
-        UME_FORCE_INLINE Vector& operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
+        UME_FORCE_INLINE FloatVector& operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -114,7 +122,7 @@ namespace VECTOR {
                 t0.storea(&elements[i]);
             }
 
-            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
                 t1.store(&elements[i]);
             }
@@ -127,7 +135,7 @@ namespace VECTOR {
         // Initialize with expression template evaluation. This is necessary for using
         // 'auto' variable on the right hand of assignment operator.
         template<typename E>
-        UME_FORCE_INLINE Vector& operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> & vec)
+        UME_FORCE_INLINE FloatVector& operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> & vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -137,7 +145,7 @@ namespace VECTOR {
                 t0.storea(&elements[i]);
             }
 
-            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
                 t1.store(&elements[i]);
             }
@@ -147,12 +155,12 @@ namespace VECTOR {
 
         // Broadcast scalar value to all elements of the vector.
         // TODO: also should be done using lazy evaluation
-        UME_FORCE_INLINE Vector& operator= (SCALAR_TYPE x) {
+        UME_FORCE_INLINE FloatVector& operator= (SCALAR_TYPE x) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
             for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 t0.storea(&elements[i]);
             }
-            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
                 elements[i] = x;
             }
             return *this;
@@ -160,8 +168,8 @@ namespace VECTOR {
 
         // Copy values from memory location
         // TODO: can this be done using lazy evaluation?
-        UME_FORCE_INLINE Vector& operator= (SCALAR_TYPE* x) {
-            for (int i = 0; i < VEC_LEN; i++) {
+        UME_FORCE_INLINE FloatVector& operator= (SCALAR_TYPE* x) {
+            for (int i = 0; i < LENGTH(); i++) {
                 elements[i] = x[i];
             }
             return *this;

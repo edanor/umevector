@@ -1,5 +1,5 @@
-#ifndef UME_DYNAMIC_ARITHMETIC_VECTOR_H_
-#define UME_DYNAMIC_ARITHMETIC_VECTOR_H_
+#ifndef UME_DYNAMIC_ARITHMETIC_UINT_VECTOR_H_
+#define UME_DYNAMIC_ARITHMETIC_UINT_VECTOR_H_
 
 namespace UME {
 namespace VECTOR {
@@ -10,8 +10,8 @@ namespace VECTOR {
     // ArithmeticVectorInterface, but it require some additional user-invisible functionality
     // to support type conversions between static and dynamic vectors.
     template<typename SCALAR_TYPE, int SIMD_STRIDE>
-    class Vector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> : public ArithmeticVectorInterface<
-        Vector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH>,
+    class UintVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> : public ArithmeticUintVectorInterface<
+        UintVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH>,
         SCALAR_TYPE,
         SIMD_STRIDE>
     {
@@ -29,41 +29,23 @@ namespace VECTOR {
         //UME_FORCE_INLINE int SIMD_STRIDE() const { return STRIDE; }
 
         SCALAR_TYPE* elements;
+    private:
+        UintVector() {}
 
-        Vector(int length) :
-            mLength(length)
+    public:
+
+        UME_FORCE_INLINE UintVector(int length, SCALAR_TYPE *values) :
+            mLength(length), elements(values)
         {
-            elements = (SCALAR_TYPE*)UME::DynamicMemory::AlignedMalloc(
-                length*sizeof(SCALAR_TYPE),
-                SIMD_TYPE::alignment());
         }
 
-        Vector(int length, SCALAR_TYPE value) :
-            mLength(length)
-        {
-            elements = (SCALAR_TYPE*)UME::DynamicMemory::AlignedMalloc(
-                length*sizeof(SCALAR_TYPE),
-                SIMD_TYPE::alignment());
-            for (int i = 0; i < length; i++) elements[i] = value;
-        }
-
-        Vector(int length, SCALAR_TYPE *values) :
-            mLength(length)
-        {
-            elements = (SCALAR_TYPE*)UME::DynamicMemory::AlignedMalloc(
-                length*sizeof(SCALAR_TYPE),
-                SIMD_TYPE::alignment());
-            for (int i = 0; i < length; i++) elements[i] = values[i];
-        }
-
-        Vector(Vector && origin) {
+        UME_FORCE_INLINE UintVector(UintVector && origin) {
             elements = origin.elements;
             mLength = origin.mLength;
             origin.elements = NULL;
         }
 
-        ~Vector() {
-            UME::DynamicMemory::AlignedFree(elements);
+        UME_FORCE_INLINE ~UintVector() {
         }
 
         // Terminal call for SIMD version of expression template expressions. 
@@ -84,30 +66,23 @@ namespace VECTOR {
             return t0;
         }
 
-        Vector& operator= (Vector&& origin) {
-            UME::DynamicMemory::AlignedFree(elements);
+        UintVector& operator= (UintVector&& origin) {
             elements = origin.elements;
-            origin.elements = NULL;
             return *this;
         }
 
-        Vector& operator= (Vector & origin) {
-            if (mLength != origin.mLength) {
-                // Dimensions do not match - reallocate
-                UME::DynamicMemory::AlignedFree(elements);
-                elements = (SCALAR_TYPE*)UME::DynamicMemory::AlignedMalloc(origin.mLength*sizeof(SCALAR_TYPE), SIMD_TYPE::alignment());
-                mLength = origin.mLength;
+        UintVector& operator= (UintVector & origin) {
+            assert(mLength == origin.mLength);
+            for (int i = 0; i < mLength;i++) {
+                elements[i] = origin.elements[i];
             }
-
-            for (int i = 0; i < mLength; i++) elements[i] = origin.elements[i];
-
             return *this;
         }
 
         // Initialize with expression template evaluation
         template<typename E>
         //Vector(ArithmeticExpression<E> & vec) {
-        Vector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
+        UintVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -124,7 +99,7 @@ namespace VECTOR {
             return *this;
         }
 
-        Vector& operator= (SCALAR_TYPE x) {
+        UintVector& operator= (SCALAR_TYPE x) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
             for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 t0.storea(&elements[i]);
@@ -135,7 +110,7 @@ namespace VECTOR {
             return *this;
         }
 
-        Vector& operator= (SCALAR_TYPE* x) {
+        UintVector& operator= (SCALAR_TYPE* x) {
             for (int i = 0; i < mLength(); i++) {
                 elements[i] = x[i];
             }
