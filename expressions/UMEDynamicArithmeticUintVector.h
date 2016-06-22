@@ -53,7 +53,7 @@ namespace VECTOR {
         // storage into proper SIMD vectors.
         UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index) const {
             SIMD_TYPE t0;
-            t0.loada(&elements[index]);
+            t0.load(&elements[index]);
             return t0;
         }
 
@@ -89,7 +89,7 @@ namespace VECTOR {
             E & reinterpret_vec = static_cast<E &>(vec);
             for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
-                t0.storea(&elements[i]);
+                t0.store(&elements[i]);
             }
 
             for (int i = LOOP_PEEL_OFFSET(); i < mLength; i++) {
@@ -102,7 +102,7 @@ namespace VECTOR {
         UintVector& operator= (SCALAR_TYPE x) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
             for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
-                t0.storea(&elements[i]);
+                t0.store(&elements[i]);
             }
             for (int i = LOOP_PEEL_OFFSET(); i < mLength(); i++) {
                 elements[i] = x;

@@ -3,6 +3,8 @@
 
 #define UME_DEFAULT_SIMD_STRIDE 4
 
+#include <UMESimd.h>
+
 #include "UMEVectorInterface.h"
 
 #include "expressions/UMEStaticMask.h"

@@ -42,7 +42,7 @@ namespace VECTOR {
             E & reinterpret_vec = static_cast<E &>(vec);
             for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
-                t0.storea(&elements[i]);
+                t0.store(&elements[i]);
             }
 
             for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
@@ -56,7 +56,7 @@ namespace VECTOR {
         // storage into proper SIMD vectors.
         UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index) const {
             SIMD_TYPE t0;
-            t0.loada(&elements[index]);
+            t0.load(&elements[index]);
             return t0;
         }
 
@@ -73,7 +73,7 @@ namespace VECTOR {
         // Some operations require implicit assignment. This assignment needs to
         // be propagated from evaluated register, back to vector data localization.
         UME_FORCE_INLINE void update_SIMD(SIMD_TYPE & x, int index) {
-            x.storea(&elements[index]);
+            x.store(&elements[index]);
         }
 
         UME_FORCE_INLINE void update_scalar(SIMD1_TYPE & x, int index) {
@@ -119,7 +119,7 @@ namespace VECTOR {
             E & reinterpret_vec = static_cast<E &>(vec);
             for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
-                t0.storea(&elements[i]);
+                t0.store(&elements[i]);
             }
 
             for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
@@ -142,7 +142,7 @@ namespace VECTOR {
             E & reinterpret_vec = static_cast<E &>(vec);
             for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
-                t0.storea(&elements[i]);
+                t0.store(&elements[i]);
             }
 
             for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
@@ -158,7 +158,7 @@ namespace VECTOR {
         UME_FORCE_INLINE IntVector& operator= (SCALAR_TYPE x) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
             for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
-                t0.storea(&elements[i]);
+                t0.store(&elements[i]);
             }
             for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
                 elements[i] = x;
