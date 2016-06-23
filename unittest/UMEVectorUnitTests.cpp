@@ -381,7 +381,8 @@ int8_t randomValue<int8_t>(std::mt19937 & generator) {
 
 template<>
 float randomValue<float>(std::mt19937 & generator) {
-    std::uniform_real_distribution<float> dist(std::numeric_limits<float>::min(), std::numeric_limits<float>::max());
+    //std::uniform_real_distribution<float> dist(std::numeric_limits<float>::min(), std::numeric_limits<float>::max());
+    std::uniform_real_distribution<float> dist(-5.0f, 5.0f);
     return dist(generator);
 }
 
@@ -677,6 +678,31 @@ void testMULV_random_static()
     }
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, int SIMD_STRIDE, int VEC_LEN>
+void testHADD_random_static()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    {
+        SCALAR_TYPE raw_a[VEC_LEN];
+        SCALAR_TYPE result = SCALAR_TYPE(0);
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<SCALAR_TYPE>(gen);
+            result += raw_a[i];
+        }
+
+        VEC_TYPE A(raw_a);
+        SCALAR_TYPE B;
+
+        B = A.hadd();
+
+        bool inRange = valueInRange(result, B, 0.01f);
+        check_condition(inRange, std::string("HADD"));
+    }
+}
+
+
 int main() {
     char header[] = { "Float Vector test (STRIDE 4):" };
     INIT_TEST(header, false);
@@ -688,4 +714,5 @@ int main() {
     testSUBV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
     testMULV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
 
+    testHADD_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
 }

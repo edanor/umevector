@@ -103,6 +103,7 @@ namespace VECTOR {
             ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>(srcA),
             srcB);
     }
+
 }
 }
 

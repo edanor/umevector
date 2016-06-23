@@ -52,7 +52,8 @@ namespace VECTOR {
             if (!_evaluated)
             {
                 SIMD_TYPE A(SCALAR_TYPE(0));
-                for (int i = 0; i < _e1.LOOP_COUNT(); i += SIMD_STRIDE) {
+                int loop_count = _e1.LOOP_PEEL_OFFSET();
+                for (int i = 0; i < loop_count; i += SIMD_STRIDE) {
                     SIMD_TYPE t0 = _e1.evaluate_SIMD(i);
                     A.bxora(t0);
                 }
@@ -69,7 +70,8 @@ namespace VECTOR {
         // Reduction operations require to be cast-able into scalar types.
         UME_FORCE_INLINE operator SCALAR_TYPE() {
             SIMD_TYPE A(SCALAR_TYPE(0));
-            for (int i = 0; i < _e1.LOOP_COUNT(); i += SIMD_STRIDE) {
+            int loop_count = _e1.LOOP_PEEL_OFFSET();
+            for (int i = 0; i < loop_count; i += SIMD_STRIDE) {
                 SIMD_TYPE t0 = _e1.evaluate_SIMD(i);
                 A.bxora(t0);
             }
