@@ -8,7 +8,9 @@
 namespace UME {
 namespace VECTOR {
 
-    template<typename SCALAR_TYPE, int VEC_LEN, int STRIDE> class Vector;
+    template<typename SCALAR_TYPE, int VEC_LEN, int STRIDE> class UintVector;
+    template<typename SCALAR_TYPE, int VEC_LEN, int STRIDE> class IntVector;
+    template<typename SCALAR_TYPE, int VEC_LEN, int STRIDE> class FloatVector;
 
     template<int VEC_LEN, int SIMD_STRIDE> class MaskVector;
 

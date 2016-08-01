@@ -46,7 +46,6 @@ void check_condition(bool cond, std::string msg);
 #define UME_PI_F float(UME_PI_D)
 #define UME_2PI_F (2.0f*UME_PI_F)
 
-
 bool valueInRange(float value, float expectedValue, float errMargin);
 bool valueInRange(double value, double expectedValue, double errMargin);
 bool valueInRange(uint32_t value, uint32_t expectedValue, float errMargin);

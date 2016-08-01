@@ -23,7 +23,6 @@ namespace VECTOR {
         operator E const&() const { return static_cast<const E&>(*this); }
 
         void dispose() {}
-
     };
 
 }

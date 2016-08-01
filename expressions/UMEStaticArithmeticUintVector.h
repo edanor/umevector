@@ -29,6 +29,7 @@ namespace VECTOR {
         UME_FORCE_INLINE UintVector(SCALAR_TYPE x) {
             for (int i = 0; i < VEC_LEN; i++) elements[i] = x;
         }
+
         // p should be properly aligned!
         UME_FORCE_INLINE UintVector(SCALAR_TYPE *p) : elements(p) {
         }
