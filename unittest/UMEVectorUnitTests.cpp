@@ -398,6 +398,103 @@ bool randomValue<bool>(std::mt19937 & generator) {
     return t0 > 0;
 }
 
+template<typename MASK_TYPE, int SIMD_STRIDE, int VEC_LEN>
+void testLAND_random_static()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    {
+        bool raw_a[VEC_LEN];
+        bool raw_b[VEC_LEN];
+        bool result[VEC_LEN];
+        bool raw_c[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<bool>(gen);
+            raw_b[i] = randomValue<bool>(gen);
+            result[i] = raw_a[i] && raw_b[i];
+        }
+
+        MASK_TYPE A(raw_a);
+        MASK_TYPE B(raw_b);
+        MASK_TYPE C(raw_c);
+
+        C = A.land(B);
+
+        bool inRange = valuesInRange(result, raw_c, VEC_LEN, 0.01f);
+        check_condition(inRange, std::string("LANDV"));
+    }
+    {
+        bool raw_a[VEC_LEN];
+        bool raw_b[VEC_LEN];
+        bool result[VEC_LEN];
+        bool raw_c[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<bool>(gen);
+            raw_b[i] = randomValue<bool>(gen);
+            result[i] = raw_a[i] && raw_b[i];
+        }
+
+        MASK_TYPE A(raw_a);
+        MASK_TYPE B(raw_b);
+        MASK_TYPE C(raw_c);
+
+        C = A && B;
+
+        bool inRange = valuesInRange(result, raw_c, VEC_LEN, 0.01f);
+        check_condition(inRange, std::string("LANDV(operator &&)"));
+    }
+}
+
+template<typename MASK_TYPE, int SIMD_STRIDE, int VEC_LEN>
+void testLOR_random_static()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    {
+        bool raw_a[VEC_LEN];
+        bool raw_b[VEC_LEN];
+        bool result[VEC_LEN];
+        bool raw_c[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<bool>(gen);
+            raw_b[i] = randomValue<bool>(gen);
+            result[i] = raw_a[i] || raw_b[i];
+        }
+
+        MASK_TYPE A(raw_a);
+        MASK_TYPE B(raw_b);
+        MASK_TYPE C(raw_c);
+
+        C = A.lor(B);
+
+        bool inRange = valuesInRange(result, raw_c, VEC_LEN, 0.01f);
+        check_condition(inRange, std::string("LORV"));
+    }
+    {
+        bool raw_a[VEC_LEN];
+        bool raw_b[VEC_LEN];
+        bool result[VEC_LEN];
+        bool raw_c[VEC_LEN];
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<bool>(gen);
+            raw_b[i] = randomValue<bool>(gen);
+            result[i] = raw_a[i] || raw_b[i];
+        }
+
+        MASK_TYPE A(raw_a);
+        MASK_TYPE B(raw_b);
+        MASK_TYPE C(raw_c);
+
+        C = A || B;
+
+        bool inRange = valuesInRange(result, raw_c, VEC_LEN, 0.01f);
+        check_condition(inRange, std::string("LORV(operator ||)"));
+    }
+}
 template<typename VEC_TYPE, typename SCALAR_TYPE, int SIMD_STRIDE, int VEC_LEN> 
 void testADDV_random_static()
 {
@@ -568,7 +665,7 @@ void testMADDS_random_static()
         }
 
         VEC_TYPE A(raw_a);
-        UME::VECTOR::ScalarExpression<float, 4> B(raw_b);
+        UME::VECTOR::ScalarExpression<SCALAR_TYPE, 4> B(raw_b);
         VEC_TYPE C(raw_c);
         MASK_TYPE mask(raw_mask);
 
@@ -701,17 +798,50 @@ void testHADD_random_static()
     }
 }
 
-
 int main() {
-    char header[] = { "Float Vector test (STRIDE 4):" };
-    INIT_TEST(header, false);
+    {
+        char header[] = { "Mask Vector test (STRIDE 8):" };
+        INIT_TEST(header, false);
+        testLAND_random_static<UME::VECTOR::MaskVector<8, 100>, 8, 100>();
+        testLOR_random_static<UME::VECTOR::MaskVector<8, 100>, 8, 100>();
+    }
 
-    testADDV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
-    testMADDV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, UME::VECTOR::MaskVector<4, 1000>, float, 4, 1000>();
-    testADDS_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
-    testMADDS_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, UME::VECTOR::MaskVector<4, 1000>, float, 4, 1000>();
-    testSUBV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
-    testMULV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
+    {
+        char header[] = { "Uint32_t Vector test (STRIDE 4):" };
+        INIT_TEST(header, false);
+        testADDV_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, uint32_t, 4, 100>();
+        testMADDV_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, UME::VECTOR::MaskVector<4, 100>, uint32_t, 4, 100>();
+        testADDS_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, uint32_t, 4, 100>();
+        testMADDS_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, UME::VECTOR::MaskVector<4, 100>, uint32_t, 4, 100>();
+        testSUBV_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, uint32_t, 4, 100>();
+        testMULV_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, uint32_t, 4, 100>();
 
-    testHADD_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
+        testHADD_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, uint32_t, 4, 100>();
+    }
+    {
+        char header[] = { "Int32_t Vector test (STRIDE 4):" };
+        INIT_TEST(header, false);
+        testADDV_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, int32_t, 4, 100>();
+        testMADDV_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, UME::VECTOR::MaskVector<4, 100>, int32_t, 4, 100>();
+        testADDS_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, int32_t, 4, 100>();
+        testMADDS_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, UME::VECTOR::MaskVector<4, 100>, int32_t, 4, 100>();
+        testSUBV_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, int32_t, 4, 100>();
+        testMULV_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, int32_t, 4, 100>();
+
+        testHADD_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, int32_t, 4, 100>();
+    }
+    {
+        char header[] = { "Float Vector test (STRIDE 4):" };
+        INIT_TEST(header, false);
+
+        testADDV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
+        testMADDV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, UME::VECTOR::MaskVector<4, 1000>, float, 4, 1000>();
+        testADDS_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
+        testMADDS_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, UME::VECTOR::MaskVector<4, 1000>, float, 4, 1000>();
+        testSUBV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
+        testMULV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
+
+        testHADD_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
+    }
+
 }
