@@ -10,6 +10,11 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticDIVExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticSUBExpression;
 
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMADDExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMMULExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMDIVExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMSUBExpression;
+
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFMULADDExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFADDMULExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFMULSUBExpression;
@@ -193,6 +198,262 @@ namespace VECTOR {
                 SIMD_STRIDE,
                 ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
                 T2> (*this, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> add(E_MASK & mask, T2 & srcB)
+        {
+            return ArithmeticMADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> add(E_MASK && mask, T2 & srcB)
+        {
+            return ArithmeticMADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> add(E_MASK & mask, T2 && srcB)
+        {
+            return ArithmeticMADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> add(E_MASK && mask, T2 && srcB)
+        {
+            return ArithmeticMADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> mul(E_MASK & mask, T2 & srcB)
+        {
+            return ArithmeticMMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> mul(E_MASK && mask, T2 & srcB)
+        {
+            return ArithmeticMMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> mul(E_MASK & mask, T2 && srcB)
+        {
+            return ArithmeticMMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> mul(E_MASK && mask, T2 && srcB)
+        {
+            return ArithmeticMMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMDIVExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> div(E_MASK & mask, T2 & srcB)
+        {
+            return ArithmeticMDIVExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMDIVExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> div(E_MASK && mask, T2 & srcB)
+        {
+            return ArithmeticMDIVExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMDIVExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> div(E_MASK & mask, T2 && srcB)
+        {
+            return ArithmeticMDIVExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMDIVExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> div(E_MASK && mask, T2 && srcB)
+        {
+            return ArithmeticMDIVExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> sub(E_MASK & mask, T2 & srcB)
+        {
+            return ArithmeticMSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> sub(E_MASK && mask, T2 & srcB)
+        {
+            return ArithmeticMSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> sub(E_MASK & mask, T2 && srcB)
+        {
+            return ArithmeticMSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            E_MASK,
+            T2> sub(E_MASK && mask, T2 && srcB)
+        {
+            return ArithmeticMSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                E_MASK,
+                T2> (*this, mask, srcB);
         }
     };
 
