@@ -22,6 +22,10 @@ namespace VECTOR {
         operator E&() { return static_cast<E&>(*this); }
         operator E const&() const { return static_cast<const E&>(*this); }
 
+        UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index) {
+            auto
+        }
+
         void dispose() {}
     };
 

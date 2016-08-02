@@ -4,9 +4,11 @@
 namespace UME {
 namespace VECTOR {
 
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFMULADDExpression;
+
     template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2>
     class ArithmeticMULExpression :
-    public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> >
+        public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> >
     {
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
@@ -15,7 +17,6 @@ namespace VECTOR {
         E2 & _e2;
 
     public:
-
         UME_FORCE_INLINE ArithmeticMULExpression(E1 & e1, E2 & e2) :
             _e1(e1), _e2(e2) {}
 
@@ -44,7 +45,68 @@ namespace VECTOR {
             auto t1 = _e2.evaluate_scalar(index);
             return t0.mul(t1);
         }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>, // this expression
+            T2> add(T2 & srcB)
+        {
+            return ArithmeticADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>,
+                T2>(*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>, // this expression
+            T2 > mul(T2 & srcB)
+        {
+            return ArithmeticMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>,
+                T2 >(*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>, // this expression
+            T2 > mul(T2 && srcB)
+        {
+            return ArithmeticMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>,
+                T2 > (*this, srcB);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFMULADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>,
+            T2,
+            T3> fmuladd(
+                T2 & srcB,
+                T3 & srcC)
+        {
+            return ArithmeticFMULADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>,
+                T2,
+                T3>(*this, srcB, srcC);
+        }
     };
+
 
     // Operators to handle "Exp1 * Exp2" expressions.
     template<typename SCALAR_TYPE, typename E1, typename E2>

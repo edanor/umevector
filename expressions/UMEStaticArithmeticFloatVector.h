@@ -12,8 +12,6 @@ namespace VECTOR {
         SIMD_STRIDE>
     {
     public:
-        typedef SCALAR_TYPE SCALAR_TYPE;
-
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD1_TYPE;
 

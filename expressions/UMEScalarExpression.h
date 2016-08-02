@@ -1,6 +1,8 @@
 #ifndef UME_SCALAR_EXPRESSION_H_
 #define UME_SCALAR_EXPRESSION_H_
 
+#include "arithmetic/UMEAddExpression.h"
+
 namespace UME {
 namespace VECTOR {
 
@@ -30,6 +32,20 @@ namespace VECTOR {
         ScalarExpression& operator=(ScalarExpression&& other) {
             _e1 = other._e1;
             return *this;
+        }
+
+        template<typename E2>
+        UME_FORCE_INLINE ArithmeticADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>,
+            E2> add(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB)
+        {
+            return ArithmeticADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>,
+                E2>(*this, srcB);
         }
     };
 

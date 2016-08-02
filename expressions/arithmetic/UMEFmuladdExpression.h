@@ -71,6 +71,62 @@ namespace VECTOR {
             auto t2 = _e3.evaluate_scalar(index);
             return t0.fmuladd(t1, t2);
         }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2>> add(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2> & srcB)
+        {
+            return ArithmeticADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2>(*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2> add(T2 && srcB)
+        {
+            return ArithmeticADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2>(*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2 >> mul(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2> & srcB)
+        {
+            return ArithmeticMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2 >>(*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2 >> mul(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2> && srcB)
+        {
+            return ArithmeticMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2 >> (*this, srcB);
+        }
     };
 
 }

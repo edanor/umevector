@@ -495,6 +495,7 @@ void testLOR_random_static()
         check_condition(inRange, std::string("LORV(operator ||)"));
     }
 }
+
 template<typename VEC_TYPE, typename SCALAR_TYPE, int SIMD_STRIDE, int VEC_LEN> 
 void testADDV_random_static()
 {
@@ -723,7 +724,6 @@ void testSUBV_random_static()
         check_condition(inRange, std::string("SUBV(operator -)"));
     }
 }
-
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int SIMD_STRIDE, int VEC_LEN>
 void testMULV_random_static()

@@ -4,6 +4,9 @@
 namespace UME {
 namespace VECTOR {
 
+    template<typename SCALAR_TYPE, int SIMD_STRIDE> class ScalarExpression;
+
+
     template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2>
     class ArithmeticADDExpression :
     public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> >
@@ -43,6 +46,34 @@ namespace VECTOR {
             auto t0 = _e1.evaluate_scalar(index);
             auto t1 = _e2.evaluate_scalar(index);
             return t0.add(t1);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>, // this expression
+            T2> add(T2 & srcB)
+        {
+            return ArithmeticADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>, // this expression
+            T2 > add(T2 && srcB)
+        {
+            return ArithmeticADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>,
+                T2> (*this, srcB);
         }
     };
 
