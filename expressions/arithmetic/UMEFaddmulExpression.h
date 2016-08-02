@@ -4,6 +4,17 @@
 namespace UME {
 namespace VECTOR {
 
+    template<typename SCALAR_TYPE, int SIMD_STRIDE> class ScalarExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticADDExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticMULExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticDIVExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticSUBExpression;
+
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFMULADDExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFADDMULExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFMULSUBExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFSUBMULExpression;
+
     template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3>
     class ArithmeticFADDMULExpression :
         public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>>
@@ -70,6 +81,118 @@ namespace VECTOR {
             auto t1 = _e2.evaluate_scalar(index);
             auto t2 = _e3.evaluate_scalar(index);
             return t0.faddmul(t1, t2);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2> add(T2 & srcB)
+        {
+            return ArithmeticADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2 > add(T2 && srcB)
+        {
+            return ArithmeticADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2> mul(T2 & srcB)
+        {
+            return ArithmeticMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2 > mul(T2 && srcB)
+        {
+            return ArithmeticMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticDIVExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2> div(T2 & srcB)
+        {
+            return ArithmeticDIVExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticDIVExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2 > div(T2 && srcB)
+        {
+            return ArithmeticDIVExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2> sub(T2 & srcB)
+        {
+            return ArithmeticSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2 > sub(T2 && srcB)
+        {
+            return ArithmeticSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFADDMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2> (*this, srcB);
         }
     };
 

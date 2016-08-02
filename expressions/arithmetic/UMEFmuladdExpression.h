@@ -4,6 +4,17 @@
 namespace UME {
 namespace VECTOR {
 
+    template<typename SCALAR_TYPE, int SIMD_STRIDE> class ScalarExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticADDExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticMULExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticDIVExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticSUBExpression;
+
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFMULADDExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFADDMULExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFMULSUBExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFSUBMULExpression;
+
     template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3>
     class ArithmeticFMULADDExpression :
         public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>>
@@ -77,13 +88,13 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
-            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2>> add(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2> & srcB)
+            T2> add(T2 & srcB)
         {
             return ArithmeticADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
-                T2>(*this, srcB);
+                T2> (*this, srcB);
         }
 
         template<typename T2>
@@ -91,13 +102,13 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
-            T2> add(T2 && srcB)
+            T2 > add(T2 && srcB)
         {
             return ArithmeticADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
-                T2>(*this, srcB);
+                T2> (*this, srcB);
         }
 
         template<typename T2>
@@ -105,13 +116,13 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
-            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2 >> mul(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2> & srcB)
+            T2> mul(T2 & srcB)
         {
             return ArithmeticMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
-                ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2 >>(*this, srcB);
+                T2> (*this, srcB);
         }
 
         template<typename T2>
@@ -119,13 +130,69 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
-            ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2 >> mul(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2> && srcB)
+            T2 > mul(T2 && srcB)
         {
             return ArithmeticMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
-                ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, T2 >> (*this, srcB);
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticDIVExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2> div(T2 & srcB)
+        {
+            return ArithmeticDIVExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticDIVExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2 > div(T2 && srcB)
+        {
+            return ArithmeticDIVExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2> sub(T2 & srcB)
+        {
+            return ArithmeticSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2 > sub(T2 && srcB)
+        {
+            return ArithmeticSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2> (*this, srcB);
         }
     };
 
