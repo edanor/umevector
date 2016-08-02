@@ -455,6 +455,262 @@ namespace VECTOR {
                 E_MASK,
                 T2> (*this, mask, srcB);
         }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFMULADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> fmuladd(T2 & srcB, T3 & srcC)
+        {
+            return ArithmeticFMULADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFMULADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> fmuladd(T2 && srcB, T3 & srcC)
+        {
+            return ArithmeticFMULADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFMULADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> fmuladd(T2 & srcB, T3 && srcC)
+        {
+            return ArithmeticFMULADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFMULADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> fmuladd(T2 && srcB, T3 && srcC)
+        {
+            return ArithmeticFMULADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFADDMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> faddmul(T2 & srcB, T3 & srcC)
+        {
+            return ArithmeticFADDMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFADDMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> faddmul(T2 && srcB, T3 & srcC)
+        {
+            return ArithmeticFADDMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFADDMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> faddmul(T2 & srcB, T3 && srcC)
+        {
+            return ArithmeticFADDMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFADDMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> faddmul(T2 && srcB, T3 && srcC)
+        {
+            return ArithmeticFADDMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFMULSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> fmulsub(T2 & srcB, T3 & srcC)
+        {
+            return ArithmeticFMULSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFMULSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> fmulsub(T2 && srcB, T3 & srcC)
+        {
+            return ArithmeticFMULSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFMULSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> fmulsub(T2 & srcB, T3 && srcC)
+        {
+            return ArithmeticFMULSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFMULSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> fmulsub(T2 && srcB, T3 && srcC)
+        {
+            return ArithmeticFMULSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFSUBMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> fsubmul(T2 & srcB, T3 & srcC)
+        {
+            return ArithmeticFSUBMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFSUBMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> fsubmul(T2 && srcB, T3 & srcC)
+        {
+            return ArithmeticFSUBMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFSUBMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> fsubmul(T2 & srcB, T3 && srcC)
+        {
+            return ArithmeticFSUBMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
+
+        template<typename T2, typename T3>
+        UME_FORCE_INLINE ArithmeticFSUBMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>, // this expression
+            T2,
+            T3> fsubmul(T2 && srcB, T3 && srcC)
+        {
+            return ArithmeticFSUBMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFMULSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3>,
+                T2,
+                T3> (*this, srcB, srcC);
+        }
     };
 
 }
