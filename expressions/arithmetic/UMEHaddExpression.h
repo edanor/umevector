@@ -98,7 +98,7 @@ namespace VECTOR {
                 SIMD_TYPE t0 = _e1.evaluate_SIMD(i);
                 A.adda(t0);
             }
-            SCALAR_TYPE B = A.hadd();
+            float B = A.hadd();
             for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
                 SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
                 B += t1[0];

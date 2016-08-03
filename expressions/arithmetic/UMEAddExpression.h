@@ -29,15 +29,13 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBXORExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
 
-    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticITOFExpression;
-
     template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2>
     class ArithmeticADDExpression :
     public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> >
     {
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
-        
+
         E1 & _e1;
         E2 & _e2;
 
@@ -761,40 +759,31 @@ namespace VECTOR {
                 > (*this);
         }
 
-        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE FLOAT_EXPRESSION_TYPE;
+        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
+        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
+        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
+        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
+        typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
+        typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE ITOU_EXPRESSION_TYPE;
 
-        UME_FORCE_INLINE FLOAT_EXPRESSION_TYPE itof() {
-            return FLOAT_EXPRESSION_TYPE(*this);
+        UME_FORCE_INLINE ITOF_EXPRESSION_TYPE itof() {
+            return ITOF_EXPRESSION_TYPE(*this);
         }
-
-        /*
-        template<typename = typename std::enable_if<std::is_same<SCALAR_TYPE, int32_t>::value>::type>
-        UME_FORCE_INLINE ArithmeticITOFExpression<
-            float,
-            SIMD_STRIDE,
-            ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> // this expression
-        > itof()
-        {
-            return ArithmeticITOFExpression<
-                float,
-                SIMD_STRIDE,
-                ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>
-            >(*this);
+        UME_FORCE_INLINE FTOI_EXPRESSION_TYPE ftoi() {
+            return FTOI_EXPRESSION_TYPE(*this);
         }
-
-        template<typename = typename std::enable_if<std::is_same<SCALAR_TYPE, int64_t>::value>::type>
-        UME_FORCE_INLINE ArithmeticITOFExpression<
-            double,
-            SIMD_STRIDE,
-            ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> // this expression
-        > itof()
-        {
-            return ArithmeticITOFExpression<
-                double,
-                SIMD_STRIDE,
-                ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>
-            >(*this);
-        }*/
+        UME_FORCE_INLINE UTOF_EXPRESSION_TYPE utof() {
+            return UTOF_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE FTOU_EXPRESSION_TYPE ftou() {
+            return FTOU_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE UTOI_EXPRESSION_TYPE utoi() {
+            return UTOI_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE ITOU_EXPRESSION_TYPE itou() {
+            return ITOU_EXPRESSION_TYPE(*this);
+        }
     };
 
     // Operators to handle "Exp1 + Exp2" expressions.
