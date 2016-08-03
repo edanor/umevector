@@ -127,25 +127,25 @@ namespace VECTOR {
     template<int SIMD_STRIDE, typename INT_EXP>
     class ITOUTrait<int8_t, SIMD_STRIDE, INT_EXP> {
     public:
-        typedef ArithmeticFTOUExpression<uint8_t, SIMD_STRIDE, INT_EXP> CAST_TYPE;
+        typedef ArithmeticITOUExpression<uint8_t, SIMD_STRIDE, INT_EXP> CAST_TYPE;
     };
 
     template<int SIMD_STRIDE, typename INT_EXP>
     class ITOUTrait<int16_t, SIMD_STRIDE, INT_EXP> {
     public:
-        typedef ArithmeticFTOUExpression<uint16_t, SIMD_STRIDE, INT_EXP> CAST_TYPE;
+        typedef ArithmeticITOUExpression<uint16_t, SIMD_STRIDE, INT_EXP> CAST_TYPE;
     };
 
     template<int SIMD_STRIDE, typename INT_EXP>
     class ITOUTrait<int32_t, SIMD_STRIDE, INT_EXP> {
     public:
-        typedef ArithmeticFTOUExpression<uint32_t, SIMD_STRIDE, INT_EXP> CAST_TYPE;
+        typedef ArithmeticITOUExpression<uint32_t, SIMD_STRIDE, INT_EXP> CAST_TYPE;
     };
 
     template<int SIMD_STRIDE, typename INT_EXP>
     class ITOUTrait<int64_t, SIMD_STRIDE, INT_EXP> {
     public:
-        typedef ArithmeticFTOUExpression<uint64_t, SIMD_STRIDE, INT_EXP> CAST_TYPE;
+        typedef ArithmeticITOUExpression<uint64_t, SIMD_STRIDE, INT_EXP> CAST_TYPE;
     };
 }
 }

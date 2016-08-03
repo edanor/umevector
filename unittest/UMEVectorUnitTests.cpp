@@ -975,4 +975,46 @@ int main() {
         auto t2 = t1.add(D);
         C = t2;
     }
+    {
+        int32_t rawA[100], rawB[100];
+        uint32_t rawC[100], rawD[100];
+
+        for (int i = 0; i < 100; i++) {
+            rawA[i] = i + 1;
+            rawB[i] = i + 2;
+            rawC[i] = i + 3;
+            rawD[i] = i + 4;
+        }
+
+        UME::VECTOR::IntVector<int32_t, 4, 100> A(rawA);
+        UME::VECTOR::IntVector<int32_t, 4, 100> B(rawB);
+        UME::VECTOR::UintVector<uint32_t, 4, 100> C(rawC);
+        UME::VECTOR::UintVector<uint32_t, 4, 100> D(rawD);
+
+        auto t0 = A.add(B);
+        auto t1 = t0.itou();
+        auto t2 = t1.add(D);
+        C = t2;
+    }
+    {
+        uint32_t rawA[100], rawB[100];
+        int32_t rawC[100], rawD[100];
+
+        for (int i = 0; i < 100; i++) {
+            rawA[i] = i + 1;
+            rawB[i] = i + 2;
+            rawC[i] = i + 3;
+            rawD[i] = i + 4;
+        }
+
+        UME::VECTOR::UintVector<uint32_t, 4, 100> A(rawA);
+        UME::VECTOR::UintVector<uint32_t, 4, 100> B(rawB);
+        UME::VECTOR::IntVector<int32_t, 4, 100> C(rawC);
+        UME::VECTOR::IntVector<int32_t, 4, 100> D(rawD);
+
+        auto t0 = A.add(B);
+        auto t1 = t0.utoi();
+        auto t2 = t1.add(D);
+        C = t2;
+    }
 }

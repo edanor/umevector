@@ -28,8 +28,8 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 // ***This file has been automatically generated***
-#ifndef UME_ITOF_EXPRESSION_H_
-#define UME_ITOF_EXPRESSION_H_
+#ifndef UME_UTOF_EXPRESSION_H_
+#define UME_UTOF_EXPRESSION_H_
 
 namespace UME {
 namespace VECTOR {
@@ -58,8 +58,8 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
 
     template <typename SCALAR_TO_TYPE, int SIMD_STRIDE, typename E1>
-    class ArithmeticITOFExpression :
-    public ArithmeticExpression<SCALAR_TO_TYPE, SIMD_STRIDE, ArithmeticITOFExpression<SCALAR_TO_TYPE, SIMD_STRIDE, E1>>
+    class ArithmeticUTOFExpression :
+    public ArithmeticExpression<SCALAR_TO_TYPE, SIMD_STRIDE, ArithmeticUTOFExpression<SCALAR_TO_TYPE, SIMD_STRIDE, E1>>
     {
 
         typedef typename UME::SIMD::SIMDVec<SCALAR_TO_TYPE, SIMD_STRIDE> SIMD_TO_TYPE;
@@ -70,10 +70,10 @@ namespace VECTOR {
 
     public:
 
-        UME_FORCE_INLINE ArithmeticITOFExpression(E1 & e1) :
+        UME_FORCE_INLINE ArithmeticUTOFExpression(E1 & e1) :
             _e1(e1) {}
 
-        UME_FORCE_INLINE ArithmeticITOFExpression(E1 && e1) :
+        UME_FORCE_INLINE ArithmeticUTOFExpression(E1 && e1) :
             _e1(std::move(e1)) {}
 
         UME_FORCE_INLINE SIMD_TO_TYPE evaluate_SIMD(int index)
@@ -92,13 +92,13 @@ namespace VECTOR {
             UME_FORCE_INLINE ArithmeticADDExpression<
             SCALAR_TO_TYPE,
             SIMD_STRIDE,
-            ArithmeticITOFExpression<SCALAR_TO_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticUTOFExpression<SCALAR_TO_TYPE, SIMD_STRIDE, E1>, // this expression
             T2> add(T2 & srcB)
         {
             return ArithmeticADDExpression<
                 SCALAR_TO_TYPE,
                 SIMD_STRIDE,
-                ArithmeticITOFExpression<SCALAR_TO_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticUTOFExpression<SCALAR_TO_TYPE, SIMD_STRIDE, E1>,
                 T2>(*this, srcB);
         }
     };

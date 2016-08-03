@@ -43,5 +43,10 @@
 
 // Cast expressions
 #include "expressions/cast/UMEItofExpression.h"
+#include "expressions/cast/UMEFtoiExpression.h"
+#include "expressions/cast/UMEUtofExpression.h"
+#include "expressions/cast/UMEFtouExpression.h"
+#include "expressions/cast/UMEItouExpression.h"
+#include "expressions/cast/UMEUtoiExpression.h"
 
 #endif
