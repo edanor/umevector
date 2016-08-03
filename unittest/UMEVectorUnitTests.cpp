@@ -843,5 +843,137 @@ int main() {
 
         testHADD_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
     }
+    {
+        float rawA[100], rawB[100], rawC[100], rawD[100], rawE[100], rawF[100];
+        UME::VECTOR::FloatVector<float, 4, 100> A(rawA);
+        UME::VECTOR::FloatVector<float, 4, 100> B(rawB);
+        UME::VECTOR::FloatVector<float, 4, 100> C(rawC);
+        UME::VECTOR::FloatVector<float, 4, 100> D(rawD);
+        UME::VECTOR::FloatVector<float, 4, 100> E(rawE);
+        UME::VECTOR::FloatVector<float, 4, 100> F(rawF);
 
+        auto t0 = A.add(B);
+        auto t1 = t0.mul(C);
+        auto t2 = t1.div(D);
+        auto t3 = t2.sub(E);
+
+        F = t3;
+    }
+
+    {
+        float rawA[100], rawB[100], rawC[100], rawD[100], rawE[100], rawF[100];
+        bool rawM[100];
+
+        for (int i = 0; i < 100; i++) {
+            rawA[i] = float(i) + 1.0f;
+            rawB[i] = float(i) + 2.0f;
+            rawC[i] = float(i) + 3.0f;
+            rawD[i] = float(i) + 4.0f;
+            rawE[i] = float(i) + 5.0f;
+            rawF[i] = float(i) + 6.0f;
+
+            rawM[i] = (i % 2) == 0 ? true : false;
+        }
+
+        UME::VECTOR::FloatVector<float, 4, 100> A(rawA);
+        UME::VECTOR::FloatVector<float, 4, 100> B(rawB);
+        UME::VECTOR::FloatVector<float, 4, 100> C(rawC);
+        UME::VECTOR::FloatVector<float, 4, 100> D(rawD);
+        UME::VECTOR::FloatVector<float, 4, 100> E(rawE);
+        UME::VECTOR::FloatVector<float, 4, 100> F(rawF);
+        UME::VECTOR::MaskVector<4, 100> mask(rawM);
+
+        auto t0 = A.add(mask, B);
+        auto t1 = t0.mul(C);
+        auto t2 = t1.div(D);
+        auto t3 = t2.sub(mask, E);
+
+        F = t3;
+    }
+    {
+        float rawA[100], rawB[100], rawC[100], rawD[100], rawE[100], rawF[100], rawG[100];
+        bool rawM[100];
+
+        for (int i = 0; i < 100; i++) {
+            rawA[i] = float(i) + 1.0f;
+            rawB[i] = float(i) + 2.0f;
+            rawC[i] = float(i) + 3.0f;
+            rawD[i] = float(i) + 4.0f;
+            rawE[i] = float(i) + 5.0f;
+            rawF[i] = float(i) + 6.0f;
+            rawG[i] = float(i) + 7.0f;
+
+            rawM[i] = (i % 2) == 0 ? true : false;
+        }
+
+        UME::VECTOR::FloatVector<float, 4, 100> A(rawA);
+        UME::VECTOR::FloatVector<float, 4, 100> B(rawB);
+        UME::VECTOR::FloatVector<float, 4, 100> C(rawC);
+        UME::VECTOR::FloatVector<float, 4, 100> D(rawD);
+        UME::VECTOR::FloatVector<float, 4, 100> E(rawE);
+        UME::VECTOR::FloatVector<float, 4, 100> F(rawF);
+        UME::VECTOR::FloatVector<float, 4, 100> G(rawG);
+        UME::VECTOR::MaskVector<4, 100> mask(rawM);
+
+        auto t0 = A.add(mask, B);
+        auto t1 = t0.fmuladd(C, D);
+        auto t2 = t1.sub(mask, E);
+        auto t3 = t2.fmulsub(F, t2);
+
+        G = t3;
+    }
+    {
+        float rawA[100], rawB[100], rawC[100], rawD[100], rawE[100], rawF[100], rawG[100];
+        bool rawM[100];
+
+        for (int i = 0; i < 100; i++) {
+            rawA[i] = float(i) + 1.0f;
+            rawB[i] = float(i) + 2.0f;
+            rawC[i] = float(i) + 3.0f;
+            rawD[i] = float(i) + 4.0f;
+            rawE[i] = float(i) + 5.0f;
+            rawF[i] = float(i) + 6.0f;
+            rawG[i] = float(i) + 7.0f;
+
+            rawM[i] = (i % 2) == 0 ? true : false;
+        }
+
+        UME::VECTOR::FloatVector<float, 4, 100> A(rawA);
+        UME::VECTOR::FloatVector<float, 4, 100> B(rawB);
+        UME::VECTOR::FloatVector<float, 4, 100> C(rawC);
+        UME::VECTOR::FloatVector<float, 4, 100> D(rawD);
+        UME::VECTOR::FloatVector<float, 4, 100> E(rawE);
+        UME::VECTOR::FloatVector<float, 4, 100> F(rawF);
+        UME::VECTOR::FloatVector<float, 4, 100> G(rawG);
+        UME::VECTOR::MaskVector<4, 100> mask(rawM);
+
+        auto t0 = A.add(mask, B);
+        auto t1 = t0.fmuladd(C, D);
+        auto t2 = t1.fmuladd(E, E);
+        auto t3 = t2.fmulsub(F, t2);
+
+        G = t3;
+    }
+    {
+        int32_t rawA[100], rawB[100];
+        float rawC[100], rawD[100];
+
+        for (int i = 0; i < 100; i++) {
+            rawA[i] = i + 1;
+            rawB[i] = i + 2;
+            rawC[i] = float(i) + 3.0f;
+            rawD[i] = float(i) + 4.0f;
+        }
+
+        UME::VECTOR::IntVector<int32_t, 4, 100> A(rawA);
+        UME::VECTOR::IntVector<int32_t, 4, 100> B(rawB);
+        UME::VECTOR::FloatVector<float, 4, 100> C(rawC);
+        UME::VECTOR::FloatVector<float, 4, 100> D(rawD);
+
+        auto t0 = A.add(B);
+        auto t1 = t0.itof();
+        auto t2 = t1.add(D);
+        C = t2;
+
+    }
 }

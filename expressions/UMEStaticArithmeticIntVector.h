@@ -4,8 +4,10 @@
 namespace UME {
 namespace VECTOR {
 
+#define DEFAULT_INT_VECTOR_SIMD_STRIDE 4
+
     /* Static vector template. This template*/
-    template<typename SCALAR_TYPE, int SIMD_STRIDE = 4, int VEC_LEN = DYNAMIC_LENGTH>
+    template<typename SCALAR_TYPE, int SIMD_STRIDE = DEFAULT_INT_VECTOR_SIMD_STRIDE, int VEC_LEN = DYNAMIC_LENGTH>
     class IntVector : public ArithmeticIntVectorInterface<
         IntVector<SCALAR_TYPE, SIMD_STRIDE, VEC_LEN>,
         SCALAR_TYPE,

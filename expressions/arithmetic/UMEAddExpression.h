@@ -1,6 +1,8 @@
 #ifndef UME_ADD_EXPRESSION_H_
 #define UME_ADD_EXPRESSION_H_
 
+#include "../UMEVectorConversionTraits.h"
+
 namespace UME {
 namespace VECTOR {
 
@@ -20,13 +22,22 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFMULSUBExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFSUBMULExpression;
 
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHADDExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHMULExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBANDExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBORExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBXORExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
+
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticITOFExpression;
+
     template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2>
     class ArithmeticADDExpression :
     public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> >
     {
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
-
+        
         E1 & _e1;
         E2 & _e2;
 
@@ -684,6 +695,106 @@ namespace VECTOR {
                 T2,
                 T3> (*this, srcB, srcC);
         }
+
+        UME_FORCE_INLINE ArithmeticHADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> // this expression
+            > hadd()
+        {
+            return ArithmeticHADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE ArithmeticHMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> // this expression
+            > hmul()
+        {
+            return ArithmeticHMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE ArithmeticHBANDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> // this expression
+            > hband()
+        {
+            return ArithmeticHBANDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE ArithmeticHBORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> // this expression
+            > hbor()
+        {
+            return ArithmeticHBORExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE ArithmeticHBXORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> // this expression
+            > hbxor()
+        {
+            return ArithmeticHBXORExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>
+                > (*this);
+        }
+
+        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE FLOAT_EXPRESSION_TYPE;
+
+        UME_FORCE_INLINE FLOAT_EXPRESSION_TYPE itof() {
+            return FLOAT_EXPRESSION_TYPE(*this);
+        }
+
+        /*
+        template<typename = typename std::enable_if<std::is_same<SCALAR_TYPE, int32_t>::value>::type>
+        UME_FORCE_INLINE ArithmeticITOFExpression<
+            float,
+            SIMD_STRIDE,
+            ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> // this expression
+        > itof()
+        {
+            return ArithmeticITOFExpression<
+                float,
+                SIMD_STRIDE,
+                ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>
+            >(*this);
+        }
+
+        template<typename = typename std::enable_if<std::is_same<SCALAR_TYPE, int64_t>::value>::type>
+        UME_FORCE_INLINE ArithmeticITOFExpression<
+            double,
+            SIMD_STRIDE,
+            ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> // this expression
+        > itof()
+        {
+            return ArithmeticITOFExpression<
+                double,
+                SIMD_STRIDE,
+                ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>
+            >(*this);
+        }*/
     };
 
     // Operators to handle "Exp1 + Exp2" expressions.

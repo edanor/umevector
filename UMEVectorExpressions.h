@@ -41,4 +41,7 @@
 #include "expressions/arithmetic/UMEHborExpression.h"
 #include "expressions/arithmetic/UMEHbxorExpression.h"
 
+// Cast expressions
+#include "expressions/cast/UMEItofExpression.h"
+
 #endif

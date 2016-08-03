@@ -20,6 +20,13 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFMULSUBExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFSUBMULExpression;
 
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHADDExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHMULExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBANDExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBORExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBXORExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
+
     template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2>
     class ArithmeticMADDExpression :
         public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> >
@@ -712,6 +719,71 @@ namespace VECTOR {
                 ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
+        }
+
+        UME_FORCE_INLINE ArithmeticHADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
+            > hadd()
+        {
+            return ArithmeticHADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE ArithmeticHMULExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
+            > hmul()
+        {
+            return ArithmeticHMULExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE ArithmeticHBANDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
+            > hband()
+        {
+            return ArithmeticHBANDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE ArithmeticHBORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
+            > hbor()
+        {
+            return ArithmeticHBORExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE ArithmeticHBXORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
+            > hbxor()
+        {
+            return ArithmeticHBXORExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
+                > (*this);
         }
     };
 
