@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2016 CERN
+// Copyright (c) 2015 CERN
 //
 // Author: Przemyslaw Karpinski
 //
@@ -24,40 +24,24 @@
 //
 //
 //  This piece of code was developed as part of ICE-DIP project at CERN.
-//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
+//  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's 
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
-// ***This file has been automatically generated***
-#ifndef UME_FLOAT_VECTOR_INTERFACE_H_
-#define UME_FLOAT_VECTOR_INTERFACE_H_
 
-#include <cassert>
+#ifndef GLOBAL_CONSTANTS_H_
+#define GLOBAL_CONSTANTS_H_
 
-#include "UMEVectorExpressions.h"
-#include "UMEBaseVectorInterface.h"
-
-namespace UME {
-namespace VECTOR {
-
-    template<
-        typename DERIVED_VECTOR_TYPE,
-        typename SCALAR_TYPE,
-        int SIMD_STRIDE>
-    class ArithmeticFloatVectorInterface :
-        public ArithmeticBaseVectorInterface<DERIVED_VECTOR_TYPE, SCALAR_TYPE, SIMD_STRIDE> {
-    protected:
-        ~ArithmeticFloatVectorInterface() {}
-
-    public:
-        // Can we make this private?
-        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
-        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1>      SIMD1_TYPE;
-        typedef UME::SIMD::SIMDVecMask<SIMD_STRIDE>          MASK_TYPE;
-        typedef UME::SIMD::SIMDVecMask<1>               MASK1_TYPE;
+namespace UME
+{
+    // This namespace allows easier aggregation of precomputed mathematical constants
+    namespace CONSTANTS
+    {
+        const double PI              = 3.1415926535897932384626433832795;
+        const double PI_HALF         = 1.5707963267948966192313216916398;
+        const double PI_ONE_AND_HALF = 4.7123889803846898576939650749193;
+        const double PI_TWO          = 6.2831853071795864769252867665590;
     };
+}
 
-}
-}
 
 #endif
-

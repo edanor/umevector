@@ -974,6 +974,5 @@ int main() {
         auto t1 = t0.itof();
         auto t2 = t1.add(D);
         C = t2;
-
     }
 }
