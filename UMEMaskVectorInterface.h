@@ -14,8 +14,6 @@ namespace VECTOR {
 
     template<int VEC_LEN, int SIMD_STRIDE> class MaskVector;
 
-    template<typename SCALAR_TYPE, int VEC_LEN, int STRIDE> class ColumnVector;
-
     // Vectors of DYNAMIC_LENGTH may have lengths that
     // are unknowns at compile time. While the internal behaviour 
     // is different than for static vector lengths, the interoperation
