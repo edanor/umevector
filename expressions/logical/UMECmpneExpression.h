@@ -28,8 +28,8 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 // ***This file has been automatically generated***
-#ifndef UME_LAND_EXPRESSION_H_
-#define UME_LAND_EXPRESSION_H_
+#ifndef UME_CMPNE_EXPRESSION_H_
+#define UME_CMPNE_EXPRESSION_H_
 
 namespace UME {
 namespace VECTOR {
@@ -58,8 +58,8 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
 
     template <int SIMD_STRIDE, typename E1, typename E2>
-    class LogicalLANDExpression :
-    public LogicalExpression<LogicalLANDExpression<SIMD_STRIDE, E1, E2>>
+    class LogicalCMPNEExpression :
+    public LogicalExpression<LogicalCMPNEExpression<SIMD_STRIDE, E1, E2>>
     {
         typedef typename UME::SIMD::SIMDVecMask<SIMD_STRIDE> SIMD_MASK_TYPE;
         typedef typename UME::SIMD::SIMDVecMask<1> SIMD_1_MASK_TYPE;
@@ -68,89 +68,89 @@ namespace VECTOR {
         E2 & _e2;
 
     public:
-        UME_FORCE_INLINE LogicalLANDExpression(E1 & e1, E2 & e2) :
+        UME_FORCE_INLINE LogicalCMPNEExpression(E1 & e1, E2 & e2) :
             _e1(e1), _e2(e2) {}
 
-        UME_FORCE_INLINE LogicalLANDExpression(E1 & e1, E2 && e2) :
+        UME_FORCE_INLINE LogicalCMPNEExpression(E1 & e1, E2 && e2) :
             _e1(e1),
             _e2(std::move(e2)) {}
 
-        UME_FORCE_INLINE LogicalLANDExpression(E1 && e1, E2 & e2) :
+        UME_FORCE_INLINE LogicalCMPNEExpression(E1 && e1, E2 & e2) :
             _e1(std::move(e1)),
             _e2(e2) {}
 
-        UME_FORCE_INLINE LogicalLANDExpression(E1 && e1, E2 && e2) :
+        UME_FORCE_INLINE LogicalCMPNEExpression(E1 && e1, E2 && e2) :
             _e1(std::move(e1)),
             _e2(std::move(e2)) {}
 
         UME_FORCE_INLINE SIMD_MASK_TYPE evaluate_SIMD(int index) {
             auto t0 = _e1.evaluate_SIMD(index);
             auto t1 = _e2.evaluate_SIMD(index);
-            return t0.land(t1);
+            return t0.cmpne(t1);
         }
 
         UME_FORCE_INLINE SIMD_1_MASK_TYPE evaluate_scalar(int index) {
             auto t0 = _e1.evaluate_scalar(index);
             auto t1 = _e2.evaluate_scalar(index);
-            return t0.land(t1);
+            return t0.cmpne(t1);
         }
     };
 
-    // Operators to handle "Exp1 && Exp2" expressions.
-    template<typename E1, typename E2>
-    UME_FORCE_INLINE LogicalLANDExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator&& (
-        LogicalExpression<E1> & srcA,
-        LogicalExpression<E2> & srcB)
+    // Operators to handle "Exp1 != Exp2" expressions.
+    template<typename SCALAR_TYPE, typename E1, typename E2>
+    UME_FORCE_INLINE LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator!= (
+        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> & srcA,
+        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
     {
-        return LogicalLANDExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
+        return LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
     }
 
-    // Operators to handle "Exp1 && RVALUE Exp2" expressions.
-    template<typename E1, typename E2>
-    UME_FORCE_INLINE LogicalLANDExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator&& (
-        LogicalExpression<E1> & srcA,
-        LogicalExpression<E2> && srcB)
+    // Operators to handle "Exp1 != RVALUE Exp2" expressions.
+    template<typename SCALAR_TYPE, typename E1, typename E2>
+    UME_FORCE_INLINE LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator!= (
+        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> & srcA,
+        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> && srcB)
     {
-        return LogicalLANDExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
+        return LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
     }
 
-    // Operators to handle "RVALUE Exp1 && Exp2" expressions.
-    template<typename E1, typename E2>
-    UME_FORCE_INLINE LogicalLANDExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator&& (
-        LogicalExpression<E1> && srcA,
-        LogicalExpression<E2> & srcB)
+    // Operators to handle "RVALUE Exp1 != Exp2" expressions.
+    template<typename SCALAR_TYPE, typename E1, typename E2>
+    UME_FORCE_INLINE LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator!= (
+        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> && srcA,
+        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
     {
-        return LogicalLANDExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
+        return LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
     }
 
-    // Operators to handle "RVALUE Exp1 && RVALUE Exp2" expressions.
-    template<typename E1, typename E2>
-    UME_FORCE_INLINE LogicalLANDExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator&& (
-        LogicalExpression<E1> && srcA,
-        LogicalExpression<E2> && srcB)
+    // Operators to handle "RVALUE Exp1 != RVALUE Exp2" expressions.
+    template<typename SCALAR_TYPE, typename E1, typename E2>
+    UME_FORCE_INLINE LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator!= (
+        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> && srcA,
+        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> && srcB)
     {
-        return LogicalLANDExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
+        return LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
     }
 
-    // Operators to handle "Exp1 && scalar" expressions.
-    template<typename E1>
-    UME_FORCE_INLINE LogicalLANDExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<bool, E1::GET_SIMD_STRIDE()>> operator&& (
-        LogicalExpression<E1> & srcA,
-        bool srcB)
+    // Operators to handle "Exp1 != scalar" expressions.
+    template<typename SCALAR_TYPE, typename E1>
+    UME_FORCE_INLINE LogicalCMPNEExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>> operator!= (
+        ArithmeticExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE(), E1> & srcA,
+        SCALAR_TYPE srcB)
     {
-        return LogicalLANDExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<bool, E1::GET_SIMD_STRIDE()>>(
+        return LogicalCMPNEExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>>(
             srcA,
-            ScalarExpression<bool, E1::GET_SIMD_STRIDE()>(srcB));
+            ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>(srcB));
     }
 
-    // Operators to handle "scalar && Exp1" expressions.
-    template<typename E2>
-    UME_FORCE_INLINE LogicalLANDExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<bool, E2::GET_SIMD_STRIDE()>, E2> operator&& (
-        bool srcA,
-        LogicalExpression<E2> & srcB)
+    // Operators to handle "scalar != Exp1" expressions.
+    template<typename SCALAR_TYPE, typename E2>
+    UME_FORCE_INLINE LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2> operator!= (
+        SCALAR_TYPE srcA,
+        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
     {
-        return LogicalLANDExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<bool, E2::GET_SIMD_STRIDE()>, E2>(
-            ScalarExpression<bool, E2::GET_SIMD_STRIDE()>(srcA),
+        return LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2>(
+            ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>(srcA),
             srcB);
     }
 

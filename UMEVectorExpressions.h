@@ -9,9 +9,17 @@
 
 // Logical expressions should be included before arithmetic expressions
 
-// Binary expressions
+// Binary logical expressions
 #include "expressions/logical/UMELandExpression.h"
 #include "expressions/logical/UMELorExpression.h"
+
+// Binary logical comparison expressions
+#include "expressions/logical/UMECmpgtExpression.h"
+#include "expressions/logical/UMECmpltExpression.h"
+#include "expressions/logical/UMECmpgeExpression.h"
+#include "expressions/logical/UMECmpleExpression.h"
+#include "expressions/logical/UMECmpeqExpression.h"
+#include "expressions/logical/UMECmpneExpression.h"
 
 // Unary expressions
 #include "expressions/arithmetic/UMEPostincExpression.h"
@@ -22,8 +30,6 @@
 #include "expressions/arithmetic/UMEMulExpression.h"
 #include "expressions/arithmetic/UMEDivExpression.h"
 
-// Comparison expressions
-#include "expressions/logical/UMECmpgtExpression.h"
 
 // Binary expressions with mask
 #include "expressions/arithmetic/UMEMaddExpression.h"
