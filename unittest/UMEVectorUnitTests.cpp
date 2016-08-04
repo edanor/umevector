@@ -1017,4 +1017,50 @@ int main() {
         auto t2 = t1.add(D);
         C = t2;
     }
+
+    {
+        float rawA[100], rawB[100], rawC[100], rawD[100], rawE[100];
+
+        for (int i = 0; i < 100; i++) {
+            rawA[i] = float(i) + 1.0f;
+            if(i % 2 == 0) rawB[i] = float(i) + 2.0f;
+            else rawB[i] = float(i) + 0.5f;
+            rawC[i] = float(i) + 3.0f;
+            rawD[i] = float(i) + 4.0f;
+            rawE[i] = float(i) + 5.0f;
+        }
+
+        UME::VECTOR::FloatVector<float, 4, 100> A(rawA);
+        UME::VECTOR::FloatVector<float, 4, 100> B(rawB);
+        UME::VECTOR::FloatVector<float, 4, 100> C(rawC);
+        UME::VECTOR::FloatVector<float, 4, 100> D(rawD);
+        UME::VECTOR::FloatVector<float, 4, 100> E(rawE);
+
+        auto t0 = A.cmpgt(B);
+        auto t1 = C.add(t0, D);
+        E = t1;
+    }
+    {
+        float rawA[100];
+        int32_t rawB[100], rawC[100], rawD[100], rawE[100];
+
+        for (int i = 0; i < 100; i++) {
+            rawA[i] = float(i) + 1.0f;
+            if (i % 2 == 0) rawB[i] = i + 2;
+            else rawB[i] = i;
+            rawC[i] = i + 3;
+            rawD[i] = i + 4;
+            rawE[i] = i + 5;
+        }
+
+        UME::VECTOR::FloatVector<float, 4, 100> A(rawA);
+        UME::VECTOR::IntVector<int32_t, 4, 100> B(rawB);
+        UME::VECTOR::IntVector<int32_t, 4, 100> C(rawC);
+        UME::VECTOR::IntVector<int32_t, 4, 100> D(rawD);
+        UME::VECTOR::IntVector<int32_t, 4, 100> E(rawE);
+
+        auto t0 = B.cmpgt(A.ftoi());
+        auto t1 = C.add(t0, D);
+        E = t1;
+    }
 }

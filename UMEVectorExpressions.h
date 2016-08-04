@@ -22,6 +22,9 @@
 #include "expressions/arithmetic/UMEMulExpression.h"
 #include "expressions/arithmetic/UMEDivExpression.h"
 
+// Comparison expressions
+#include "expressions/logical/UMECmpgtExpression.h"
+
 // Binary expressions with mask
 #include "expressions/arithmetic/UMEMaddExpression.h"
 #include "expressions/arithmetic/UMEMsubExpression.h"

@@ -570,6 +570,15 @@ namespace VECTOR {
             return ArithmeticHBXORExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>((*this));
         }
 
+        //CMPGT
+        template<typename E2>
+        UME_FORCE_INLINE LogicalCMPGTExpression<SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> cmpgt(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB) {
+            return LogicalCMPGTExpression<SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        }
+        template<typename E2>
+        UME_FORCE_INLINE LogicalCMPGTExpression<SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2> cmpgt(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB) {
+            return LogicalCMPGTExpression<SIMD_STRIDE, DERIVED_VECTOR_TYPE, E2>((*this), srcB);
+        }
     };
 
 }
