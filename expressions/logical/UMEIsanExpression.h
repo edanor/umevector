@@ -59,6 +59,7 @@ namespace VECTOR {
     template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPEQExpression;
     template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPNEExpression;
 
+
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticRCPExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticNEGExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticABSExpression;
@@ -114,8 +115,6 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBANDExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBORExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBXORExpression;
-    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHMAXExpression;
-    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHMINExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTDECExpression;
 
@@ -143,6 +142,105 @@ namespace VECTOR {
         UME_FORCE_INLINE SIMD_1_MASK_TYPE evaluate_scalar(int index) {
             auto t0 = _e1.evaluate_scalar(index);
             return t0.isan();
+        }
+
+        UME_FORCE_INLINE LogicalLNOTExpression<
+            SIMD_STRIDE,
+            LogicalISANExpression<SIMD_STRIDE, E1> // this expression
+            > lnot()
+        {
+            return LogicalLNOTExpression<
+                SIMD_STRIDE,
+                LogicalISANExpression<SIMD_STRIDE, E1>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISFINExpression<
+            SIMD_STRIDE,
+            LogicalISANExpression<SIMD_STRIDE, E1> // this expression
+            > isfin()
+        {
+            return LogicalISFINExpression<
+                SIMD_STRIDE,
+                LogicalISANExpression<SIMD_STRIDE, E1>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISINFExpression<
+            SIMD_STRIDE,
+            LogicalISANExpression<SIMD_STRIDE, E1> // this expression
+            > isinf()
+        {
+            return LogicalISINFExpression<
+                SIMD_STRIDE,
+                LogicalISANExpression<SIMD_STRIDE, E1>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISANExpression<
+            SIMD_STRIDE,
+            LogicalISANExpression<SIMD_STRIDE, E1> // this expression
+            > isan()
+        {
+            return LogicalISANExpression<
+                SIMD_STRIDE,
+                LogicalISANExpression<SIMD_STRIDE, E1>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISNANExpression<
+            SIMD_STRIDE,
+            LogicalISANExpression<SIMD_STRIDE, E1> // this expression
+            > isnan()
+        {
+            return LogicalISNANExpression<
+                SIMD_STRIDE,
+                LogicalISANExpression<SIMD_STRIDE, E1>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISNORMExpression<
+            SIMD_STRIDE,
+            LogicalISANExpression<SIMD_STRIDE, E1> // this expression
+            > isnorm()
+        {
+            return LogicalISNORMExpression<
+                SIMD_STRIDE,
+                LogicalISANExpression<SIMD_STRIDE, E1>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISSUBExpression<
+            SIMD_STRIDE,
+            LogicalISANExpression<SIMD_STRIDE, E1> // this expression
+            > issub()
+        {
+            return LogicalISSUBExpression<
+                SIMD_STRIDE,
+                LogicalISANExpression<SIMD_STRIDE, E1>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISZEROExpression<
+            SIMD_STRIDE,
+            LogicalISANExpression<SIMD_STRIDE, E1> // this expression
+            > iszero()
+        {
+            return LogicalISZEROExpression<
+                SIMD_STRIDE,
+                LogicalISANExpression<SIMD_STRIDE, E1>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISZEROSUBExpression<
+            SIMD_STRIDE,
+            LogicalISANExpression<SIMD_STRIDE, E1> // this expression
+            > iszerosub()
+        {
+            return LogicalISZEROSUBExpression<
+                SIMD_STRIDE,
+                LogicalISANExpression<SIMD_STRIDE, E1>
+                > (*this);
         }
     };
 

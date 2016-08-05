@@ -61,6 +61,7 @@ namespace VECTOR {
     template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPEQExpression;
     template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPNEExpression;
 
+
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticRCPExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticNEGExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticABSExpression;
@@ -116,8 +117,6 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBANDExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBORExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBXORExpression;
-    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHMAXExpression;
-    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHMINExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTDECExpression;
 
@@ -1869,32 +1868,6 @@ namespace VECTOR {
             > hbxor()
         {
             return ArithmeticHBXORExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                ArithmeticSINExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
-                > (*this);
-        }
-
-        UME_FORCE_INLINE ArithmeticHMAXExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            ArithmeticSINExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
-            > hmax()
-        {
-            return ArithmeticHMAXExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                ArithmeticSINExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
-                > (*this);
-        }
-
-        UME_FORCE_INLINE ArithmeticHMINExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            ArithmeticSINExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
-            > hmin()
-        {
-            return ArithmeticHMINExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticSINExpression<SCALAR_TYPE, SIMD_STRIDE, E1>

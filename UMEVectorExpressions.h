@@ -51,6 +51,7 @@
 #include "expressions/logical/UMECmpeqExpression.h"
 #include "expressions/logical/UMECmpneExpression.h"
 
+
 #include "expressions/arithmetic/UMERcpExpression.h"
 #include "expressions/arithmetic/UMENegExpression.h"
 #include "expressions/arithmetic/UMEAbsExpression.h"
@@ -106,8 +107,6 @@
 #include "expressions/arithmetic/UMEHbandExpression.h"
 #include "expressions/arithmetic/UMEHborExpression.h"
 #include "expressions/arithmetic/UMEHbxorExpression.h"
-#include "expressions/arithmetic/UMEHmaxExpression.h"
-#include "expressions/arithmetic/UMEHminExpression.h"
 
 #include "expressions/arithmetic/UMEPostincExpression.h"
 #include "expressions/arithmetic/UMEPostdecExpression.h"
