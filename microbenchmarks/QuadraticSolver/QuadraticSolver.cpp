@@ -55,7 +55,7 @@ typedef unsigned long long TIMING_RES;
 // This size effectively gives 200 MB of allocation for single precision, and 400 MB for double precision
 // on x86 compatible machine. This means that data will travel between main memory and cache on most of
 // existing machines.
-const int ARRAY_SIZE = 1024;//*1024 * 8;
+const int ARRAY_SIZE = 1024 *1024 * 8;
 
 // Different implementations:
 #include "QuadraticSolverNaive.h"

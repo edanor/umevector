@@ -44,9 +44,9 @@ UME_NEVER_INLINE void QuadSolveVECTOR(
     SCALAR_FLOAT_T* __restrict x2,
     int* __restrict roots
 #else
-    const SCALAR_FLOAT_T* __restrict__ a,
-    const SCALAR_FLOAT_T* __restrict__ b,
-    const SCALAR_FLOAT_T* __restrict__ c,
+    SCALAR_FLOAT_T* __restrict__ a,
+    SCALAR_FLOAT_T* __restrict__ b,
+    SCALAR_FLOAT_T* __restrict__ c,
     SCALAR_FLOAT_T* __restrict__ x1,
     SCALAR_FLOAT_T* __restrict__ x2,
     int* __restrict__ roots
@@ -55,11 +55,10 @@ UME_NEVER_INLINE void QuadSolveVECTOR(
 {
     typedef typename UME::VECTOR::FloatVector<SCALAR_FLOAT_T, SIMD_STRIDE, ARRAY_SIZE> FLOAT_VEC_T;
     typedef typename UME::VECTOR::IntVector<SCALAR_INT_T, SIMD_STRIDE, ARRAY_SIZE> INT_VEC_T;
-    
+
     typedef typename UME::VECTOR::ScalarExpression<SCALAR_FLOAT_T, SIMD_STRIDE> SCALAR_FLOAT_EXP_T;
     typedef typename UME::VECTOR::ScalarExpression<SCALAR_INT_T, SIMD_STRIDE> SCALAR_INT_EXP_T;
-    
-    
+
     //FLOAT_VEC_T one(1.0f);
     SCALAR_FLOAT_EXP_T one(1.0f);
     FLOAT_VEC_T va(&a[0]);
@@ -113,15 +112,15 @@ UME_NEVER_INLINE void QuadSolveVECTOR(
 
     //INT_VEC_T int_roots(nr);
     INT_VEC_T int_roots(roots);
-    int_roots = nr_1.ftoi();
-    FLOAT_VEC_T x1_vec(&x1[0]);
-    x1_vec = r1_3;
-    FLOAT_VEC_T x2_vec(&x2[0]);
-    x2_vec = r2_1;
     //UME::SIMD::SIMDVec<int, INT_VEC_T::length()> int_roots2(int_roots);
     //int_roots2.store(roots);
+    int_roots = nr_1.ftoi();
     //r1.store(x1);
+    FLOAT_VEC_T x1_vec(&x1[0]);
+    x1_vec = r1_3;
     //r2.store(x2);
+    FLOAT_VEC_T x2_vec(&x2[0]);
+    x2_vec = r2_1;
 }
 
 template<typename FLOAT_T, uint32_t SIMD_STRIDE>

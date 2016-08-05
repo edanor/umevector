@@ -109,6 +109,38 @@ namespace VECTOR {
                 E2>(*this, mask, srcB);
         }
 
+        template<typename E_MASK, typename E2>
+        UME_FORCE_INLINE ArithmeticBLENDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>,
+            E_MASK,
+            E2> blend(LogicalExpression<E_MASK> && mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB)
+        {
+            return ArithmeticBLENDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>,
+                E_MASK,
+                E2>(*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename E2>
+        UME_FORCE_INLINE ArithmeticBLENDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>,
+            E_MASK,
+            E2> blend(LogicalExpression<E_MASK> && mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB)
+        {
+            return ArithmeticBLENDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>,
+                E_MASK,
+                E2>(*this, mask, srcB);
+        }
+
         template<typename E2, typename E3>
         UME_FORCE_INLINE ArithmeticFMULADDExpression<
             SCALAR_TYPE,
