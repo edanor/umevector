@@ -37,6 +37,16 @@ namespace VECTOR {
 
     template<typename SCALAR_TYPE, int SIMD_STRIDE> class ScalarExpression;
 
+    template<int SIMD_STRIDE, typename E1> class LogicalLNOTExpression;
+    template<int SIMD_STRIDE, typename E1> class LogicalISFINExpression;
+    template<int SIMD_STRIDE, typename E1> class LogicalISINFExpression;
+    template<int SIMD_STRIDE, typename E1> class LogicalISANExpression;
+    template<int SIMD_STRIDE, typename E1> class LogicalISNANExpression;
+    template<int SIMD_STRIDE, typename E1> class LogicalISNORMExpression;
+    template<int SIMD_STRIDE, typename E1> class LogicalISSUBExpression;
+    template<int SIMD_STRIDE, typename E1> class LogicalISZEROExpression;
+    template<int SIMD_STRIDE, typename E1> class LogicalISZEROSUBExpression;
+
     template<int SIMD_STRIDE, typename E1, typename E2> class LogicalLANDExpression;
     template<int SIMD_STRIDE, typename E1, typename E2> class LogicalLORExpression;
     template<int SIMD_STRIDE, typename E1, typename E2> class LogicalLXORExpression;
