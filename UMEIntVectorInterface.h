@@ -28,6 +28,7 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 // ***This file has been automatically generated***
+//
 #ifndef UME_INT_VECTOR_INTERFACE_H_
 #define UME_INT_VECTOR_INTERFACE_H_
 

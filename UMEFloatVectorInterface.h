@@ -28,6 +28,7 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 // ***This file has been automatically generated***
+//
 #ifndef UME_FLOAT_VECTOR_INTERFACE_H_
 #define UME_FLOAT_VECTOR_INTERFACE_H_
 
@@ -54,16 +55,6 @@ namespace VECTOR {
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1>      SIMD1_TYPE;
         typedef UME::SIMD::SIMDVecMask<SIMD_STRIDE>          MASK_TYPE;
         typedef UME::SIMD::SIMDVecMask<1>               MASK1_TYPE;
-
-        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>::CAST_TYPE FTOI_EXPRESSION_TYPE;
-        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>::CAST_TYPE FTOU_EXPRESSION_TYPE;
-
-        UME_FORCE_INLINE FTOI_EXPRESSION_TYPE ftoi() {
-            return FTOI_EXPRESSION_TYPE(*this);
-        }
-        UME_FORCE_INLINE FTOU_EXPRESSION_TYPE ftou() {
-            return FTOU_EXPRESSION_TYPE(*this);
-        }
     };
 
 }
