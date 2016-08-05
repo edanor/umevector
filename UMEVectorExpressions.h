@@ -84,9 +84,17 @@
 
 #include "expressions/arithmetic/UMEBlendExpression.h"
 #include "expressions/arithmetic/UMEMaddExpression.h"
+#include "expressions/arithmetic/UMEMsaddExpression.h"
 #include "expressions/arithmetic/UMEMmulExpression.h"
 #include "expressions/arithmetic/UMEMdivExpression.h"
 #include "expressions/arithmetic/UMEMsubExpression.h"
+#include "expressions/arithmetic/UMEMssubExpression.h"
+#include "expressions/arithmetic/UMEMmaxExpression.h"
+#include "expressions/arithmetic/UMEMminExpression.h"
+#include "expressions/arithmetic/UMEMbandExpression.h"
+#include "expressions/arithmetic/UMEMborExpression.h"
+#include "expressions/arithmetic/UMEMbxorExpression.h"
+#include "expressions/arithmetic/UMEMbandnotExpression.h"
 
 #include "expressions/arithmetic/UMEFmuladdExpression.h"
 #include "expressions/arithmetic/UMEFmulsubExpression.h"
@@ -100,6 +108,7 @@
 #include "expressions/arithmetic/UMEHbxorExpression.h"
 
 #include "expressions/arithmetic/UMEPostincExpression.h"
+#include "expressions/arithmetic/UMEPostdecExpression.h"
 
 #include "expressions/cast/UMEItofExpression.h"
 #include "expressions/cast/UMEFtoiExpression.h"

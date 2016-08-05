@@ -29,8 +29,8 @@
 //
 // ***This file has been automatically generated***
 //
-#ifndef UME_CMPLE_EXPRESSION_H_
-#define UME_CMPLE_EXPRESSION_H_
+#ifndef UME_POSTDEC_EXPRESSION_H_
+#define UME_POSTDEC_EXPRESSION_H_
 
 namespace UME {
 namespace VECTOR {
@@ -117,105 +117,63 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTDECExpression;
 
-    template <int SIMD_STRIDE, typename E1, typename E2>
-    class LogicalCMPLEExpression :
-    public LogicalExpression<LogicalCMPLEExpression<SIMD_STRIDE, E1, E2>>
+    template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1>
+    class ArithmeticPOSTDECExpression :
+    public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTDECExpression<SCALAR_TYPE, SIMD_STRIDE, E1> >
     {
-        typedef typename UME::SIMD::SIMDVecMask<SIMD_STRIDE> SIMD_MASK_TYPE;
-        typedef typename UME::SIMD::SIMDVecMask<1> SIMD_1_MASK_TYPE;
+        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
+        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
         E1 & _e1;
-        E2 & _e2;
 
     public:
-        UME_FORCE_INLINE LogicalCMPLEExpression(E1 & e1, E2 & e2) :
-            _e1(e1), _e2(e2) {}
 
-        UME_FORCE_INLINE LogicalCMPLEExpression(E1 & e1, E2 && e2) :
-            _e1(e1),
-            _e2(std::move(e2)) {}
+        ArithmeticPOSTDECExpression(E1 & e1) : _e1(e1) {}
 
-        UME_FORCE_INLINE LogicalCMPLEExpression(E1 && e1, E2 & e2) :
-            _e1(std::move(e1)),
-            _e2(e2) {}
-
-        UME_FORCE_INLINE LogicalCMPLEExpression(E1 && e1, E2 && e2) :
-            _e1(std::move(e1)),
-            _e2(std::move(e2)) {}
-
-        UME_FORCE_INLINE SIMD_MASK_TYPE evaluate_SIMD(int index) {
+        inline SIMD_TYPE evaluate_SIMD(int index)
+        {
             auto t0 = _e1.evaluate_SIMD(index);
-            auto t1 = _e2.evaluate_SIMD(index);
-            return t0.cmple(t1);
+            auto t1 = t0.postinc();
+            _e1.update_SIMD(t0, index); // For postinc expression, the _e1 operand should be a proper lvalue.
+            return t1;
         }
 
-        UME_FORCE_INLINE SIMD_1_MASK_TYPE evaluate_scalar(int index) {
+        inline SIMD_1_TYPE evaluate_scalar(int index)
+        {
             auto t0 = _e1.evaluate_scalar(index);
-            auto t1 = _e2.evaluate_scalar(index);
-            return t0.cmple(t1);
+            auto t1 = t0.postinc();
+            _e1.update_scalar(t0, index); // For postinc expression, the _e1 subexpression should be a proper lvalue.
+            return t1;
+        }
+
+        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTDECExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
+        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTDECExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
+        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTDECExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
+        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTDECExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
+        typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTDECExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
+        typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTDECExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE ITOU_EXPRESSION_TYPE;
+
+        UME_FORCE_INLINE ITOF_EXPRESSION_TYPE itof() {
+            return ITOF_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE FTOI_EXPRESSION_TYPE ftoi() {
+            return FTOI_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE UTOF_EXPRESSION_TYPE utof() {
+            return UTOF_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE FTOU_EXPRESSION_TYPE ftou() {
+            return FTOU_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE UTOI_EXPRESSION_TYPE utoi() {
+            return UTOI_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE ITOU_EXPRESSION_TYPE itou() {
+            return ITOU_EXPRESSION_TYPE(*this);
         }
     };
-
-    // Operators to handle "Exp1 <= Exp2" expressions.
-    template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE LogicalCMPLEExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator<= (
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> & srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
-    {
-        return LogicalCMPLEExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "Exp1 <= RVALUE Exp2" expressions.
-    template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE LogicalCMPLEExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator<= (
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> & srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> && srcB)
-    {
-        return LogicalCMPLEExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "RVALUE Exp1 <= Exp2" expressions.
-    template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE LogicalCMPLEExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator<= (
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> && srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
-    {
-        return LogicalCMPLEExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "RVALUE Exp1 <= RVALUE Exp2" expressions.
-    template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE LogicalCMPLEExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator<= (
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> && srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> && srcB)
-    {
-        return LogicalCMPLEExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "Exp1 <= scalar" expressions.
-    template<typename SCALAR_TYPE, typename E1>
-    UME_FORCE_INLINE LogicalCMPLEExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>> operator<= (
-        ArithmeticExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE(), E1> & srcA,
-        SCALAR_TYPE srcB)
-    {
-        return LogicalCMPLEExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>>(
-            srcA,
-            ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>(srcB));
-    }
-
-    // Operators to handle "scalar <= Exp1" expressions.
-    template<typename SCALAR_TYPE, typename E2>
-    UME_FORCE_INLINE LogicalCMPLEExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2> operator<= (
-        SCALAR_TYPE srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
-    {
-        return LogicalCMPLEExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2>(
-            ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>(srcA),
-            srcB);
-    }
 
 }
 }
 
 #endif
-

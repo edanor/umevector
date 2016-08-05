@@ -29,10 +29,8 @@
 //
 // ***This file has been automatically generated***
 //
-#ifndef UME_ROUND_EXPRESSION_H_
-#define UME_ROUND_EXPRESSION_H_
-
-#include "../UMEVectorConversionTraits.h"
+#ifndef UME_MBXOR_EXPRESSION_H_
+#define UME_MBXOR_EXPRESSION_H_
 
 namespace UME {
 namespace VECTOR {
@@ -119,240 +117,281 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTDECExpression;
 
-    template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1>
-    class ArithmeticROUNDExpression :
-    public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> >
+    template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2>
+    class ArithmeticMBXORExpression :
+        public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> >
     {
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
         E1 & _e1;
+        E_MASK & _e_mask;
+        E2 & _e2;
 
     public:
+        UME_FORCE_INLINE ArithmeticMBXORExpression(E1 & e1, E_MASK & e_mask, E2 & e2) :
+            _e1(e1),
+            _e_mask(e_mask),
+            _e2(e2) {}
 
-        UME_FORCE_INLINE ArithmeticROUNDExpression(E1 & e1) :
-            _e1(e1) {}
+        UME_FORCE_INLINE ArithmeticMBXORExpression(E1 && e1, E_MASK & e_mask, E2 & e2) :
+            _e1(std::move(e1)),
+            _e_mask(e_mask),
+            _e2(e2) {}
 
-        UME_FORCE_INLINE ArithmeticROUNDExpression(E1 && e1) :
-            _e1(std::move(e1)) {}
+        UME_FORCE_INLINE ArithmeticMBXORExpression(E1 & e1, E_MASK && e_mask, E2 & e2) :
+            _e1(e1),
+            _e_mask(std::move(e_mask)),
+            _e2(e2) {}
+
+        UME_FORCE_INLINE ArithmeticMBXORExpression(E1 & e1, E_MASK & e_mask, E2 && e2) :
+            _e1(e1),
+            _e_mask(e_mask),
+            _e2(std::move(e2)) {}
+
+        UME_FORCE_INLINE ArithmeticMBXORExpression(E1 && e1, E_MASK && e_mask, E2 & e2) :
+            _e1(std::move(e1)),
+            _e_mask(std::move(e_mask)),
+            _e2(e2) {}
+
+        UME_FORCE_INLINE ArithmeticMBXORExpression(E1 && e1, E_MASK & e_mask, E2 && e2) :
+            _e1(std::move(e1)),
+            _e_mask(e_mask),
+            _e2(std::move(e2)) {}
+
+        UME_FORCE_INLINE ArithmeticMBXORExpression(E1 & e1, E_MASK && e_mask, E2 && e2) :
+            _e1(e1),
+            _e_mask(std::move(e_mask)),
+            _e2(std::move(e2)) {}
+
+        UME_FORCE_INLINE ArithmeticMBXORExpression(E1 && e1, E_MASK && e_mask, E2 && e2) :
+            _e1(std::move(e1)),
+            _e_mask(std::move(e_mask)),
+            _e2(std::move(e2)) {}
 
         UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)
         {
             auto t0 = _e1.evaluate_SIMD(index);
-            return t0.round();
+            auto t1 = _e_mask.evaluate_SIMD(index);
+            auto t2 = _e2.evaluate_SIMD(index);
+            auto t3 = t0.bxor(t1, t2);
+            return t3;
         }
 
         UME_FORCE_INLINE SIMD_1_TYPE evaluate_scalar(int index)
         {
             auto t0 = _e1.evaluate_scalar(index);
-            return t0.round();
+            auto t1 = _e_mask.evaluate_scalar(index);
+            auto t2 = _e2.evaluate_scalar(index);
+            auto t3 = t0.bxor(t1, t2);
+            return t3;
         }
 
         UME_FORCE_INLINE ArithmeticRCPExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > rcp()
         {
             return ArithmeticRCPExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticNEGExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > neg()
         {
             return ArithmeticNEGExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticABSExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > abs()
         {
             return ArithmeticABSExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticSQRTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > sqrt()
         {
             return ArithmeticSQRTExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticROUNDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > round()
         {
             return ArithmeticROUNDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticFLOORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > floor()
         {
             return ArithmeticFLOORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticCEILExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > ceil()
         {
             return ArithmeticCEILExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticEXPExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > exp()
         {
             return ArithmeticEXPExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticLOGExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > log()
         {
             return ArithmeticLOGExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticLOG10Expression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > log10()
         {
             return ArithmeticLOG10Expression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticLOG2Expression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > log2()
         {
             return ArithmeticLOG2Expression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticSINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > sin()
         {
             return ArithmeticSINExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticCOSExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > cos()
         {
             return ArithmeticCOSExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticTANExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > tan()
         {
             return ArithmeticTANExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticATANExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > atan()
         {
             return ArithmeticATANExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticBNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > bnot()
         {
             return ArithmeticBNOTExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
@@ -360,13 +399,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2> add(T2 & srcB)
         {
             return ArithmeticADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -374,13 +413,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2 > add(T2 && srcB)
         {
             return ArithmeticADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -388,13 +427,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticSADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2> sadd(T2 & srcB)
         {
             return ArithmeticSADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -402,13 +441,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticSADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2 > sadd(T2 && srcB)
         {
             return ArithmeticSADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -416,13 +455,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2> mul(T2 & srcB)
         {
             return ArithmeticMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -430,13 +469,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2 > mul(T2 && srcB)
         {
             return ArithmeticMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -444,13 +483,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2> div(T2 & srcB)
         {
             return ArithmeticDIVExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -458,13 +497,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2 > div(T2 && srcB)
         {
             return ArithmeticDIVExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -472,13 +511,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2> sub(T2 & srcB)
         {
             return ArithmeticSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -486,13 +525,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2 > sub(T2 && srcB)
         {
             return ArithmeticSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -500,13 +539,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticSSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2> ssub(T2 & srcB)
         {
             return ArithmeticSSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -514,13 +553,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticSSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2 > ssub(T2 && srcB)
         {
             return ArithmeticSSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -528,13 +567,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMAXExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2> max(T2 & srcB)
         {
             return ArithmeticMAXExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -542,13 +581,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMAXExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2 > max(T2 && srcB)
         {
             return ArithmeticMAXExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -556,13 +595,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2> min(T2 & srcB)
         {
             return ArithmeticMINExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -570,13 +609,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2 > min(T2 && srcB)
         {
             return ArithmeticMINExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -584,13 +623,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2> band(T2 & srcB)
         {
             return ArithmeticBANDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -598,13 +637,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2 > band(T2 && srcB)
         {
             return ArithmeticBANDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -612,13 +651,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2> bor(T2 & srcB)
         {
             return ArithmeticBORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -626,13 +665,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2 > bor(T2 && srcB)
         {
             return ArithmeticBORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -640,13 +679,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2> bxor(T2 & srcB)
         {
             return ArithmeticBXORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -654,13 +693,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2 > bxor(T2 && srcB)
         {
             return ArithmeticBXORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -668,13 +707,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticBANDNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2> bandnot(T2 & srcB)
         {
             return ArithmeticBANDNOTExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -682,13 +721,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticBANDNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2 > bandnot(T2 && srcB)
         {
             return ArithmeticBANDNOTExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -696,13 +735,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticREMExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2> rem(T2 & srcB)
         {
             return ArithmeticREMExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -710,13 +749,13 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticREMExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2 > rem(T2 && srcB)
         {
             return ArithmeticREMExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2> (*this, srcB);
         }
 
@@ -724,14 +763,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticBLENDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> blend(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -740,14 +779,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticBLENDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> blend(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -756,14 +795,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticBLENDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> blend(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -772,14 +811,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticBLENDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> blend(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -788,14 +827,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> add(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -804,14 +843,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> add(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -820,14 +859,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> add(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -836,14 +875,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> add(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -852,14 +891,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMSADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> sadd(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMSADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -868,14 +907,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMSADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> sadd(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMSADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -884,14 +923,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMSADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> sadd(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMSADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -900,14 +939,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMSADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> sadd(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMSADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -916,14 +955,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> mul(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -932,14 +971,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> mul(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -948,14 +987,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> mul(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -964,14 +1003,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> mul(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -980,14 +1019,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> div(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMDIVExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -996,14 +1035,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> div(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMDIVExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1012,14 +1051,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> div(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMDIVExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1028,14 +1067,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> div(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMDIVExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1044,14 +1083,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> sub(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1060,14 +1099,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> sub(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1076,14 +1115,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> sub(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1092,14 +1131,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> sub(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1108,14 +1147,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMSSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> ssub(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMSSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1124,14 +1163,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMSSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> ssub(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMSSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1140,14 +1179,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMSSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> ssub(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMSSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1156,14 +1195,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMSSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> ssub(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMSSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1172,14 +1211,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMMAXExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> max(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMMAXExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1188,14 +1227,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMMAXExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> max(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMMAXExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1204,14 +1243,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMMAXExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> max(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMMAXExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1220,14 +1259,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMMAXExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> max(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMMAXExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1236,14 +1275,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMMINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> min(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMMINExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1252,14 +1291,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMMINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> min(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMMINExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1268,14 +1307,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMMINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> min(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMMINExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1284,14 +1323,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMMINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> min(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMMINExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1300,14 +1339,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> band(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMBANDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1316,14 +1355,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> band(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMBANDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1332,14 +1371,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> band(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMBANDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1348,14 +1387,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> band(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMBANDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1364,14 +1403,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> bor(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMBORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1380,14 +1419,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> bor(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMBORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1396,14 +1435,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> bor(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMBORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1412,14 +1451,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> bor(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMBORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1428,14 +1467,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> bxor(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMBXORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1444,14 +1483,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> bxor(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMBXORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1460,14 +1499,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> bxor(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMBXORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1476,14 +1515,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> bxor(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMBXORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1492,14 +1531,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBANDNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> bandnot(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMBANDNOTExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1508,14 +1547,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBANDNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> bandnot(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMBANDNOTExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1524,14 +1563,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBANDNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> bandnot(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMBANDNOTExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1540,14 +1579,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMBANDNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T_MASK,
             T2> bandnot(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMBANDNOTExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T_MASK,
                 T2> (*this, mask, srcB);
         }
@@ -1556,14 +1595,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFMULADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> fmuladd(T2 & srcB, T3 & srcC)
         {
             return ArithmeticFMULADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1572,14 +1611,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFMULADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> fmuladd(T2 && srcB, T3 & srcC)
         {
             return ArithmeticFMULADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1588,14 +1627,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFMULADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> fmuladd(T2 & srcB, T3 && srcC)
         {
             return ArithmeticFMULADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1604,14 +1643,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFMULADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> fmuladd(T2 && srcB, T3 && srcC)
         {
             return ArithmeticFMULADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1620,14 +1659,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFMULSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> fmulsub(T2 & srcB, T3 & srcC)
         {
             return ArithmeticFMULSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1636,14 +1675,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFMULSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> fmulsub(T2 && srcB, T3 & srcC)
         {
             return ArithmeticFMULSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1652,14 +1691,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFMULSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> fmulsub(T2 & srcB, T3 && srcC)
         {
             return ArithmeticFMULSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1668,14 +1707,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFMULSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> fmulsub(T2 && srcB, T3 && srcC)
         {
             return ArithmeticFMULSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1684,14 +1723,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFADDMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> faddmul(T2 & srcB, T3 & srcC)
         {
             return ArithmeticFADDMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1700,14 +1739,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFADDMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> faddmul(T2 && srcB, T3 & srcC)
         {
             return ArithmeticFADDMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1716,14 +1755,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFADDMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> faddmul(T2 & srcB, T3 && srcC)
         {
             return ArithmeticFADDMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1732,14 +1771,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFADDMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> faddmul(T2 && srcB, T3 && srcC)
         {
             return ArithmeticFADDMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1748,14 +1787,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFSUBMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> fsubmul(T2 & srcB, T3 & srcC)
         {
             return ArithmeticFSUBMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1764,14 +1803,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFSUBMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> fsubmul(T2 && srcB, T3 & srcC)
         {
             return ArithmeticFSUBMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1780,14 +1819,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFSUBMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> fsubmul(T2 & srcB, T3 && srcC)
         {
             return ArithmeticFSUBMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1796,14 +1835,14 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticFSUBMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
             T2,
             T3> fsubmul(T2 && srcB, T3 && srcC)
         {
             return ArithmeticFSUBMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2,
                 T3> (*this, srcB, srcC);
         }
@@ -1811,218 +1850,218 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticHADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > hadd()
         {
             return ArithmeticHADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticHMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > hmul()
         {
             return ArithmeticHMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticHBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > hband()
         {
             return ArithmeticHBANDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticHBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > hbor()
         {
             return ArithmeticHBORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         UME_FORCE_INLINE ArithmeticHBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> // this expression
             > hbxor()
         {
             return ArithmeticHBXORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>
                 > (*this);
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPGTExpression<
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
             T2> cmpgt(T2 & srcB)
         {
             return LogicalCMPGTExpression<
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2>((*this), srcB);
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPGTExpression<
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
             T2> cmpgt(T2 && srcB)
         {
             return LogicalCMPGTExpression<
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2>((*this), srcB);
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPLTExpression<
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
             T2> cmplt(T2 & srcB)
         {
             return LogicalCMPLTExpression<
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2>((*this), srcB);
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPLTExpression<
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
             T2> cmplt(T2 && srcB)
         {
             return LogicalCMPLTExpression<
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2>((*this), srcB);
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPGEExpression<
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
             T2> cmpge(T2 & srcB)
         {
             return LogicalCMPGEExpression<
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2>((*this), srcB);
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPGEExpression<
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
             T2> cmpge(T2 && srcB)
         {
             return LogicalCMPGEExpression<
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2>((*this), srcB);
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPLEExpression<
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
             T2> cmple(T2 & srcB)
         {
             return LogicalCMPLEExpression<
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2>((*this), srcB);
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPLEExpression<
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
             T2> cmple(T2 && srcB)
         {
             return LogicalCMPLEExpression<
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2>((*this), srcB);
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPEQExpression<
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
             T2> cmpeq(T2 & srcB)
         {
             return LogicalCMPEQExpression<
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2>((*this), srcB);
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPEQExpression<
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
             T2> cmpeq(T2 && srcB)
         {
             return LogicalCMPEQExpression<
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2>((*this), srcB);
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPNEExpression<
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
             T2> cmpne(T2 & srcB)
         {
             return LogicalCMPNEExpression<
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2>((*this), srcB);
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPNEExpression<
             SIMD_STRIDE,
-            ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+            ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
             T2> cmpne(T2 && srcB)
         {
             return LogicalCMPNEExpression<
                 SIMD_STRIDE,
-                ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
                 T2>((*this), srcB);
         }
 
-        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
-        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
-        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
-        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
-        typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
-        typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticROUNDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE ITOU_EXPRESSION_TYPE;
+        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
+        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
+        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
+        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
+        typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
+        typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE ITOU_EXPRESSION_TYPE;
 
         UME_FORCE_INLINE ITOF_EXPRESSION_TYPE itof() {
             return ITOF_EXPRESSION_TYPE(*this);
