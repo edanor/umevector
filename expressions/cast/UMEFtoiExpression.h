@@ -59,6 +59,9 @@ namespace VECTOR {
     template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPEQExpression;
     template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPNEExpression;
 
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticRCPExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticNEGExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticABSExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticSQRTExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticROUNDExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticFLOORExpression;
@@ -71,11 +74,21 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticCOSExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticTANExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticATANExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticBNOTExpression;
 
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticADDExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticSADDExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticMULExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticDIVExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticSUBExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticSSUBExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticMAXExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticMINExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticBANDExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticBORExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticBXORExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticBANDNOTExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticREMExpression;
 
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticBLENDExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMADDExpression;
@@ -126,6 +139,45 @@ namespace VECTOR {
             return SIMD_1_TYPE(t0);
         }
 
+
+        UME_FORCE_INLINE ArithmeticRCPExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            > rcp()
+        {
+            return ArithmeticRCPExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE ArithmeticNEGExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            > neg()
+        {
+            return ArithmeticNEGExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                > (*this);
+        }
+
+        UME_FORCE_INLINE ArithmeticABSExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            > abs()
+        {
+            return ArithmeticABSExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                > (*this);
+        }
 
         UME_FORCE_INLINE ArithmeticSQRTExpression<
             SCALAR_TYPE,
@@ -283,6 +335,19 @@ namespace VECTOR {
                 > (*this);
         }
 
+        UME_FORCE_INLINE ArithmeticBNOTExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1> // this expression
+            > bnot()
+        {
+            return ArithmeticBNOTExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
+                > (*this);
+        }
+
         template<typename T2>
         UME_FORCE_INLINE ArithmeticADDExpression<
             SCALAR_TYPE,
@@ -305,6 +370,34 @@ namespace VECTOR {
             T2 > add(T2 && srcB)
         {
             return ArithmeticADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticSADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2> sadd(T2 & srcB)
+        {
+            return ArithmeticSADDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticSADDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2 > sadd(T2 && srcB)
+        {
+            return ArithmeticSADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
@@ -389,6 +482,230 @@ namespace VECTOR {
             T2 > sub(T2 && srcB)
         {
             return ArithmeticSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticSSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2> ssub(T2 & srcB)
+        {
+            return ArithmeticSSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticSSUBExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2 > ssub(T2 && srcB)
+        {
+            return ArithmeticSSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticMAXExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2> max(T2 & srcB)
+        {
+            return ArithmeticMAXExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticMAXExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2 > max(T2 && srcB)
+        {
+            return ArithmeticMAXExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticMINExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2> min(T2 & srcB)
+        {
+            return ArithmeticMINExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticMINExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2 > min(T2 && srcB)
+        {
+            return ArithmeticMINExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticBANDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2> band(T2 & srcB)
+        {
+            return ArithmeticBANDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticBANDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2 > band(T2 && srcB)
+        {
+            return ArithmeticBANDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticBORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2> bor(T2 & srcB)
+        {
+            return ArithmeticBORExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticBORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2 > bor(T2 && srcB)
+        {
+            return ArithmeticBORExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticBXORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2> bxor(T2 & srcB)
+        {
+            return ArithmeticBXORExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticBXORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2 > bxor(T2 && srcB)
+        {
+            return ArithmeticBXORExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticBANDNOTExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2> bandnot(T2 & srcB)
+        {
+            return ArithmeticBANDNOTExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticBANDNOTExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2 > bandnot(T2 && srcB)
+        {
+            return ArithmeticBANDNOTExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticREMExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2> rem(T2 & srcB)
+        {
+            return ArithmeticREMExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticREMExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            T2 > rem(T2 && srcB)
+        {
+            return ArithmeticREMExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
