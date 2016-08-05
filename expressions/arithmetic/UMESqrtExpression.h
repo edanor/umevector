@@ -90,6 +90,19 @@ namespace VECTOR {
             return t0.sqrt();
         }
 
+        UME_FORCE_INLINE ArithmeticSQRTExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticSQRTExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            > sqrt()
+        {
+            return ArithmeticSQRTExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticSQRTExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                > (*this);
+        }
+
         template<typename T2>
         UME_FORCE_INLINE ArithmeticADDExpression<
             SCALAR_TYPE,

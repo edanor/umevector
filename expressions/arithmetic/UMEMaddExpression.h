@@ -35,6 +35,7 @@ namespace UME {
 namespace VECTOR {
 
     template<typename SCALAR_TYPE, int SIMD_STRIDE> class ScalarExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticSQRTExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticADDExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticMULExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticDIVExpression;
@@ -126,6 +127,19 @@ namespace VECTOR {
             auto t2 = _e2.evaluate_scalar(index);
             auto t3 = t0.add(t1, t2);
             return t3;
+        }
+
+        UME_FORCE_INLINE ArithmeticSQRTExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
+            > sqrt()
+        {
+            return ArithmeticSQRTExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticMADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
+                > (*this);
         }
 
         template<typename T2>

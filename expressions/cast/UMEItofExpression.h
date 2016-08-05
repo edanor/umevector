@@ -35,6 +35,7 @@ namespace UME {
 namespace VECTOR {
 
     template<typename SCALAR_TYPE, int SIMD_STRIDE> class ScalarExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticSQRTExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticADDExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticMULExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticDIVExpression;
@@ -89,6 +90,19 @@ namespace VECTOR {
             return SIMD_1_TYPE(t0);
         }
 
+
+        UME_FORCE_INLINE ArithmeticSQRTExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticITOFExpression<SCALAR_TYPE, SIMD_STRIDE, E1>, // this expression
+            > sqrt()
+        {
+            return ArithmeticSQRTExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticITOFExpression<SCALAR_TYPE, SIMD_STRIDE, E1>,
+                > (*this);
+        }
 
         template<typename T2>
         UME_FORCE_INLINE ArithmeticADDExpression<
@@ -841,6 +855,32 @@ namespace VECTOR {
                 SIMD_STRIDE,
                 ArithmeticITOFExpression<SCALAR_TYPE, SIMD_STRIDE, E1>
                 > (*this);
+        }
+
+        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticITOFExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
+        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticITOFExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
+        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticITOFExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
+        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticITOFExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
+        typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticITOFExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
+        typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticITOFExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE ITOU_EXPRESSION_TYPE;
+
+        UME_FORCE_INLINE ITOF_EXPRESSION_TYPE itof() {
+            return ITOF_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE FTOI_EXPRESSION_TYPE ftoi() {
+            return FTOI_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE UTOF_EXPRESSION_TYPE utof() {
+            return UTOF_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE FTOU_EXPRESSION_TYPE ftou() {
+            return FTOU_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE UTOI_EXPRESSION_TYPE utoi() {
+            return UTOI_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE ITOU_EXPRESSION_TYPE itou() {
+            return ITOU_EXPRESSION_TYPE(*this);
         }
     };
 
