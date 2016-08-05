@@ -240,323 +240,323 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> add(E_MASK & mask, T2 & srcB)
+            T_MASK,
+            T2> add(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> add(E_MASK && mask, T2 & srcB)
+            T_MASK,
+            T2> add(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> add(E_MASK & mask, T2 && srcB)
+            T_MASK,
+            T2> add(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> add(E_MASK && mask, T2 && srcB)
+            T_MASK,
+            T2> add(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> mul(E_MASK & mask, T2 & srcB)
+            T_MASK,
+            T2> mul(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> mul(E_MASK && mask, T2 & srcB)
+            T_MASK,
+            T2> mul(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> mul(E_MASK & mask, T2 && srcB)
+            T_MASK,
+            T2> mul(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> mul(E_MASK && mask, T2 && srcB)
+            T_MASK,
+            T2> mul(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> div(E_MASK & mask, T2 & srcB)
+            T_MASK,
+            T2> div(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMDIVExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> div(E_MASK && mask, T2 & srcB)
+            T_MASK,
+            T2> div(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMDIVExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> div(E_MASK & mask, T2 && srcB)
+            T_MASK,
+            T2> div(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMDIVExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> div(E_MASK && mask, T2 && srcB)
+            T_MASK,
+            T2> div(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMDIVExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> sub(E_MASK & mask, T2 & srcB)
+            T_MASK,
+            T2> sub(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticMSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> sub(E_MASK && mask, T2 & srcB)
+            T_MASK,
+            T2> sub(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticMSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> sub(E_MASK & mask, T2 && srcB)
+            T_MASK,
+            T2> sub(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticMSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticMSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            E_MASK,
-            T2> sub(E_MASK && mask, T2 && srcB)
+            T_MASK,
+            T2> sub(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                E_MASK,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T1, typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticBLENDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            T1,
-            T2> blend(T1 & mask, T2 & srcB)
+            T_MASK,
+            T2> blend(T_MASK & mask, T2 & srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                T1,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T1, typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticBLENDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            T1,
-            T2> blend(T1 && mask, T2 & srcB)
+            T_MASK,
+            T2> blend(T_MASK && mask, T2 & srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                T1,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T1, typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticBLENDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            T1,
-            T2> blend(T1 & mask, T2 && srcB)
+            T_MASK,
+            T2> blend(T_MASK & mask, T2 && srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                T1,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T1, typename T2>
+        template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticBLENDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>, // this expression
-            T1,
-            T2> blend(T1 && mask, T2 && srcB)
+            T_MASK,
+            T2> blend(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>,
-                T1,
+                T_MASK,
                 T2> (*this, mask, srcB);
         }
 
