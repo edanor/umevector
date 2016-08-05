@@ -29,8 +29,8 @@
 //
 // ***This file has been automatically generated***
 //
-#ifndef UME_ISFIN_EXPRESSION_H_
-#define UME_ISFIN_EXPRESSION_H_
+#ifndef UME_HMAX_EXPRESSION_H_
+#define UME_HMAX_EXPRESSION_H_
 
 namespace UME {
 namespace VECTOR {
@@ -119,30 +119,109 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTDECExpression;
 
-    template <int SIMD_STRIDE, typename E1>
-    class LogicalISFINExpression :
-    public LogicalExpression<LogicalISFINExpression<SIMD_STRIDE, E1, E2>>
+    template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1>
+    class ArithmeticHMAXExpression :
+        public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticHMAXExpression<SCALAR_TYPE, SIMD_STRIDE, E1> >
     {
-        typedef typename UME::SIMD::SIMDVecMask<SIMD_STRIDE> SIMD_MASK_TYPE;
-        typedef typename UME::SIMD::SIMDVecMask<1> SIMD_1_MASK_TYPE;
+        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
+        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
         E1 & _e1;
 
+        // Value of this expression has to be calculated only once, and can be returned for every
+        // call to 'evaluate_SIMD' or 'evaluate_scalar'.
+        bool _evaluated;
+        SCALAR_TYPE _value; // This value is correct only if 'evaluated == true'
+
     public:
-        UME_FORCE_INLINE LogicalISFINExpression(E1 & e1) :
-            _e1(e1) {}
+        UME_FORCE_INLINE ArithmeticHMAXExpression(E1 & e1) :
+            _e1(e1), 
+            _evaluated(false) {}
 
-        UME_FORCE_INLINE LogicalISFINExpression(E1 && e1) :
-            _e1(std::move(e1)) {}
+        UME_FORCE_INLINE ArithmeticHMAXExpression(E1 && e1) :
+            _e1(std::move(e1)),
+            _evaluated(false) {}
 
-        UME_FORCE_INLINE SIMD_MASK_TYPE evaluate_SIMD(int index) {
-            auto t0 = _e1.evaluate_SIMD(index);
-            return t0.isfin();
+        // First reduce to scalar and then return
+        UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)
+        {
+            if (!_evaluated) {
+                SIMD_TYPE A(SCALAR_TYPE(0));
+                int loop_count = _e1.LOOP_PEEL_OFFSET();
+                for (int i = 0; i < loop_count; i += SIMD_STRIDE) {
+                    SIMD_TYPE t0 = _e1.evaluate_SIMD(i);
+                    A.maxa(t0);
+                }
+                _value = A.hmax();
+                for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
+                    SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
+                    _value  t1[0];
+                }
+                _evaluated = true;
+            }
+            return SIMD_TYPE(_value);
         }
 
-        UME_FORCE_INLINE SIMD_1_MASK_TYPE evaluate_scalar(int index) {
-            auto t0 = _e1.evaluate_scalar(index);
-            return t0.isfin();
+        UME_FORCE_INLINE SIMD_1_TYPE evaluate_scalar(int index)
+        {
+            if (!_evaluated)
+            {
+                SIMD_TYPE A(SCALAR_TYPE(0));
+                int loop_count = _e1.LOOP_PEEL_OFFSET();
+                for (int i = 0; i < loop_count; i += SIMD_STRIDE) {
+                    SIMD_TYPE t0 = _e1.evaluate_SIMD(i);
+                    A.maxa(t0);
+                }
+                _value = A.hmax();
+                for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
+                    SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
+                    _value  t1[0];
+                }
+                _evaluated = true;
+            }
+            return SIMD_1_TYPE(_value);
+        }
+
+        // Reduction operations require to be cast-able into scalar types.
+        UME_FORCE_INLINE operator SCALAR_TYPE() {
+            SIMD_TYPE A(SCALAR_TYPE(0));
+            int loop_count = _e1.LOOP_PEEL_OFFSET();
+            for (int i = 0; i < loop_count; i += SIMD_STRIDE) {
+                SIMD_TYPE t0 = _e1.evaluate_SIMD(i);
+                A.maxa(t0);
+            }
+            SCALAR_TYPE B = A.hmax();
+            for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
+                SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
+                B  t1[0];
+            }
+            return B;
+        }
+
+        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticHMAXExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
+        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticHMAXExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
+        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticHMAXExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
+        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticHMAXExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
+        typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticHMAXExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
+        typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticHMAXExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE ITOU_EXPRESSION_TYPE;
+
+        UME_FORCE_INLINE ITOF_EXPRESSION_TYPE itof() {
+            return ITOF_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE FTOI_EXPRESSION_TYPE ftoi() {
+            return FTOI_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE UTOF_EXPRESSION_TYPE utof() {
+            return UTOF_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE FTOU_EXPRESSION_TYPE ftou() {
+            return FTOU_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE UTOI_EXPRESSION_TYPE utoi() {
+            return UTOI_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE ITOU_EXPRESSION_TYPE itou() {
+            return ITOU_EXPRESSION_TYPE(*this);
         }
     };
 
@@ -150,4 +229,3 @@ namespace VECTOR {
 }
 
 #endif
-

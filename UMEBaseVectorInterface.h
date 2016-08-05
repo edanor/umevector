@@ -1781,6 +1781,32 @@ namespace VECTOR {
                 > (*this);
         }
 
+        UME_FORCE_INLINE ArithmeticHMAXExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_VECTOR_TYPE // this expression
+            > hmax()
+        {
+            return ArithmeticHMAXExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_VECTOR_TYPE
+                > (*this);
+        }
+
+        UME_FORCE_INLINE ArithmeticHMINExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_VECTOR_TYPE // this expression
+            > hmin()
+        {
+            return ArithmeticHMINExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_VECTOR_TYPE
+                > (*this);
+        }
+
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPGTExpression<
             SIMD_STRIDE,

@@ -106,6 +106,8 @@
 #include "expressions/arithmetic/UMEHbandExpression.h"
 #include "expressions/arithmetic/UMEHborExpression.h"
 #include "expressions/arithmetic/UMEHbxorExpression.h"
+#include "expressions/arithmetic/UMEHmaxExpression.h"
+#include "expressions/arithmetic/UMEHminExpression.h"
 
 #include "expressions/arithmetic/UMEPostincExpression.h"
 #include "expressions/arithmetic/UMEPostdecExpression.h"
