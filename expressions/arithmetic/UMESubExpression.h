@@ -46,6 +46,7 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMMULExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMDIVExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMSUBExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticBLENDExpression;
 
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFMULADDExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFADDMULExpression;
@@ -58,6 +59,7 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBORExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBXORExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticSQRTExpression;
 
     template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2>
     class ArithmeticSUBExpression :
@@ -461,6 +463,70 @@ namespace VECTOR {
             T2> sub(E_MASK && mask, T2 && srcB)
         {
             return ArithmeticMSUBExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticBLENDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>, // this expression
+            E_MASK,
+            T2> blend(E_MASK & mask, T2 & srcB)
+        {
+            return ArithmeticBLENDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticBLENDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>, // this expression
+            E_MASK,
+            T2> blend(E_MASK && mask, T2 & srcB)
+        {
+            return ArithmeticBLENDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticBLENDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>, // this expression
+            E_MASK,
+            T2> blend(E_MASK & mask, T2 && srcB)
+        {
+            return ArithmeticBLENDExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>,
+                E_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename E_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticBLENDExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>, // this expression
+            E_MASK,
+            T2> blend(E_MASK && mask, T2 && srcB)
+        {
+            return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 ArithmeticSUBExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>,

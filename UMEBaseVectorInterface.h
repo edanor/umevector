@@ -146,17 +146,17 @@ namespace VECTOR {
         }
 
         template<typename E1, typename E2>
-        UME_FORCE_INLINE ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2> add(LogicalExpression<E1> && mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB) {
+        UME_FORCE_INLINE ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2> mul(LogicalExpression<E1> && mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB) {
             return ArithmeticMMULExpression < SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2>((*this), mask, srcB);
         }
 
         // Partially specialize to support RH scalar operand
         template<typename E1>
-        UME_FORCE_INLINE ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > add(LogicalExpression<E1> & mask, SCALAR_TYPE srcB) {
+        UME_FORCE_INLINE ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > mul(LogicalExpression<E1> & mask, SCALAR_TYPE srcB) {
             return ArithmeticMMULExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), mask, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
         template<typename E1>
-        UME_FORCE_INLINE ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > add(LogicalExpression<E1> && mask, SCALAR_TYPE srcB) {
+        UME_FORCE_INLINE ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > mul(LogicalExpression<E1> && mask, SCALAR_TYPE srcB) {
             return ArithmeticMMULExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), mask, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
@@ -167,17 +167,17 @@ namespace VECTOR {
         }
 
         template<typename E1, typename E2>
-        UME_FORCE_INLINE ArithmeticMDIVExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2> add(LogicalExpression<E1> && mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB) {
+        UME_FORCE_INLINE ArithmeticMDIVExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2> div(LogicalExpression<E1> && mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB) {
             return ArithmeticMDIVExpression < SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2>((*this), mask, srcB);
         }
 
         // Partially specialize to support RH scalar operand
         template<typename E1>
-        UME_FORCE_INLINE ArithmeticMDIVExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > add(LogicalExpression<E1> & mask, SCALAR_TYPE srcB) {
+        UME_FORCE_INLINE ArithmeticMDIVExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > div(LogicalExpression<E1> & mask, SCALAR_TYPE srcB) {
             return ArithmeticMDIVExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), mask, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
         template<typename E1>
-        UME_FORCE_INLINE ArithmeticMDIVExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > add(LogicalExpression<E1> && mask, SCALAR_TYPE srcB) {
+        UME_FORCE_INLINE ArithmeticMDIVExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > div(LogicalExpression<E1> && mask, SCALAR_TYPE srcB) {
             return ArithmeticMDIVExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), mask, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
@@ -188,18 +188,39 @@ namespace VECTOR {
         }
 
         template<typename E1, typename E2>
-        UME_FORCE_INLINE ArithmeticMSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2> add(LogicalExpression<E1> && mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB) {
+        UME_FORCE_INLINE ArithmeticMSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2> sub(LogicalExpression<E1> && mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB) {
             return ArithmeticMSUBExpression < SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2>((*this), mask, srcB);
         }
 
         // Partially specialize to support RH scalar operand
         template<typename E1>
-        UME_FORCE_INLINE ArithmeticMSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > add(LogicalExpression<E1> & mask, SCALAR_TYPE srcB) {
+        UME_FORCE_INLINE ArithmeticMSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > sub(LogicalExpression<E1> & mask, SCALAR_TYPE srcB) {
             return ArithmeticMSUBExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), mask, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
         template<typename E1>
-        UME_FORCE_INLINE ArithmeticMSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > add(LogicalExpression<E1> && mask, SCALAR_TYPE srcB) {
+        UME_FORCE_INLINE ArithmeticMSUBExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > sub(LogicalExpression<E1> && mask, SCALAR_TYPE srcB) {
             return ArithmeticMSUBExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), mask, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
+        }
+
+        // BLEND
+        template<typename E1, typename E2>
+        UME_FORCE_INLINE ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2> blend(LogicalExpression<E1> & mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB) {
+            return ArithmeticBLENDExpression < SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2>((*this), mask, srcB);
+        }
+
+        template<typename E1, typename E2>
+        UME_FORCE_INLINE ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2> blend(LogicalExpression<E1> && mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB) {
+            return ArithmeticBLENDExpression < SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, E2>((*this), mask, srcB);
+        }
+
+        // Partially specialize to support RH scalar operand
+        template<typename E1>
+        UME_FORCE_INLINE ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > blend(LogicalExpression<E1> & mask, SCALAR_TYPE srcB) {
+            return ArithmeticBLENDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), mask, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
+        }
+        template<typename E1>
+        UME_FORCE_INLINE ArithmeticBLENDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> > blend(LogicalExpression<E1> && mask, SCALAR_TYPE srcB) {
+            return ArithmeticBLENDExpression <SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE, E1, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>>((*this), mask, ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         // FMULADD
@@ -548,6 +569,10 @@ namespace VECTOR {
 
         UME_FORCE_INLINE ArithmeticPOSTINCExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE> postinc() {
             return ArithmeticPOSTINCExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>((*this));
+        }
+
+        UME_FORCE_INLINE ArithmeticSQRTExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE> sqrt() {
+            return ArithmeticSQRTExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>((*this));
         }
 
         UME_FORCE_INLINE ArithmeticHADDExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE> hadd() {
