@@ -34,6 +34,7 @@
 #include "../utilities/TimingStatistics.h"
 
 // define RDTSC getter function
+#if !defined(__GNUG__)
 #if defined(__i386__)
 static __inline__ unsigned long long __rdtsc(void)
 {
@@ -48,6 +49,7 @@ static __inline__ unsigned long long __rdtsc(void)
     __asm__ __volatile__("rdtsc\n" : "=a"(lo), "=d"(hi));
     return ((unsigned long long)lo) | (((unsigned long long)hi) << 32);
 }
+#endif
 #endif
 
 typedef unsigned long long TIMING_RES;
