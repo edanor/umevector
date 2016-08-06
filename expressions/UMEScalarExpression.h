@@ -83,7 +83,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>,
             E_MASK,
-            E2> blend(LogicalExpression<E_MASK> & mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB)
+            E2> blend(LogicalExpression<SIMD_STRIDE, E_MASK> & mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
@@ -99,7 +99,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>,
             E_MASK,
-            E2> blend(LogicalExpression<E_MASK> & mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB)
+            E2> blend(LogicalExpression<SIMD_STRIDE, E_MASK> & mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
@@ -115,7 +115,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>,
             E_MASK,
-            E2> blend(LogicalExpression<E_MASK> && mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB)
+            E2> blend(LogicalExpression<SIMD_STRIDE, E_MASK> && mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> & srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
@@ -131,7 +131,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             ScalarExpression<SCALAR_TYPE, SIMD_STRIDE>,
             E_MASK,
-            E2> blend(LogicalExpression<E_MASK> && mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB)
+            E2> blend(LogicalExpression<SIMD_STRIDE, E_MASK> && mask, ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E2> && srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
@@ -162,7 +162,7 @@ namespace VECTOR {
 
 
     template<int SIMD_STRIDE>
-    class ScalarExpression<bool, SIMD_STRIDE> : public LogicalExpression < ScalarExpression<bool, SIMD_STRIDE> >
+    class ScalarExpression<bool, SIMD_STRIDE> : public LogicalExpression <SIMD_STRIDE, ScalarExpression<bool, SIMD_STRIDE> >
     {
         const bool _e1;
         //SCALAR_TYPE * _e1;

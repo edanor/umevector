@@ -56,7 +56,7 @@ namespace VECTOR {
         MaskVector(bool *p) : elements(p) {}
 
         template<typename E>
-        MaskVector(LogicalExpression<E> && vec)
+        MaskVector(LogicalExpression<SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -119,7 +119,7 @@ namespace VECTOR {
 
         template<typename E>
         //Vector(ArithmeticExpression<E> & vec) {
-        UME_FORCE_INLINE MaskVector& operator= (LogicalExpression<E> & vec)
+        UME_FORCE_INLINE MaskVector& operator= (LogicalExpression<SIMD_STRIDE, E> & vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -139,7 +139,7 @@ namespace VECTOR {
         // Initialize with expression template evaluation
         template<typename E>
         //Vector(ArithmeticExpression<E> & vec) {
-        UME_FORCE_INLINE MaskVector& operator= (LogicalExpression<E> && vec)
+        UME_FORCE_INLINE MaskVector& operator= (LogicalExpression<SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.

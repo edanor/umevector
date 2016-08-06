@@ -32,9 +32,11 @@
 namespace UME {
 namespace VECTOR {
 
-    template<typename E>
+    template<int SIMD_STRIDE, typename E>
     class LogicalExpression {
     public:
+        static constexpr int GET_SIMD_STRIDE() { return SIMD_STRIDE; }
+
         operator E&() { return static_cast<E&>(*this); }
         operator E const&() const { return static_cast<const E&>(*this); }
 

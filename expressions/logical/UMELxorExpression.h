@@ -120,7 +120,7 @@ namespace VECTOR {
 
     template <int SIMD_STRIDE, typename E1, typename E2>
     class LogicalLXORExpression :
-    public LogicalExpression<LogicalLXORExpression<SIMD_STRIDE, E1, E2>>
+    public LogicalExpression<SIMD_STRIDE, LogicalLXORExpression<SIMD_STRIDE, E1, E2>>
     {
         typedef typename UME::SIMD::SIMDVecMask<SIMD_STRIDE> SIMD_MASK_TYPE;
         typedef typename UME::SIMD::SIMDVecMask<1> SIMD_1_MASK_TYPE;
@@ -147,13 +147,13 @@ namespace VECTOR {
         UME_FORCE_INLINE SIMD_MASK_TYPE evaluate_SIMD(int index) {
             auto t0 = _e1.evaluate_SIMD(index);
             auto t1 = _e2.evaluate_SIMD(index);
-            return t0.lor(t1);
+            return t0.lxor(t1);
         }
 
         UME_FORCE_INLINE SIMD_1_MASK_TYPE evaluate_scalar(int index) {
             auto t0 = _e1.evaluate_scalar(index);
             auto t1 = _e2.evaluate_scalar(index);
-            return t0.lor(t1);
+            return t0.lxor(t1);
         }
 
         UME_FORCE_INLINE LogicalLNOTExpression<
@@ -254,65 +254,104 @@ namespace VECTOR {
                 LogicalLXORExpression<SIMD_STRIDE, E1, E2>
                 > (*this);
         }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLANDExpression<
+            SIMD_STRIDE,
+            LogicalLXORExpression<SIMD_STRIDE, E1, E2>, // this expression
+            T2> land(T2 & srcB)
+        {
+            return LogicalLANDExpression<
+                SIMD_STRIDE,
+                LogicalLXORExpression<SIMD_STRIDE, E1, E2>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLANDExpression<
+            SIMD_STRIDE,
+            LogicalLXORExpression<SIMD_STRIDE, E1, E2>, // this expression
+            T2 > land(T2 && srcB)
+        {
+            return LogicalLANDExpression<
+                SIMD_STRIDE,
+                LogicalLXORExpression<SIMD_STRIDE, E1, E2>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLORExpression<
+            SIMD_STRIDE,
+            LogicalLXORExpression<SIMD_STRIDE, E1, E2>, // this expression
+            T2> lor(T2 & srcB)
+        {
+            return LogicalLORExpression<
+                SIMD_STRIDE,
+                LogicalLXORExpression<SIMD_STRIDE, E1, E2>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLORExpression<
+            SIMD_STRIDE,
+            LogicalLXORExpression<SIMD_STRIDE, E1, E2>, // this expression
+            T2 > lor(T2 && srcB)
+        {
+            return LogicalLORExpression<
+                SIMD_STRIDE,
+                LogicalLXORExpression<SIMD_STRIDE, E1, E2>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLXORExpression<
+            SIMD_STRIDE,
+            LogicalLXORExpression<SIMD_STRIDE, E1, E2>, // this expression
+            T2> lxor(T2 & srcB)
+        {
+            return LogicalLXORExpression<
+                SIMD_STRIDE,
+                LogicalLXORExpression<SIMD_STRIDE, E1, E2>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLXORExpression<
+            SIMD_STRIDE,
+            LogicalLXORExpression<SIMD_STRIDE, E1, E2>, // this expression
+            T2 > lxor(T2 && srcB)
+        {
+            return LogicalLXORExpression<
+                SIMD_STRIDE,
+                LogicalLXORExpression<SIMD_STRIDE, E1, E2>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLANDNOTExpression<
+            SIMD_STRIDE,
+            LogicalLXORExpression<SIMD_STRIDE, E1, E2>, // this expression
+            T2> landnot(T2 & srcB)
+        {
+            return LogicalLANDNOTExpression<
+                SIMD_STRIDE,
+                LogicalLXORExpression<SIMD_STRIDE, E1, E2>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLANDNOTExpression<
+            SIMD_STRIDE,
+            LogicalLXORExpression<SIMD_STRIDE, E1, E2>, // this expression
+            T2 > landnot(T2 && srcB)
+        {
+            return LogicalLANDNOTExpression<
+                SIMD_STRIDE,
+                LogicalLXORExpression<SIMD_STRIDE, E1, E2>,
+                T2> (*this, srcB);
+        }
     };
 
-    // Operators to handle "Exp1 || Exp2" expressions.
-    template<typename E1, typename E2>
-    UME_FORCE_INLINE LogicalLXORExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator|| (
-        LogicalExpression<E1> & srcA,
-        LogicalExpression<E2> & srcB)
-    {
-        return LogicalLXORExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "Exp1 || RVALUE Exp2" expressions.
-    template<typename E1, typename E2>
-    UME_FORCE_INLINE LogicalLXORExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator|| (
-        LogicalExpression<E1> & srcA,
-        LogicalExpression<E2> && srcB)
-    {
-        return LogicalLXORExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "RVALUE Exp1 || Exp2" expressions.
-    template<typename E1, typename E2>
-    UME_FORCE_INLINE LogicalLXORExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator|| (
-        LogicalExpression<E1> && srcA,
-        LogicalExpression<E2> & srcB)
-    {
-        return LogicalLXORExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "RVALUE Exp1 || RVALUE Exp2" expressions.
-    template<typename E1, typename E2>
-    UME_FORCE_INLINE LogicalLXORExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator|| (
-        LogicalExpression<E1> && srcA,
-        LogicalExpression<E2> && srcB)
-    {
-        return LogicalLXORExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "Exp1 || scalar" expressions.
-    template<typename E1>
-    UME_FORCE_INLINE LogicalLXORExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<bool, E1::GET_SIMD_STRIDE()>> operator|| (
-        LogicalExpression<E1> & srcA,
-        bool srcB)
-    {
-        return LogicalLXORExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<bool, E1::GET_SIMD_STRIDE()>>(
-            srcA,
-            ScalarExpression<bool, E1::GET_SIMD_STRIDE()>(srcB));
-    }
-
-    // Operators to handle "scalar || Exp1" expressions.
-    template<typename E2>
-    UME_FORCE_INLINE LogicalLXORExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<bool, E2::GET_SIMD_STRIDE()>, E2> operator|| (
-        bool srcA,
-        LogicalExpression<E2> & srcB)
-    {
-        return LogicalLXORExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<bool, E2::GET_SIMD_STRIDE()>, E2>(
-            ScalarExpression<bool, E2::GET_SIMD_STRIDE()>(srcA),
-            srcB);
-    }
 
 }
 }

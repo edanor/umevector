@@ -120,7 +120,7 @@ namespace VECTOR {
 
     template <int SIMD_STRIDE, typename E1>
     class LogicalLNOTExpression :
-    public LogicalExpression<LogicalLNOTExpression<SIMD_STRIDE, E1, E2>>
+    public LogicalExpression<SIMD_STRIDE, LogicalLNOTExpression<SIMD_STRIDE, E1, E2>>
     {
         typedef typename UME::SIMD::SIMDVecMask<SIMD_STRIDE> SIMD_MASK_TYPE;
         typedef typename UME::SIMD::SIMDVecMask<1> SIMD_1_MASK_TYPE;
@@ -241,6 +241,102 @@ namespace VECTOR {
                 SIMD_STRIDE,
                 LogicalLNOTExpression<SIMD_STRIDE, E1>
                 > (*this);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLANDExpression<
+            SIMD_STRIDE,
+            LogicalLNOTExpression<SIMD_STRIDE, E1>, // this expression
+            T2> land(T2 & srcB)
+        {
+            return LogicalLANDExpression<
+                SIMD_STRIDE,
+                LogicalLNOTExpression<SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLANDExpression<
+            SIMD_STRIDE,
+            LogicalLNOTExpression<SIMD_STRIDE, E1>, // this expression
+            T2 > land(T2 && srcB)
+        {
+            return LogicalLANDExpression<
+                SIMD_STRIDE,
+                LogicalLNOTExpression<SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLORExpression<
+            SIMD_STRIDE,
+            LogicalLNOTExpression<SIMD_STRIDE, E1>, // this expression
+            T2> lor(T2 & srcB)
+        {
+            return LogicalLORExpression<
+                SIMD_STRIDE,
+                LogicalLNOTExpression<SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLORExpression<
+            SIMD_STRIDE,
+            LogicalLNOTExpression<SIMD_STRIDE, E1>, // this expression
+            T2 > lor(T2 && srcB)
+        {
+            return LogicalLORExpression<
+                SIMD_STRIDE,
+                LogicalLNOTExpression<SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLXORExpression<
+            SIMD_STRIDE,
+            LogicalLNOTExpression<SIMD_STRIDE, E1>, // this expression
+            T2> lxor(T2 & srcB)
+        {
+            return LogicalLXORExpression<
+                SIMD_STRIDE,
+                LogicalLNOTExpression<SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLXORExpression<
+            SIMD_STRIDE,
+            LogicalLNOTExpression<SIMD_STRIDE, E1>, // this expression
+            T2 > lxor(T2 && srcB)
+        {
+            return LogicalLXORExpression<
+                SIMD_STRIDE,
+                LogicalLNOTExpression<SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLANDNOTExpression<
+            SIMD_STRIDE,
+            LogicalLNOTExpression<SIMD_STRIDE, E1>, // this expression
+            T2> landnot(T2 & srcB)
+        {
+            return LogicalLANDNOTExpression<
+                SIMD_STRIDE,
+                LogicalLNOTExpression<SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLANDNOTExpression<
+            SIMD_STRIDE,
+            LogicalLNOTExpression<SIMD_STRIDE, E1>, // this expression
+            T2 > landnot(T2 && srcB)
+        {
+            return LogicalLANDNOTExpression<
+                SIMD_STRIDE,
+                LogicalLNOTExpression<SIMD_STRIDE, E1>,
+                T2> (*this, srcB);
         }
     };
 
