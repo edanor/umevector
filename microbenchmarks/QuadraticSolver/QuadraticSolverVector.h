@@ -56,8 +56,8 @@ UME_NEVER_INLINE void QuadSolveVECTOR(
     typedef typename UME::VECTOR::FloatVector<SCALAR_FLOAT_T, SIMD_STRIDE, ARRAY_SIZE> FLOAT_VEC_T;
     typedef typename UME::VECTOR::IntVector<SCALAR_INT_T, SIMD_STRIDE, ARRAY_SIZE> INT_VEC_T;
 
-    typedef typename UME::VECTOR::ScalarExpression<SCALAR_FLOAT_T, SIMD_STRIDE> SCALAR_FLOAT_EXP_T;
-    typedef typename UME::VECTOR::ScalarExpression<SCALAR_INT_T, SIMD_STRIDE> SCALAR_INT_EXP_T;
+    typedef typename UME::VECTOR::Scalar<SCALAR_FLOAT_T, SIMD_STRIDE> SCALAR_FLOAT_EXP_T;
+    typedef typename UME::VECTOR::Scalar<SCALAR_INT_T, SIMD_STRIDE> SCALAR_INT_EXP_T;
 
     //FLOAT_VEC_T one(1.0f);
     SCALAR_FLOAT_EXP_T one(1.0f);

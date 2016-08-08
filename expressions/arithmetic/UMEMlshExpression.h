@@ -29,10 +29,8 @@
 //
 // ***This file has been automatically generated***
 //
-#ifndef UME_CEIL_EXPRESSION_H_
-#define UME_CEIL_EXPRESSION_H_
-
-#include "../UMEVectorConversionTraits.h"
+#ifndef UME_MLSH_EXPRESSION_H_
+#define UME_MLSH_EXPRESSION_H_
 
 namespace UME {
 namespace VECTOR {
@@ -128,41 +126,82 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTDECExpression;
 
-    template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1>
-    class ArithmeticCEILExpression :
-    public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticCEILExpression<SCALAR_TYPE, SIMD_STRIDE, E1> >
+    template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2>
+    class ArithmeticMLSHExpression :
+        public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLSHExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> >
     {
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
         E1 & _e1;
+        E_MASK & _e_mask;
+        E2 & _e2;
 
     public:
+        UME_FORCE_INLINE ArithmeticMLSHExpression(E1 & e1, E_MASK & e_mask, E2 & e2) :
+            _e1(e1),
+            _e_mask(e_mask),
+            _e2(e2) {}
 
-        UME_FORCE_INLINE ArithmeticCEILExpression(E1 & e1) :
-            _e1(e1) {}
+        UME_FORCE_INLINE ArithmeticMLSHExpression(E1 && e1, E_MASK & e_mask, E2 & e2) :
+            _e1(std::move(e1)),
+            _e_mask(e_mask),
+            _e2(e2) {}
 
-        UME_FORCE_INLINE ArithmeticCEILExpression(E1 && e1) :
-            _e1(std::move(e1)) {}
+        UME_FORCE_INLINE ArithmeticMLSHExpression(E1 & e1, E_MASK && e_mask, E2 & e2) :
+            _e1(e1),
+            _e_mask(std::move(e_mask)),
+            _e2(e2) {}
+
+        UME_FORCE_INLINE ArithmeticMLSHExpression(E1 & e1, E_MASK & e_mask, E2 && e2) :
+            _e1(e1),
+            _e_mask(e_mask),
+            _e2(std::move(e2)) {}
+
+        UME_FORCE_INLINE ArithmeticMLSHExpression(E1 && e1, E_MASK && e_mask, E2 & e2) :
+            _e1(std::move(e1)),
+            _e_mask(std::move(e_mask)),
+            _e2(e2) {}
+
+        UME_FORCE_INLINE ArithmeticMLSHExpression(E1 && e1, E_MASK & e_mask, E2 && e2) :
+            _e1(std::move(e1)),
+            _e_mask(e_mask),
+            _e2(std::move(e2)) {}
+
+        UME_FORCE_INLINE ArithmeticMLSHExpression(E1 & e1, E_MASK && e_mask, E2 && e2) :
+            _e1(e1),
+            _e_mask(std::move(e_mask)),
+            _e2(std::move(e2)) {}
+
+        UME_FORCE_INLINE ArithmeticMLSHExpression(E1 && e1, E_MASK && e_mask, E2 && e2) :
+            _e1(std::move(e1)),
+            _e_mask(std::move(e_mask)),
+            _e2(std::move(e2)) {}
 
         UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)
         {
             auto t0 = _e1.evaluate_SIMD(index);
-            return t0.ceil();
+            auto t1 = _e_mask.evaluate_SIMD(index);
+            auto t2 = _e2.evaluate_SIMD(index);
+            auto t3 = t0.lsh(t1, t2);
+            return t3;
         }
 
         UME_FORCE_INLINE SIMD_1_TYPE evaluate_scalar(int index)
         {
             auto t0 = _e1.evaluate_scalar(index);
-            return t0.ceil();
+            auto t1 = _e_mask.evaluate_scalar(index);
+            auto t2 = _e2.evaluate_scalar(index);
+            auto t3 = t0.lsh(t1, t2);
+            return t3;
         }
 
-        typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticCEILExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
-        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticCEILExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
-        typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticCEILExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE ITOU_EXPRESSION_TYPE;
-        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticCEILExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
-        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticCEILExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
-        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticCEILExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
+        typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLSHExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
+        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLSHExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
+        typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLSHExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE ITOU_EXPRESSION_TYPE;
+        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLSHExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
+        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLSHExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
+        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLSHExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
 
         UME_FORCE_INLINE UTOI_EXPRESSION_TYPE utoi() {
             return UTOI_EXPRESSION_TYPE(*this);

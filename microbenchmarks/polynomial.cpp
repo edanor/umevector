@@ -516,7 +516,7 @@ template<typename FLOAT_T, int SIMD_STRIDE>
 TIMING_RES test_VECTOR()
 {
     typedef typename UME::VECTOR::FloatVector<FLOAT_T, SIMD_STRIDE, ARRAY_SIZE> VEC_T;
-    typedef typename UME::VECTOR::ScalarExpression<FLOAT_T, SIMD_STRIDE> SCALAR_EXP_T;
+    typedef typename UME::VECTOR::Scalar<FLOAT_T, SIMD_STRIDE> SCALAR_EXP_T;
     
     unsigned long long start, end; // Time measurements
     FLOAT_T a[17];

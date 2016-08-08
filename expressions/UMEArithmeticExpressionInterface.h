@@ -108,6 +108,10 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMBORExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMBXORExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMBANDNOTExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMLSHExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMRSHExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMROLExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMRORExpression;
 
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFMULADDExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2, typename E3> class ArithmeticFMULSUBExpression;
@@ -1643,6 +1647,262 @@ namespace VECTOR {
             T2> bandnot(T_MASK && mask, T2 && srcB)
         {
             return ArithmeticMBANDNOTExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMLSHExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> lsh(T_MASK & mask, T2 & srcB)
+        {
+            return ArithmeticMLSHExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMLSHExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> lsh(T_MASK && mask, T2 & srcB)
+        {
+            return ArithmeticMLSHExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMLSHExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> lsh(T_MASK & mask, T2 && srcB)
+        {
+            return ArithmeticMLSHExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMLSHExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> lsh(T_MASK && mask, T2 && srcB)
+        {
+            return ArithmeticMLSHExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMRSHExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> rsh(T_MASK & mask, T2 & srcB)
+        {
+            return ArithmeticMRSHExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMRSHExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> rsh(T_MASK && mask, T2 & srcB)
+        {
+            return ArithmeticMRSHExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMRSHExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> rsh(T_MASK & mask, T2 && srcB)
+        {
+            return ArithmeticMRSHExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMRSHExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> rsh(T_MASK && mask, T2 && srcB)
+        {
+            return ArithmeticMRSHExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMROLExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> rol(T_MASK & mask, T2 & srcB)
+        {
+            return ArithmeticMROLExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMROLExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> rol(T_MASK && mask, T2 & srcB)
+        {
+            return ArithmeticMROLExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMROLExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> rol(T_MASK & mask, T2 && srcB)
+        {
+            return ArithmeticMROLExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMROLExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> rol(T_MASK && mask, T2 && srcB)
+        {
+            return ArithmeticMROLExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMRORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> ror(T_MASK & mask, T2 & srcB)
+        {
+            return ArithmeticMRORExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMRORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> ror(T_MASK && mask, T2 & srcB)
+        {
+            return ArithmeticMRORExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMRORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> ror(T_MASK & mask, T2 && srcB)
+        {
+            return ArithmeticMRORExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T_MASK,
+                T2> (*this, mask, srcB);
+        }
+
+        template<typename T_MASK, typename T2>
+        UME_FORCE_INLINE ArithmeticMRORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T_MASK,
+            T2> ror(T_MASK && mask, T2 && srcB)
+        {
+            return ArithmeticMRORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
