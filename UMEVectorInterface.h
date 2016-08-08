@@ -54,7 +54,7 @@ const int DYNAMIC_LENGTH = -1;
 
 //#include "UMEMaskVectorInterface.h"
 
-#include "UMEBaseVectorInterface.h"
+//#include "UMEBaseVectorInterface.h"
 #include "UMEUintVectorInterface.h"
 #include "UMEIntVectorInterface.h"
 #include "UMEFloatVectorInterface.h"

@@ -35,7 +35,7 @@
 #include <cassert>
 
 #include "UMEVectorExpressions.h"
-#include "UMEBaseVectorInterface.h"
+//#include "UMEBaseVectorInterface.h"
 
 namespace UME {
 namespace VECTOR {
@@ -45,7 +45,8 @@ namespace VECTOR {
         typename SCALAR_TYPE,
         int SIMD_STRIDE>
     class ArithmeticIntVectorInterface :
-        public ArithmeticBaseVectorInterface< DERIVED_VECTOR_TYPE, SCALAR_TYPE, SIMD_STRIDE> {
+        //public ArithmeticBaseVectorInterface< DERIVED_VECTOR_TYPE, SCALAR_TYPE, SIMD_STRIDE> {
+        public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE> {
     protected:
         ~ArithmeticIntVectorInterface() {}
 
