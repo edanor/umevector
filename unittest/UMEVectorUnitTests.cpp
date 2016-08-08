@@ -1127,4 +1127,15 @@ int main() {
         maskC = t0.lnot();
 
     }
+    /*
+    {
+        uint32_t rawA[100], rawB[100], rawC[100];
+
+        UME::VECTOR::Vector<uint32_t, 4, 100> A(rawA);
+        UME::VECTOR::Vector<uint32_t, 4, 100> B(rawB);
+        UME::VECTOR::Vector<uint32_t, 4, 100> C(rawC);
+
+        C = (A + B).sin();
+
+    }*/
 }

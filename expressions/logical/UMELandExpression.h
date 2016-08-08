@@ -59,6 +59,7 @@ namespace VECTOR {
     template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPEQExpression;
     template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPNEExpression;
 
+
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticRCPExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticNEGExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticABSExpression;
