@@ -1,4 +1,4 @@
-UME::SIMD is an explicit vectorization library. The library defines homogeneous interface for accessing functionality of SIMD registers of AVX, AVX2, AVX512 and IMCI (KNCNI, k1om) instruction set. 
+UME::VECTOR is an expression template based vectorization library. The library defines an interface for arbitrary-sized vectors. This library is based on UME::SIMD interface and requires it to work.
 
 This piece of code was developed as part of ICE-DIP project at CERN.
 
@@ -9,7 +9,7 @@ This piece of code was developed as part of ICE-DIP project at CERN.
  All questions should be submitted using the bug tracking system:
 
 
-   >   [bug tracker](https://bitbucket.org/edanor/umesimd/issues)
+   >   [bug tracker](https://bitbucket.org/edanor/vector/issues)
 
 
 or by sending e-mail to:
