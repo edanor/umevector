@@ -355,8 +355,8 @@ namespace VECTOR {
     // Operators to handle "Exp1 || Exp2" expressions.
     template<typename E1, typename E2>
     UME_FORCE_INLINE LogicalLORExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator|| (
-        LogicalExpression<E1::GET_SIMD_STRIDE(), E1> & srcA,
-        LogicalExpression<E1::GET_SIMD_STRIDE(), E2> & srcB)
+        LogicalExpression<E2::GET_SIMD_STRIDE(), E1> & srcA,
+        LogicalExpression<E2::GET_SIMD_STRIDE(), E2> & srcB)
     {
         return LogicalLORExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
     }
@@ -364,8 +364,8 @@ namespace VECTOR {
     // Operators to handle "Exp1 || RVALUE Exp2" expressions.
     template<typename E1, typename E2>
     UME_FORCE_INLINE LogicalLORExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator|| (
-        LogicalExpression<E1::GET_SIMD_STRIDE(), E1> & srcA,
-        LogicalExpression<E1::GET_SIMD_STRIDE(), E2> && srcB)
+        LogicalExpression<E2::GET_SIMD_STRIDE(), E1> & srcA,
+        LogicalExpression<E2::GET_SIMD_STRIDE(), E2> && srcB)
     {
         return LogicalLORExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
     }
@@ -373,8 +373,8 @@ namespace VECTOR {
     // Operators to handle "RVALUE Exp1 || Exp2" expressions.
     template<typename E1, typename E2>
     UME_FORCE_INLINE LogicalLORExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator|| (
-        LogicalExpression<E1::GET_SIMD_STRIDE(), E1> && srcA,
-        LogicalExpression<E1::GET_SIMD_STRIDE(), E2> & srcB)
+        LogicalExpression<E2::GET_SIMD_STRIDE(), E1> && srcA,
+        LogicalExpression<E2::GET_SIMD_STRIDE(), E2> & srcB)
     {
         return LogicalLORExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
     }
@@ -382,8 +382,8 @@ namespace VECTOR {
     // Operators to handle "RVALUE Exp1 || RVALUE Exp2" expressions.
     template<typename E1, typename E2>
     UME_FORCE_INLINE LogicalLORExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator|| (
-        LogicalExpression<E1::GET_SIMD_STRIDE(), E1> && srcA,
-        LogicalExpression<E1::GET_SIMD_STRIDE(), E2> && srcB)
+        LogicalExpression<E2::GET_SIMD_STRIDE(), E1> && srcA,
+        LogicalExpression<E2::GET_SIMD_STRIDE(), E2> && srcB)
     {
         return LogicalLORExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
     }
