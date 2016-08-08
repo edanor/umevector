@@ -27,38 +27,10 @@
 //  "ICE-DIP is a European Industrial Doctorate project funded by the European Community's
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
-// ***This file has been automatically generated***
-//
-#ifndef UME_CMPGT_EXPRESSION_H_
-#define UME_CMPGT_EXPRESSION_H_
+#ifndef UME_ARITHMETIC_EXPRESSION_INTERFACE_H_
 
 namespace UME {
 namespace VECTOR {
-
-    template<typename SCALAR_TYPE, int SIMD_STRIDE> class ScalarExpression;
-
-    template<int SIMD_STRIDE, typename E1> class LogicalLNOTExpression;
-    template<int SIMD_STRIDE, typename E1> class LogicalISFINExpression;
-    template<int SIMD_STRIDE, typename E1> class LogicalISINFExpression;
-    template<int SIMD_STRIDE, typename E1> class LogicalISANExpression;
-    template<int SIMD_STRIDE, typename E1> class LogicalISNANExpression;
-    template<int SIMD_STRIDE, typename E1> class LogicalISNORMExpression;
-    template<int SIMD_STRIDE, typename E1> class LogicalISSUBExpression;
-    template<int SIMD_STRIDE, typename E1> class LogicalISZEROExpression;
-    template<int SIMD_STRIDE, typename E1> class LogicalISZEROSUBExpression;
-
-    template<int SIMD_STRIDE, typename E1, typename E2> class LogicalLANDExpression;
-    template<int SIMD_STRIDE, typename E1, typename E2> class LogicalLORExpression;
-    template<int SIMD_STRIDE, typename E1, typename E2> class LogicalLXORExpression;
-    template<int SIMD_STRIDE, typename E1, typename E2> class LogicalLANDNOTExpression;
-
-    template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPGTExpression;
-    template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPLTExpression;
-    template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPGEExpression;
-    template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPLEExpression;
-    template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPEQExpression;
-    template<int SIMD_STRIDE, typename E1, typename E2> class LogicalCMPNEExpression;
-
 
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticRCPExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticNEGExpression;
@@ -118,105 +90,19 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTDECExpression;
 
-    template <int SIMD_STRIDE, typename E1, typename E2>
-    class LogicalCMPGTExpression :
-    public LogicalExpression<SIMD_STRIDE, LogicalCMPGTExpression<SIMD_STRIDE, E1, E2>>
-    {
-        typedef typename UME::SIMD::SIMDVecMask<SIMD_STRIDE> SIMD_MASK_TYPE;
-        typedef typename UME::SIMD::SIMDVecMask<1> SIMD_1_MASK_TYPE;
-
-        E1 & _e1;
-        E2 & _e2;
-
+    template <typename SCALAR_TYPE, int SIMD_STRIDE, typename DERIVED_EXPRESSION>
+    class ArithmeticExpression {
     public:
-        UME_FORCE_INLINE LogicalCMPGTExpression(E1 & e1, E2 & e2) :
-            _e1(e1), _e2(e2) {}
+        int LOOP_COUNT() { return static_cast<DERIVED_EXPRESSION&>(*this).LOOP_COUNT(); }
 
-        UME_FORCE_INLINE LogicalCMPGTExpression(E1 & e1, E2 && e2) :
-            _e1(e1),
-            _e2(std::move(e2)) {}
+        static constexpr int GET_SIMD_STRIDE() { return SIMD_STRIDE; }
 
-        UME_FORCE_INLINE LogicalCMPGTExpression(E1 && e1, E2 & e2) :
-            _e1(std::move(e1)),
-            _e2(e2) {}
+        operator DERIVED_EXPRESSION&() { return static_cast<DERIVED_EXPRESSION&>(*this); }
+        operator DERIVED_EXPRESSION const&() const { return static_cast<const DERIVED_EXPRESSION&>(*this); }
 
-        UME_FORCE_INLINE LogicalCMPGTExpression(E1 && e1, E2 && e2) :
-            _e1(std::move(e1)),
-            _e2(std::move(e2)) {}
-
-        UME_FORCE_INLINE SIMD_MASK_TYPE evaluate_SIMD(int index) {
-            auto t0 = _e1.evaluate_SIMD(index);
-            auto t1 = _e2.evaluate_SIMD(index);
-            return t0.cmpgt(t1);
-        }
-
-        UME_FORCE_INLINE SIMD_1_MASK_TYPE evaluate_scalar(int index) {
-            auto t0 = _e1.evaluate_scalar(index);
-            auto t1 = _e2.evaluate_scalar(index);
-            return t0.cmpgt(t1);
-        }
+        void dispose() {}
     };
 
-    // Operators to handle "Exp1 > Exp2" expressions.
-    template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator> (
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> & srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
-    {
-        return LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "Exp1 > RVALUE Exp2" expressions.
-    template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator> (
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> & srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> && srcB)
-    {
-        return LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "RVALUE Exp1 > Exp2" expressions.
-    template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator> (
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> && srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
-    {
-        return LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "RVALUE Exp1 > RVALUE Exp2" expressions.
-    template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator> (
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> && srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> && srcB)
-    {
-        return LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "Exp1 > scalar" expressions.
-    template<typename SCALAR_TYPE, typename E1>
-    UME_FORCE_INLINE LogicalCMPGTExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>> operator> (
-        ArithmeticExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE(), E1> & srcA,
-        SCALAR_TYPE srcB)
-    {
-        return LogicalCMPGTExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>>(
-            srcA,
-            ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>(srcB));
-    }
-
-    // Operators to handle "scalar > Exp1" expressions.
-    template<typename SCALAR_TYPE, typename E2>
-    UME_FORCE_INLINE LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2> operator> (
-        SCALAR_TYPE srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
-    {
-        return LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2>(
-            ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>(srcA),
-            srcB);
-    }
-
 }
 }
-
 #endif
-

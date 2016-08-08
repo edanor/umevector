@@ -32,13 +32,23 @@
 #ifndef UME_VECTOR_EXPRESSIONS_H_
 #define UME_VECTOR_EXPRESSIONS_H_
 
-#include "expressions/UMEExpressionInterface.h"
+#include "expressions/UMELogicalExpressionInterface.h"
+#include "expressions/UMEArithmeticExpressionInterface.h"
 
 // Scalar expression is a necessary wrapper for scalar types.
 #include "expressions/UMEScalarExpression.h"
 
 // Logical expressions should be included before arithmetic expressions
 
+#include "expressions/logical/UMELnotExpression.h"
+#include "expressions/logical/UMEIsfinExpression.h"
+#include "expressions/logical/UMEIsinfExpression.h"
+#include "expressions/logical/UMEIsanExpression.h"
+#include "expressions/logical/UMEIsnanExpression.h"
+#include "expressions/logical/UMEIsnormExpression.h"
+#include "expressions/logical/UMEIssubExpression.h"
+#include "expressions/logical/UMEIszeroExpression.h"
+#include "expressions/logical/UMEIszerosubExpression.h"
 #include "expressions/logical/UMELandExpression.h"
 #include "expressions/logical/UMELorExpression.h"
 #include "expressions/logical/UMELxorExpression.h"

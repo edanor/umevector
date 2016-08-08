@@ -30,13 +30,15 @@
 #ifndef UME_STATIC_MASK_H_
 #define UME_STATIC_MASK_H_
 
+#include "expressions/UMELogicalExpressionInterface.h"
+
 namespace UME {
 namespace VECTOR {
 
     template<int SIMD_STRIDE, int VEC_LEN = DYNAMIC_LENGTH>
-    class MaskVector : public MaskInterface<
-        MaskVector<SIMD_STRIDE, VEC_LEN>,
-        SIMD_STRIDE>
+    class MaskVector : public LogicalExpression<
+        SIMD_STRIDE,
+        MaskVector<SIMD_STRIDE, VEC_LEN>>
     {
     public:
         typedef UME::SIMD::SIMDVecMask<SIMD_STRIDE>  SIMD_TYPE;

@@ -29,12 +29,11 @@
 //
 // ***This file has been automatically generated***
 //
-#ifndef UME_CMPGT_EXPRESSION_H_
-#define UME_CMPGT_EXPRESSION_H_
+#ifndef UME_LOGICAL_EXPRESSION_INTERFACE_H_
+#define UME_LOGICAL_EXPRESSION_INTERFACE_H_
 
 namespace UME {
 namespace VECTOR {
-
     template<typename SCALAR_TYPE, int SIMD_STRIDE> class ScalarExpression;
 
     template<int SIMD_STRIDE, typename E1> class LogicalLNOTExpression;
@@ -117,106 +116,214 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticHBXORExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTDECExpression;
-
-    template <int SIMD_STRIDE, typename E1, typename E2>
-    class LogicalCMPGTExpression :
-    public LogicalExpression<SIMD_STRIDE, LogicalCMPGTExpression<SIMD_STRIDE, E1, E2>>
-    {
-        typedef typename UME::SIMD::SIMDVecMask<SIMD_STRIDE> SIMD_MASK_TYPE;
-        typedef typename UME::SIMD::SIMDVecMask<1> SIMD_1_MASK_TYPE;
-
-        E1 & _e1;
-        E2 & _e2;
-
+    template<int SIMD_STRIDE, typename DERIVED_EXPRESSION>
+    class LogicalExpression {
     public:
-        UME_FORCE_INLINE LogicalCMPGTExpression(E1 & e1, E2 & e2) :
-            _e1(e1), _e2(e2) {}
+        static constexpr int GET_SIMD_STRIDE() { return SIMD_STRIDE; }
 
-        UME_FORCE_INLINE LogicalCMPGTExpression(E1 & e1, E2 && e2) :
-            _e1(e1),
-            _e2(std::move(e2)) {}
+        operator DERIVED_EXPRESSION&() { return static_cast<DERIVED_EXPRESSION&>(*this); }
+        operator DERIVED_EXPRESSION const&() const { return static_cast<const DERIVED_EXPRESSION&>(*this); }
 
-        UME_FORCE_INLINE LogicalCMPGTExpression(E1 && e1, E2 & e2) :
-            _e1(std::move(e1)),
-            _e2(e2) {}
+        void dispose() {}
 
-        UME_FORCE_INLINE LogicalCMPGTExpression(E1 && e1, E2 && e2) :
-            _e1(std::move(e1)),
-            _e2(std::move(e2)) {}
 
-        UME_FORCE_INLINE SIMD_MASK_TYPE evaluate_SIMD(int index) {
-            auto t0 = _e1.evaluate_SIMD(index);
-            auto t1 = _e2.evaluate_SIMD(index);
-            return t0.cmpgt(t1);
+        UME_FORCE_INLINE LogicalLNOTExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION // this expression
+            > lnot()
+        {
+            return LogicalLNOTExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION
+                > (*this);
         }
 
-        UME_FORCE_INLINE SIMD_1_MASK_TYPE evaluate_scalar(int index) {
-            auto t0 = _e1.evaluate_scalar(index);
-            auto t1 = _e2.evaluate_scalar(index);
-            return t0.cmpgt(t1);
+        UME_FORCE_INLINE LogicalISFINExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION // this expression
+            > isfin()
+        {
+            return LogicalISFINExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISINFExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION // this expression
+            > isinf()
+        {
+            return LogicalISINFExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISANExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION // this expression
+            > isan()
+        {
+            return LogicalISANExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISNANExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION // this expression
+            > isnan()
+        {
+            return LogicalISNANExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISNORMExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION // this expression
+            > isnorm()
+        {
+            return LogicalISNORMExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISSUBExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION // this expression
+            > issub()
+        {
+            return LogicalISSUBExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISZEROExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION // this expression
+            > iszero()
+        {
+            return LogicalISZEROExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION
+                > (*this);
+        }
+
+        UME_FORCE_INLINE LogicalISZEROSUBExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION // this expression
+            > iszerosub()
+        {
+            return LogicalISZEROSUBExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION
+                > (*this);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLANDExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2> land(T2 & srcB)
+        {
+            return LogicalLANDExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLANDExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2 > land(T2 && srcB)
+        {
+            return LogicalLANDExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLORExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2> lor(T2 & srcB)
+        {
+            return LogicalLORExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLORExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2 > lor(T2 && srcB)
+        {
+            return LogicalLORExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLXORExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2> lxor(T2 & srcB)
+        {
+            return LogicalLXORExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLXORExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2 > lxor(T2 && srcB)
+        {
+            return LogicalLXORExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLANDNOTExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2> landnot(T2 & srcB)
+        {
+            return LogicalLANDNOTExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE LogicalLANDNOTExpression<
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2 > landnot(T2 && srcB)
+        {
+            return LogicalLANDNOTExpression<
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
         }
     };
 
-    // Operators to handle "Exp1 > Exp2" expressions.
-    template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator> (
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> & srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
-    {
-        return LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "Exp1 > RVALUE Exp2" expressions.
-    template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator> (
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> & srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> && srcB)
-    {
-        return LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "RVALUE Exp1 > Exp2" expressions.
-    template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator> (
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> && srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
-    {
-        return LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "RVALUE Exp1 > RVALUE Exp2" expressions.
-    template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2> operator> (
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> && srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> && srcB)
-    {
-        return LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), E1, E2>(srcA, srcB);
-    }
-
-    // Operators to handle "Exp1 > scalar" expressions.
-    template<typename SCALAR_TYPE, typename E1>
-    UME_FORCE_INLINE LogicalCMPGTExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>> operator> (
-        ArithmeticExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE(), E1> & srcA,
-        SCALAR_TYPE srcB)
-    {
-        return LogicalCMPGTExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>>(
-            srcA,
-            ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>(srcB));
-    }
-
-    // Operators to handle "scalar > Exp1" expressions.
-    template<typename SCALAR_TYPE, typename E2>
-    UME_FORCE_INLINE LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2> operator> (
-        SCALAR_TYPE srcA,
-        ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
-    {
-        return LogicalCMPGTExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2>(
-            ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>(srcA),
-            srcB);
-    }
-
 }
 }
-
 #endif
 

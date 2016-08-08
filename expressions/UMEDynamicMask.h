@@ -34,9 +34,10 @@ namespace UME {
 namespace VECTOR {
 
     template<int SIMD_STRIDE>
-    class MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH> : public MaskInterface<
-        MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH>,
-        SIMD_STRIDE>
+    class MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH> : 
+        public LogicalExpression<
+            SIMD_STRIDE,
+            MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH >>
     {
     private:
         int mLength;

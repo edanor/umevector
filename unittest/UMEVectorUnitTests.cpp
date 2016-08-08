@@ -1110,4 +1110,21 @@ int main() {
 
         C = A.blend(mask, B);
     }
+    {
+        bool rawA[100], rawB[100], rawC[100];
+
+        for (int i = 0; i < 100; i++) {
+            rawA[i] = (i % 2) == 0 ? true : false;
+            rawB[i] = (i % 2) == 0 ? true : false;
+            rawC[i] = (i % 2) == 0 ? true : false;
+        }
+
+        UME::VECTOR::MaskVector<4, 100> maskA(rawA);
+        UME::VECTOR::MaskVector<4, 100> maskB(rawB);
+        UME::VECTOR::MaskVector<4, 100> maskC(rawC);
+
+        auto t0 = maskA.land(maskB);
+        maskC = t0.lnot();
+
+    }
 }

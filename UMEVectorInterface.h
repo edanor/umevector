@@ -52,7 +52,7 @@ namespace UME {
 // compiler to perform additional code optimizations.
 const int DYNAMIC_LENGTH = -1;
 
-#include "UMEMaskVectorInterface.h"
+//#include "UMEMaskVectorInterface.h"
 
 #include "UMEBaseVectorInterface.h"
 #include "UMEUintVectorInterface.h"
