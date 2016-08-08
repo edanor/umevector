@@ -29,8 +29,10 @@
 //
 // ***This file has been automatically generated***
 //
-#ifndef UME_MLOG10_EXPRESSION_H_
-#define UME_MLOG10_EXPRESSION_H_
+#ifndef UME_ROR_EXPRESSION_H_
+#define UME_ROR_EXPRESSION_H_
+
+#include "../UMEVectorConversionTraits.h"
 
 namespace UME {
 namespace VECTOR {
@@ -122,55 +124,53 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTINCExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1> class ArithmeticPOSTDECExpression;
 
-    template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK>
-    class ArithmeticMLOG10Expression :
-        public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLOG10Expression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK> >
+    template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2>
+    class ArithmeticRORExpression :
+    public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticRORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> >
     {
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
         E1 & _e1;
-        E_MASK & _e_mask;
+        E2 & _e2;
 
     public:
-        UME_FORCE_INLINE ArithmeticMLOG10Expression(E1 & e1, E_MASK & e_mask) :
+
+        UME_FORCE_INLINE ArithmeticRORExpression(E1 & e1, E2 & e2) :
+            _e1(e1), _e2(e2) {}
+
+        UME_FORCE_INLINE ArithmeticRORExpression(E1 & e1, E2 && e2) :
             _e1(e1),
-            _e_mask(e_mask) {}
+            _e2(std::move(e2)) {}
 
-        UME_FORCE_INLINE ArithmeticMLOG10Expression(E1 && e1, E_MASK & e_mask) :
+        UME_FORCE_INLINE ArithmeticRORExpression(E1 && e1, E2 & e2) :
             _e1(std::move(e1)),
-            _e_mask(e_mask) {}
+            _e2(e2) {}
 
-        UME_FORCE_INLINE ArithmeticMLOG10Expression(E1 & e1, E_MASK && e_mask) :
-            _e1(e1),
-            _e_mask(std::move(e_mask)) {}
-
-        UME_FORCE_INLINE ArithmeticMLOG10Expression(E1 && e1, E_MASK && e_mask) :
+        UME_FORCE_INLINE ArithmeticRORExpression(E1 && e1, E2 && e2) :
             _e1(std::move(e1)),
-            _e_mask(std::move(e_mask)) {}
+            _e2(std::move(e2)) {}
 
         UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)
         {
             auto t0 = _e1.evaluate_SIMD(index);
-            auto t1 = _e_mask.evaluate_SIMD(index);
-            auto t2 = t0.log10(t1);
-            return t2;
+            auto t1 = _e2.evaluate_SIMD(index);
+            return t0.ror(t1);
         }
 
         UME_FORCE_INLINE SIMD_1_TYPE evaluate_scalar(int index)
         {
             auto t0 = _e1.evaluate_scalar(index);
-            auto t1 = _e_mask.evaluate_scalar(index);
-            auto t2 = t0.log10(t1);
-            return t2;
+            auto t1 = _e2.evaluate_scalar(index);
+            return t0.ror(t1);
         }
 
-        typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLOG10Expression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
-        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLOG10Expression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
-        typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLOG10Expression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK>>::CAST_TYPE ITOU_EXPRESSION_TYPE;
-        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLOG10Expression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
-        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLOG10Expression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
-        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMLOG10Expression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
+        typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticRORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
+        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticRORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
+        typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticRORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE ITOU_EXPRESSION_TYPE;
+        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticRORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
+        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticRORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
+        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticRORExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
 
         UME_FORCE_INLINE UTOI_EXPRESSION_TYPE utoi() {
             return UTOI_EXPRESSION_TYPE(*this);
@@ -191,6 +191,7 @@ namespace VECTOR {
             return FTOI_EXPRESSION_TYPE(*this);
         }
     };
+
 
 }
 }

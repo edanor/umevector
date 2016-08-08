@@ -90,6 +90,10 @@ namespace VECTOR {
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticBXORExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticBANDNOTExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticREMExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticLSHExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticRSHExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticROLExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2> class ArithmeticRORExpression;
 
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticBLENDExpression;
     template<typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E_MASK, typename E2> class ArithmeticMADDExpression;
@@ -696,6 +700,118 @@ namespace VECTOR {
             T2 > rem(T2 && srcB)
         {
             return ArithmeticREMExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticLSHExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2> lsh(T2 & srcB)
+        {
+            return ArithmeticLSHExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticLSHExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2 > lsh(T2 && srcB)
+        {
+            return ArithmeticLSHExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticRSHExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2> rsh(T2 & srcB)
+        {
+            return ArithmeticRSHExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticRSHExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2 > rsh(T2 && srcB)
+        {
+            return ArithmeticRSHExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticROLExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2> rol(T2 & srcB)
+        {
+            return ArithmeticROLExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticROLExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2 > rol(T2 && srcB)
+        {
+            return ArithmeticROLExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticRORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2> ror(T2 & srcB)
+        {
+            return ArithmeticRORExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticRORExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2 > ror(T2 && srcB)
+        {
+            return ArithmeticRORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,

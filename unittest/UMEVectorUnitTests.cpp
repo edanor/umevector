@@ -1146,4 +1146,33 @@ int main() {
         C = (A + B).sin();
         //C = A.band(B);
     }
+    {
+        uint32_t rawA[100], rawB[100], rawC[100];
+
+        UME::VECTOR::Vector<uint32_t, 4, 100> A(rawA);
+        UME::VECTOR::Vector<uint32_t, 4, 100> B(rawB);
+        UME::VECTOR::Vector<uint32_t, 4, 100> C(rawC);
+
+        C = A.lsh(B);
+    }
+    {
+        int32_t rawA[100], rawC[100];
+        uint32_t rawB[100];
+
+        UME::VECTOR::Vector<int32_t, 4, 100> A(rawA);
+        UME::VECTOR::Vector<uint32_t, 4, 100> B(rawB);
+        UME::VECTOR::Vector<int32_t, 4, 100> C(rawC);
+
+        C = A.lsh(B);
+    }
+    {
+        int32_t rawA[100], rawC[100];
+
+        UME::VECTOR::Vector<int32_t, 4, 100> A(rawA);
+        UME::VECTOR::Vector<int32_t, 4, 100> C(rawC);
+
+        UME::VECTOR::Scalar<int32_t, 4> B(4);
+
+        C = A.lsh(B);
+    }
 }
