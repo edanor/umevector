@@ -35,7 +35,7 @@
 namespace UME {
 namespace VECTOR {
 
-    template<typename SCALAR_TYPE, int SIMD_STRIDE> class ScalarExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE> class Scalar;
 
     template<int SIMD_STRIDE, typename E1> class LogicalLNOTExpression;
     template<int SIMD_STRIDE, typename E1> class LogicalISFINExpression;

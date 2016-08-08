@@ -623,7 +623,7 @@ void testADDS_random_static()
         }
 
         VEC_TYPE A(raw_a);
-        UME::VECTOR::ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> B(raw_b);
+        UME::VECTOR::Scalar<SCALAR_TYPE, SIMD_STRIDE> B(raw_b);
         VEC_TYPE C(raw_c);
 
         C = A.add(B);
@@ -644,7 +644,7 @@ void testADDS_random_static()
         }
 
         VEC_TYPE A(raw_a);
-        UME::VECTOR::ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> B(raw_b);
+        UME::VECTOR::Scalar<SCALAR_TYPE, SIMD_STRIDE> B(raw_b);
         VEC_TYPE C(raw_c);
 
         C = A + B;
@@ -665,7 +665,7 @@ void testADDS_random_static()
         }
 
         VEC_TYPE A(raw_a);
-        UME::VECTOR::ScalarExpression<SCALAR_TYPE, SIMD_STRIDE> B(raw_b);
+        UME::VECTOR::Scalar<SCALAR_TYPE, SIMD_STRIDE> B(raw_b);
         VEC_TYPE C(raw_c);
 
         C = B + A;
@@ -695,7 +695,7 @@ void testMADDS_random_static()
         }
 
         VEC_TYPE A(raw_a);
-        UME::VECTOR::ScalarExpression<SCALAR_TYPE, 4> B(raw_b);
+        UME::VECTOR::Scalar<SCALAR_TYPE, 4> B(raw_b);
         VEC_TYPE C(raw_c);
         MASK_TYPE mask(raw_mask);
 

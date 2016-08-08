@@ -35,7 +35,7 @@
 namespace UME {
 namespace VECTOR {
 
-    template<typename SCALAR_TYPE, int SIMD_STRIDE> class ScalarExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE> class Scalar;
 
     template<int SIMD_STRIDE, typename E1> class LogicalLNOTExpression;
     template<int SIMD_STRIDE, typename E1> class LogicalISFINExpression;
@@ -195,23 +195,23 @@ namespace VECTOR {
 
     // Operators to handle "Exp1 && scalar" expressions.
     template<typename E1>
-    UME_FORCE_INLINE LogicalLANDExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<bool, E1::GET_SIMD_STRIDE()>> operator&& (
+    UME_FORCE_INLINE LogicalLANDExpression<E1::GET_SIMD_STRIDE(), E1, Scalar<bool, E1::GET_SIMD_STRIDE()>> operator&& (
         LogicalExpression<E1::GET_SIMD_STRIDE(), E1> & srcA,
         bool srcB)
     {
-        return LogicalLANDExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<bool, E1::GET_SIMD_STRIDE()>>(
+        return LogicalLANDExpression<E1::GET_SIMD_STRIDE(), E1, Scalar<bool, E1::GET_SIMD_STRIDE()>>(
             srcA,
-            ScalarExpression<bool, E1::GET_SIMD_STRIDE()>(srcB));
+            Scalar<bool, E1::GET_SIMD_STRIDE()>(srcB));
     }
 
     // Operators to handle "scalar && Exp1" expressions.
     template<typename E2>
-    UME_FORCE_INLINE LogicalLANDExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<bool, E2::GET_SIMD_STRIDE()>, E2> operator&& (
+    UME_FORCE_INLINE LogicalLANDExpression<E2::GET_SIMD_STRIDE(), Scalar<bool, E2::GET_SIMD_STRIDE()>, E2> operator&& (
         bool srcA,
         LogicalExpression<E2::GET_SIMD_STRIDE(), E2> & srcB)
     {
-        return LogicalLANDExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<bool, E2::GET_SIMD_STRIDE()>, E2>(
-            ScalarExpression<bool, E2::GET_SIMD_STRIDE()>(srcA),
+        return LogicalLANDExpression<E2::GET_SIMD_STRIDE(), Scalar<bool, E2::GET_SIMD_STRIDE()>, E2>(
+            Scalar<bool, E2::GET_SIMD_STRIDE()>(srcA),
             srcB);
     }
 

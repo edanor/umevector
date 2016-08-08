@@ -35,7 +35,7 @@
 namespace UME {
 namespace VECTOR {
 
-    template<typename SCALAR_TYPE, int SIMD_STRIDE> class ScalarExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE> class Scalar;
 
     template<int SIMD_STRIDE, typename E1> class LogicalLNOTExpression;
     template<int SIMD_STRIDE, typename E1> class LogicalISFINExpression;
@@ -195,23 +195,23 @@ namespace VECTOR {
 
     // Operators to handle "Exp1 != scalar" expressions.
     template<typename SCALAR_TYPE, typename E1>
-    UME_FORCE_INLINE LogicalCMPNEExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>> operator!= (
+    UME_FORCE_INLINE LogicalCMPNEExpression<E1::GET_SIMD_STRIDE(), E1, Scalar<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>> operator!= (
         ArithmeticExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE(), E1> & srcA,
         SCALAR_TYPE srcB)
     {
-        return LogicalCMPNEExpression<E1::GET_SIMD_STRIDE(), E1, ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>>(
+        return LogicalCMPNEExpression<E1::GET_SIMD_STRIDE(), E1, Scalar<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>>(
             srcA,
-            ScalarExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>(srcB));
+            Scalar<SCALAR_TYPE, E1::GET_SIMD_STRIDE()>(srcB));
     }
 
     // Operators to handle "scalar != Exp1" expressions.
     template<typename SCALAR_TYPE, typename E2>
-    UME_FORCE_INLINE LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2> operator!= (
+    UME_FORCE_INLINE LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), Scalar<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2> operator!= (
         SCALAR_TYPE srcA,
         ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
     {
-        return LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2>(
-            ScalarExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>(srcA),
+        return LogicalCMPNEExpression<E2::GET_SIMD_STRIDE(), Scalar<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2>(
+            Scalar<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>(srcA),
             srcB);
     }
 

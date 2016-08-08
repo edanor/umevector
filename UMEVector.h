@@ -36,19 +36,17 @@
 
 #include "UMEVectorInterface.h"
 
-#include "expressions/UMEStaticMask.h"
-#include "expressions/UMEDynamicMask.h"
+#include "terminals/UMEStaticMask.h"
+#include "terminals/UMEDynamicMask.h"
 
-#include "expressions/UMEStaticArithmeticUintVector.h"
-#include "expressions/UMEDynamicArithmeticUintVector.h"
+#include "terminals/UMEStaticArithmeticUintVector.h"
+#include "terminals/UMEDynamicArithmeticUintVector.h"
 
-#include "expressions/UMEStaticArithmeticIntVector.h"
-#include "expressions/UMEDynamicArithmeticIntVector.h"
+#include "terminals/UMEStaticArithmeticIntVector.h"
+#include "terminals/UMEDynamicArithmeticIntVector.h"
 
-#include "expressions/UMEStaticArithmeticFloatVector.h"
-#include "expressions/UMEDynamicArithmeticFloatVector.h"
-
-//#include "UMEVectorOperators.h"
+#include "terminals/UMEStaticArithmeticFloatVector.h"
+#include "terminals/UMEDynamicArithmeticFloatVector.h"
 
 
 namespace UME {

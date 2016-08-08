@@ -34,7 +34,7 @@
 
 namespace UME {
 namespace VECTOR {
-    template<typename SCALAR_TYPE, int SIMD_STRIDE> class ScalarExpression;
+    template<typename SCALAR_TYPE, int SIMD_STRIDE> class Scalar;
 
     template<int SIMD_STRIDE, typename E1> class LogicalLNOTExpression;
     template<int SIMD_STRIDE, typename E1> class LogicalISFINExpression;
@@ -123,7 +123,7 @@ namespace VECTOR {
 #include "expressions/UMEArithmeticExpressionInterface.h"
 
 // Scalar expression is a necessary wrapper for scalar types.
-#include "expressions/UMEScalarExpression.h"
+#include "terminals/UMEScalar.h"
 
 // Logical expressions should be included before arithmetic expressions
 
