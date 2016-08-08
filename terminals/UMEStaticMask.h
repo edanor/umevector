@@ -35,7 +35,7 @@
 namespace UME {
 namespace VECTOR {
 
-    template<int SIMD_STRIDE, int VEC_LEN = DYNAMIC_LENGTH>
+    template<int SIMD_STRIDE, int VEC_LEN = UME_DYNAMIC_LENGTH>
     class MaskVector : public LogicalExpression<
         SIMD_STRIDE,
         MaskVector<SIMD_STRIDE, VEC_LEN>>
@@ -113,7 +113,7 @@ namespace VECTOR {
             return *this;
         }
 
-        UME_FORCE_INLINE MaskVector& operator= (MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH> & origin) {
+        UME_FORCE_INLINE MaskVector& operator= (MaskVector<SIMD_STRIDE, UME_DYNAMIC_LENGTH> & origin) {
             assert(VEC_LEN == origin.LENGTH()); // Cannot re-allocate static
             for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
             return *this;

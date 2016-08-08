@@ -1175,4 +1175,21 @@ int main() {
 
         C = A.lsh(B);
     }
+    {
+        int32_t rawA[8], rawB[8], rawC[8];
+
+        for (int i = 0; i < 8; i++) {
+            rawA[i] = i;
+            rawB[i] = i + 8;
+            rawC[i] = i + 16;
+        }
+
+        UME::VECTOR::Vector<int32_t, 4, 8> A(rawA);
+        UME::VECTOR::Vector<int32_t> B (8, rawB);
+        UME::VECTOR::Vector<int32_t> C(8, rawC);
+
+        A = B;
+        B = A - (C + A);
+
+    }
 }

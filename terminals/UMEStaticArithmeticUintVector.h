@@ -34,7 +34,7 @@ namespace UME {
 namespace VECTOR {
 
     /* Static vector template. This template*/
-    template<typename SCALAR_TYPE, int SIMD_STRIDE = 4, int VEC_LEN = DYNAMIC_LENGTH>
+    template<typename SCALAR_TYPE, int SIMD_STRIDE = 4, int VEC_LEN = UME_DYNAMIC_LENGTH>
     class UintVector : public UintExpressionInterface<
         UintVector<SCALAR_TYPE, SIMD_STRIDE, VEC_LEN>,
         SCALAR_TYPE,
@@ -112,10 +112,10 @@ namespace VECTOR {
         // Cast operator to convert from static to dynamic form. Because of
         // different allocation method, the data needs to be copied from stack-organized
         // to heap-organized. 
-        UME_FORCE_INLINE operator UintVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH>() {
+        UME_FORCE_INLINE operator UintVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH>() {
             // TODO:
             // Create dynamic Row vector, and copy data
-            UintVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> temp(VEC_LEN);
+            UintVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> temp(VEC_LEN);
             //memcpy(temp.elements, elements, VEC_LEN*sizeof(SCALAR_TYPE));
             return temp;
         }
@@ -127,7 +127,7 @@ namespace VECTOR {
         }
 
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
-        UME_FORCE_INLINE UintVector& operator= (UintVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> & origin) {
+        UME_FORCE_INLINE UintVector& operator= (UintVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> & origin) {
             assert(VEC_LEN == origin.LENGTH()); // Cannot re-allocate static
             for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
             return *this;

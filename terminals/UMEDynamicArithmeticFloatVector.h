@@ -39,9 +39,9 @@ namespace VECTOR {
     // ArithmeticVectorInterface, but it require some additional user-invisible functionality
     // to support type conversions between static and dynamic vectors.
     template<typename SCALAR_TYPE, int SIMD_STRIDE>
-    class FloatVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> : 
+    class FloatVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> :
         public FloatExpressionInterface<
-            FloatVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH>,
+            FloatVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH>,
             SCALAR_TYPE,
             SIMD_STRIDE>
     {
@@ -108,7 +108,7 @@ namespace VECTOR {
 
         // Initialize with expression template evaluation
         template<typename E>
-        UME_FORCE_INLINE FloatVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> & vec)
+        UME_FORCE_INLINE FloatVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> & vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -125,7 +125,7 @@ namespace VECTOR {
             return *this;
         }
         template<typename E>
-        UME_FORCE_INLINE FloatVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
+        UME_FORCE_INLINE FloatVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.

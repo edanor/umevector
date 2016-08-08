@@ -30,7 +30,20 @@
 #ifndef UME_VECTOR_H_
 #define UME_VECTOR_H_
 
+// The stride can and should be controlled by the user, depending
+// on the algorithm and hardware used. This default is provided
+// so that it is possible to simplify some code examples, rather than
+// as a hard setting.
 #define UME_DEFAULT_SIMD_STRIDE 4
+
+// Vectors of DYNAMIC_LENGTH may have lengths that
+// are unknowns at compile time. While the internal behaviour 
+// is different than for static vector lengths, the interoperation
+// of static and dynamic vectors should still take place correctly,
+// as long as vector lengths are the same. For performance reasons
+// it is best to use static vectors since then it is possible for the
+// compiler to perform additional code optimizations.
+const int UME_DYNAMIC_LENGTH = -1;
 
 #include <UMESimd.h>
 
@@ -51,7 +64,7 @@
 
 namespace UME {
     namespace VECTOR {
-        template<typename SCALAR_T, uint32_t SIMD_STRIDE, uint32_t VEC_LEN>
+        template<typename SCALAR_T, uint32_t SIMD_STRIDE = UME_DEFAULT_SIMD_STRIDE, uint32_t VEC_LEN = UME_DYNAMIC_LENGTH>
         struct BaseVectorType {
         };
 
@@ -105,8 +118,9 @@ namespace UME {
             typedef typename UME::VECTOR::FloatVector<double, SIMD_STRIDE, VEC_LEN> BASE_T;
         };
 
-        template<typename SCALAR_T, uint32_t SIMD_STRIDE, uint32_t VEC_LEN>
+        template<typename SCALAR_T, uint32_t SIMD_STRIDE = UME_DEFAULT_SIMD_STRIDE, uint32_t VEC_LEN = UME_DYNAMIC_LENGTH>
         using Vector = typename BaseVectorType<SCALAR_T, SIMD_STRIDE, VEC_LEN>::BASE_T;
+
     }
 }
 

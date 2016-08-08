@@ -34,10 +34,10 @@ namespace UME {
 namespace VECTOR {
 
     template<int SIMD_STRIDE>
-    class MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH> : 
+    class MaskVector<SIMD_STRIDE, UME_DYNAMIC_LENGTH> :
         public LogicalExpression<
             SIMD_STRIDE,
-            MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH >>
+            MaskVector<SIMD_STRIDE, UME_DYNAMIC_LENGTH >>
     {
     private:
         int mLength;
@@ -116,7 +116,7 @@ namespace VECTOR {
 
 
         template<typename E>
-        UME_FORCE_INLINE MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH>(LogicalExpression<SIMD_STRIDE, E> && vec)
+        UME_FORCE_INLINE MaskVector<SIMD_STRIDE, UME_DYNAMIC_LENGTH>(LogicalExpression<SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -137,9 +137,9 @@ namespace VECTOR {
         // Cast operator to convert from static to dynamic form. Because of
         // different allocation method, the data needs to be copied from stack-organized
         // to heap-organized. 
-        UME_FORCE_INLINE operator MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH>() {
+        UME_FORCE_INLINE operator MaskVector<SIMD_STRIDE, UME_DYNAMIC_LENGTH>() {
             // Create dynamic Row vector, and copy data
-            MaskVector<SIMD_STRIDE, DYNAMIC_LENGTH> temp(LENGTH());
+            MaskVector<SIMD_STRIDE, UME_DYNAMIC_LENGTH> temp(LENGTH());
             for (int i = 0; i < LENGTH();i++) temp.elements[i] = elements[i];
             return temp;
         }

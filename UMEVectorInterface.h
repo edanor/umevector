@@ -43,14 +43,6 @@ namespace UME {
     }
 }
 
-// Vectors of DYNAMIC_LENGTH may have lengths that
-// are unknowns at compile time. While the internal behaviour 
-// is different than for static vector lengths, the interoperation
-// of static and dynamic vectors should still take place correctly,
-// as long as vector lengths are the same. For performance reasons
-// it is best to use static vectors since then it is possible for the
-// compiler to perform additional code optimizations.
-const int DYNAMIC_LENGTH = -1;
 
 //#include "UMEMaskVectorInterface.h"
 
