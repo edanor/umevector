@@ -188,30 +188,30 @@ namespace VECTOR {
             return t3;
         }
 
-        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
-        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
-        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
-        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
         typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
+        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
         typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE ITOU_EXPRESSION_TYPE;
+        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
+        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
+        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
 
-        UME_FORCE_INLINE ITOF_EXPRESSION_TYPE itof() {
-            return ITOF_EXPRESSION_TYPE(*this);
-        }
-        UME_FORCE_INLINE FTOI_EXPRESSION_TYPE ftoi() {
-            return FTOI_EXPRESSION_TYPE(*this);
+        UME_FORCE_INLINE UTOI_EXPRESSION_TYPE utoi() {
+            return UTOI_EXPRESSION_TYPE(*this);
         }
         UME_FORCE_INLINE UTOF_EXPRESSION_TYPE utof() {
             return UTOF_EXPRESSION_TYPE(*this);
         }
+        UME_FORCE_INLINE ITOU_EXPRESSION_TYPE itou() {
+            return ITOU_EXPRESSION_TYPE(*this);
+        }
+        UME_FORCE_INLINE ITOF_EXPRESSION_TYPE itof() {
+            return ITOF_EXPRESSION_TYPE(*this);
+        }
         UME_FORCE_INLINE FTOU_EXPRESSION_TYPE ftou() {
             return FTOU_EXPRESSION_TYPE(*this);
         }
-        UME_FORCE_INLINE UTOI_EXPRESSION_TYPE utoi() {
-            return UTOI_EXPRESSION_TYPE(*this);
-        }
-        UME_FORCE_INLINE ITOU_EXPRESSION_TYPE itou() {
-            return ITOU_EXPRESSION_TYPE(*this);
+        UME_FORCE_INLINE FTOI_EXPRESSION_TYPE ftoi() {
+            return FTOI_EXPRESSION_TYPE(*this);
         }
     };
 

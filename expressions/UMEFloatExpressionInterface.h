@@ -55,30 +55,14 @@ namespace VECTOR {
         typedef UME::SIMD::SIMDVecMask<SIMD_STRIDE>          MASK_TYPE;
         typedef UME::SIMD::SIMDVecMask<1>               MASK1_TYPE;
 
-        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>::CAST_TYPE ITOF_EXPRESSION_TYPE;
-        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>::CAST_TYPE FTOI_EXPRESSION_TYPE;
-        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>::CAST_TYPE UTOF_EXPRESSION_TYPE;
         typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>::CAST_TYPE FTOU_EXPRESSION_TYPE;
-        typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>::CAST_TYPE UTOI_EXPRESSION_TYPE;
-        typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>::CAST_TYPE ITOU_EXPRESSION_TYPE;
+        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>::CAST_TYPE FTOI_EXPRESSION_TYPE;
 
-        UME_FORCE_INLINE ITOF_EXPRESSION_TYPE itof() {
-            return ITOF_EXPRESSION_TYPE(*this);
-        }
-        UME_FORCE_INLINE FTOI_EXPRESSION_TYPE ftoi() {
-            return FTOI_EXPRESSION_TYPE(*this);
-        }
-        UME_FORCE_INLINE UTOF_EXPRESSION_TYPE utof() {
-            return UTOF_EXPRESSION_TYPE(*this);
-        }
         UME_FORCE_INLINE FTOU_EXPRESSION_TYPE ftou() {
             return FTOU_EXPRESSION_TYPE(*this);
         }
-        UME_FORCE_INLINE UTOI_EXPRESSION_TYPE utoi() {
-            return UTOI_EXPRESSION_TYPE(*this);
-        }
-        UME_FORCE_INLINE ITOU_EXPRESSION_TYPE itou() {
-            return ITOU_EXPRESSION_TYPE(*this);
+        UME_FORCE_INLINE FTOI_EXPRESSION_TYPE ftoi() {
+            return FTOI_EXPRESSION_TYPE(*this);
         }
     };
 
