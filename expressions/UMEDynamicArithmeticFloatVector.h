@@ -39,10 +39,11 @@ namespace VECTOR {
     // ArithmeticVectorInterface, but it require some additional user-invisible functionality
     // to support type conversions between static and dynamic vectors.
     template<typename SCALAR_TYPE, int SIMD_STRIDE>
-    class FloatVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> : public ArithmeticFloatVectorInterface<
-        FloatVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH>,
-        SCALAR_TYPE,
-        SIMD_STRIDE>
+    class FloatVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH> : 
+        public FloatExpressionInterface<
+            FloatVector<SCALAR_TYPE, SIMD_STRIDE, DYNAMIC_LENGTH>,
+            SCALAR_TYPE,
+            SIMD_STRIDE>
     {
     private:
         int mLength;

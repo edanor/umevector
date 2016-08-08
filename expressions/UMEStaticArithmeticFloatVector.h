@@ -35,10 +35,11 @@ namespace VECTOR {
 
     /* Static vector template. This template*/
     template<typename SCALAR_TYPE, int SIMD_STRIDE = 4, int VEC_LEN = DYNAMIC_LENGTH>
-    class FloatVector : public ArithmeticFloatVectorInterface<
-        FloatVector<SCALAR_TYPE, SIMD_STRIDE, VEC_LEN>,
-        SCALAR_TYPE,
-        SIMD_STRIDE>
+    class FloatVector : 
+        public FloatExpressionInterface<
+            FloatVector<SCALAR_TYPE, SIMD_STRIDE, VEC_LEN>,
+            SCALAR_TYPE,
+            SIMD_STRIDE>
     {
     public:
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;

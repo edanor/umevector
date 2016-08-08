@@ -35,7 +35,7 @@ namespace VECTOR {
 
     /* Static vector template. This template*/
     template<typename SCALAR_TYPE, int SIMD_STRIDE = 4, int VEC_LEN = DYNAMIC_LENGTH>
-    class UintVector : public ArithmeticUintVectorInterface<
+    class UintVector : public UintExpressionInterface<
         UintVector<SCALAR_TYPE, SIMD_STRIDE, VEC_LEN>,
         SCALAR_TYPE,
         SIMD_STRIDE>

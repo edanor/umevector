@@ -29,12 +29,12 @@
 //
 // ***This file has been automatically generated***
 //
-#ifndef UME_FLOAT_VECTOR_INTERFACE_H_
-#define UME_FLOAT_VECTOR_INTERFACE_H_
+#ifndef UME_UINT_EXPRESSION_INTERFACE_H_
+#define UME_UINT_EXPRESSION_INTERFACE_H_
 
 #include <cassert>
 
-#include "UMEVectorExpressions.h"
+#include "../UMEVectorExpressions.h"
 
 namespace UME {
 namespace VECTOR {
@@ -43,10 +43,10 @@ namespace VECTOR {
         typename DERIVED_VECTOR_TYPE,
         typename SCALAR_TYPE,
         int SIMD_STRIDE>
-    class ArithmeticFloatVectorInterface :
+    class UintExpressionInterface :
         public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE> {
     protected:
-        ~ArithmeticFloatVectorInterface() {}
+        ~UintExpressionInterface() {}
 
     public:
         // Can we make this private?
