@@ -57,11 +57,16 @@ namespace VECTOR {
         UME_FORCE_INLINE FloatVector() {}
 
     public:
-        // p should be properly aligned!
+        // pointer should be properly aligned!
         UME_FORCE_INLINE FloatVector(SCALAR_TYPE *p) : elements(p) {
         }
+
+        UME_FORCE_INLINE FloatVector(FloatVector & origin) {
+            elements = origin.elements;
+        }
+
         UME_FORCE_INLINE FloatVector(FloatVector && origin) {
-            for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
+            elements = origin.elements;
         }
 
         template<typename E>
@@ -75,7 +80,7 @@ namespace VECTOR {
                 t0.store(&elements[i]);
             }
 
-            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
                 t1.store(&elements[i]);
             }

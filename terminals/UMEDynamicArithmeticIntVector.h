@@ -69,6 +69,11 @@ namespace VECTOR {
             mLength(length), elements(values) {
         }
 
+        UME_FORCE_INLINE IntVector(IntVector & origin) {
+            elements = origin.elements;
+            mLength = origin.mLength;
+        }
+
         UME_FORCE_INLINE IntVector(IntVector && origin) {
             elements = origin.elements;
             mLength = origin.mLength;
@@ -96,20 +101,20 @@ namespace VECTOR {
             return t0;
         }
 
-        UME_FORCE_INLINE IntVector& operator= (IntVector&& origin) {
-            for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
-            return *this;
-        }
-
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
         UME_FORCE_INLINE IntVector& operator= (IntVector & origin) {
             for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
             return *this;
         }
 
+        UME_FORCE_INLINE IntVector& operator= (IntVector&& origin) {
+            for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
+            return *this;
+        }
+
         // Initialize with expression template evaluation
         template<typename E>
-        UME_FORCE_INLINE IntVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
+        UME_FORCE_INLINE IntVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> & vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -125,6 +130,23 @@ namespace VECTOR {
             }
             return *this;
         }
+        template<typename E>
+        UME_FORCE_INLINE IntVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
+        {
+            // Need to reinterpret vec to E to propagate to proper expression
+            // evaluator.
+            E & reinterpret_vec = static_cast<E &>(vec);
+            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
+                t0.store(&elements[i]);
+            }
+
+            for (int i = LOOP_PEEL_OFFSET(); i < mLength; i++) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
+                t1.store(&elements[i]);
+            }
+            return *this;
+        }
 
         UME_FORCE_INLINE IntVector& operator= (SCALAR_TYPE x) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
@@ -133,13 +155,6 @@ namespace VECTOR {
             }
             for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
                 elements[i] = x;
-            }
-            return *this;
-        }
-
-        UME_FORCE_INLINE IntVector& operator= (Scalar<SCALAR_TYPE, SIMD_STRIDE> & x) {
-            for (int i = 0; i < LENGTH(); i++) {
-                elements[i] = x[i];
             }
             return *this;
         }

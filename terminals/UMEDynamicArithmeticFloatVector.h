@@ -64,9 +64,14 @@ namespace VECTOR {
         UME_FORCE_INLINE FloatVector() {}
 
     public:
-        // p should be properly aligned!
+        // pointer should be properly aligned!
         UME_FORCE_INLINE FloatVector(int length, SCALAR_TYPE *values) :
             mLength(length), elements(values) {
+        }
+
+        UME_FORCE_INLINE FloatVector(FloatVector & origin) {
+            elements = origin.elements;
+            mLength = origin.mLength;
         }
 
         UME_FORCE_INLINE FloatVector(FloatVector && origin) {
@@ -98,11 +103,12 @@ namespace VECTOR {
 
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
         UME_FORCE_INLINE FloatVector& operator= (FloatVector & origin) {
-            for (int i = 0; i < mLength; i++) elements[i] = origin.elements[i];
+            for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
             return *this;
         }
+
         UME_FORCE_INLINE FloatVector& operator= (FloatVector&& origin) {
-            for (int i = 0; i < mLength; i++) elements[i] = origin.elements[i];
+            for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
             return *this;
         }
 
@@ -147,22 +153,11 @@ namespace VECTOR {
             for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 t0.store(&elements[i]);
             }
-            for (int i = LOOP_PEEL_OFFSET(); i < mLength(); i++) {
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
                 elements[i] = x;
             }
             return *this;
         }
-        /*
-        UME_FORCE_INLINE FloatVector& operator= (Scalar<SCALAR_TYPE, SIMD_STRIDE> & x) {
-            UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x.evaluate_scalar());
-            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
-                t0.store(&elements[i]);
-            }
-            for (int i = LOOP_PEEL_OFFSET(); i < mLength(); i++) {
-                elements[i] = x;
-            }
-            return *this;
-        }*/
     };
 
 }

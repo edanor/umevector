@@ -73,7 +73,7 @@ namespace VECTOR {
                 _value = A.hmax();
                 for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
                     SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
-                    _value  t1[0];
+                    _value = t1[0];
                 }
                 _evaluated = true;
             }
@@ -93,7 +93,7 @@ namespace VECTOR {
                 _value = A.hmax();
                 for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
                     SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
-                    _value  t1[0];
+                    _value = t1[0];
                 }
                 _evaluated = true;
             }
@@ -111,7 +111,7 @@ namespace VECTOR {
             SCALAR_TYPE B = A.hmax();
             for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
                 SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
-                B  t1[0];
+                B = t1[0];
             }
             return B;
         }

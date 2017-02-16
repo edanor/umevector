@@ -33,10 +33,8 @@
 namespace UME {
 namespace VECTOR {
 
-#define DEFAULT_INT_VECTOR_SIMD_STRIDE 4
-
     /* Static vector template. This template*/
-    template<typename SCALAR_TYPE, int SIMD_STRIDE = DEFAULT_INT_VECTOR_SIMD_STRIDE, int VEC_LEN = UME_DYNAMIC_LENGTH>
+    template<typename SCALAR_TYPE, int SIMD_STRIDE = 4, int VEC_LEN = UME_DYNAMIC_LENGTH>
     class IntVector : 
         public IntExpressionInterface<
             IntVector<SCALAR_TYPE, SIMD_STRIDE, VEC_LEN>,
@@ -59,12 +57,17 @@ namespace VECTOR {
         UME_FORCE_INLINE IntVector() {}
 
     public:
-        // p should be properly aligned!
+        // pointer should be properly aligned!
         UME_FORCE_INLINE IntVector(SCALAR_TYPE *p) : elements(p) {
         }
+
+        UME_FORCE_INLINE IntVector(IntVector & origin) {
+            elements = origin.elements;
+        }
+/*
         UME_FORCE_INLINE IntVector(IntVector && origin) {
             for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
-        }
+        }*/
 
         template<typename E>
         UME_FORCE_INLINE IntVector(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
@@ -116,6 +119,7 @@ namespace VECTOR {
         // different allocation method, the data needs to be copied from stack-organized
         // to heap-organized. 
         UME_FORCE_INLINE operator IntVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH>() {
+            // TODO:
             // Create dynamic Row vector, and copy data
             IntVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> temp(LENGTH());
             //memcpy(temp.elements, elements, LENGTH()*sizeof(SCALAR_TYPE));

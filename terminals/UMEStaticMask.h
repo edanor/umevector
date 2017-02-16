@@ -30,7 +30,7 @@
 #ifndef UME_STATIC_MASK_H_
 #define UME_STATIC_MASK_H_
 
-#include "expressions/UMELogicalExpressionInterface.h"
+#include "../expressions/UMELogicalExpressionInterface.h"
 
 namespace UME {
 namespace VECTOR {

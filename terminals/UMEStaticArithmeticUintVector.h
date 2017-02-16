@@ -35,10 +35,11 @@ namespace VECTOR {
 
     /* Static vector template. This template*/
     template<typename SCALAR_TYPE, int SIMD_STRIDE = 4, int VEC_LEN = UME_DYNAMIC_LENGTH>
-    class UintVector : public UintExpressionInterface<
-        UintVector<SCALAR_TYPE, SIMD_STRIDE, VEC_LEN>,
-        SCALAR_TYPE,
-        SIMD_STRIDE>
+    class UintVector : 
+        public UintExpressionInterface<
+            UintVector<SCALAR_TYPE, SIMD_STRIDE, VEC_LEN>,
+            SCALAR_TYPE,
+            SIMD_STRIDE>
     {
     public:
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
@@ -52,15 +53,20 @@ namespace VECTOR {
 
         SCALAR_TYPE *elements;
     private:
+        // Vector class should be intialized with proper user-managed memory buffer.
         UME_FORCE_INLINE UintVector() { }
 
     public:
-        UME_FORCE_INLINE UintVector(SCALAR_TYPE x) {
-            for (int i = 0; i < VEC_LEN; i++) elements[i] = x;
+        // pointer should be properly aligned!
+        UME_FORCE_INLINE UintVector(SCALAR_TYPE *p) : elements(p) {
         }
 
-        // p should be properly aligned!
-        UME_FORCE_INLINE UintVector(SCALAR_TYPE *p) : elements(p) {
+        UME_FORCE_INLINE UintVector(UintVector & origin) {
+            elements = origin.elements;
+        }
+
+        UME_FORCE_INLINE UintVector(UintVector && origin) {
+            elements = origin.elements;
         }
 
         template<typename E>
@@ -74,7 +80,7 @@ namespace VECTOR {
                 t0.store(&elements[i]);
             }
 
-            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
                 t1.store(&elements[i]);
             }
@@ -115,13 +121,18 @@ namespace VECTOR {
         UME_FORCE_INLINE operator UintVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH>() {
             // TODO:
             // Create dynamic Row vector, and copy data
-            UintVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> temp(VEC_LEN);
-            //memcpy(temp.elements, elements, VEC_LEN*sizeof(SCALAR_TYPE));
+            UintVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> temp(LENGTH());
+            //memcpy(temp.elements, elements, LENGTH()*sizeof(SCALAR_TYPE));
             return temp;
         }
 
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
         UME_FORCE_INLINE UintVector& operator= (UintVector & origin) {
+            for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
+            return *this;
+        }
+
+        UME_FORCE_INLINE UintVector& operator= (UintVector&& origin) {
             for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
             return *this;
         }
@@ -146,7 +157,7 @@ namespace VECTOR {
                 t0.store(&elements[i]);
             }
 
-            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
                 t1.store(&elements[i]);
             }
@@ -169,7 +180,7 @@ namespace VECTOR {
                 t0.store(&elements[i]);
             }
 
-            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
                 UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
                 t1.store(&elements[i]);
             }
@@ -184,7 +195,7 @@ namespace VECTOR {
             for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 t0.store(&elements[i]);
             }
-            for (int i = LOOP_PEEL_OFFSET(); i < VEC_LEN; i++) {
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
                 elements[i] = x;
             }
             return *this;
@@ -193,7 +204,7 @@ namespace VECTOR {
         // Copy values from memory location
         // TODO: can this be done using lazy evaluation?
         UME_FORCE_INLINE UintVector& operator= (SCALAR_TYPE* x) {
-            for (int i = 0; i < VEC_LEN; i++) {
+            for (int i = 0; i < LENGTH(); i++) {
                 elements[i] = x[i];
             }
             return *this;

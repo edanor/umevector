@@ -32,7 +32,7 @@
 
 #include <random>
 
-#include <UMEVector.h>
+#include "../UMEVector.h"
 
 extern int g_totalTests;
 extern int g_totalFailed;

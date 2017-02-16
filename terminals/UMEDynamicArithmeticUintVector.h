@@ -50,7 +50,7 @@ namespace VECTOR {
 
     public:
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
-        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1>      SIMD1_TYPE;
+        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD1_TYPE;
 
         UME_FORCE_INLINE int LENGTH() const { return mLength; }
         UME_FORCE_INLINE int LOOP_COUNT() const { return mLength / SIMD_STRIDE; }
@@ -60,13 +60,18 @@ namespace VECTOR {
 
         SCALAR_TYPE* elements;
     private:
-        UintVector() {}
+        // Vector class should be intialized with proper user-managed memory buffer.
+        UME_FORCE_INLINE UintVector() {}
 
     public:
-
+        // pointer should be properly aligned!
         UME_FORCE_INLINE UintVector(int length, SCALAR_TYPE *values) :
-            mLength(length), elements(values)
-        {
+            mLength(length), elements(values) {
+        }
+
+        UME_FORCE_INLINE UintVector(UintVector & origin) {
+            elements = origin.elements;
+            mLength = origin.mLength;
         }
 
         UME_FORCE_INLINE UintVector(UintVector && origin) {
@@ -96,23 +101,37 @@ namespace VECTOR {
             return t0;
         }
 
-        UintVector& operator= (UintVector&& origin) {
-            elements = origin.elements;
+        // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
+        UME_FORCE_INLINE UintVector& operator= (UintVector & origin) {
+            for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
             return *this;
         }
 
-        UintVector& operator= (UintVector & origin) {
-            assert(mLength == origin.mLength);
-            for (int i = 0; i < mLength;i++) {
-                elements[i] = origin.elements[i];
-            }
+        UME_FORCE_INLINE UintVector& operator= (UintVector&& origin) {
+            for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
             return *this;
         }
 
         // Initialize with expression template evaluation
         template<typename E>
-        //Vector(ArithmeticExpression<E> & vec) {
-        UintVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
+        UME_FORCE_INLINE UintVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> & vec)
+        {
+            // Need to reinterpret vec to E to propagate to proper expression
+            // evaluator.
+            E & reinterpret_vec = static_cast<E &>(vec);
+            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
+                t0.store(&elements[i]);
+            }
+
+            for (int i = LOOP_PEEL_OFFSET(); i < mLength; i++) {
+                UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
+                t1.store(&elements[i]);
+            }
+            return *this;
+        }
+        template<typename E>
+        UME_FORCE_INLINE UintVector<SCALAR_TYPE, SIMD_STRIDE, UME_DYNAMIC_LENGTH> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -129,20 +148,13 @@ namespace VECTOR {
             return *this;
         }
 
-        UintVector& operator= (SCALAR_TYPE x) {
+        UME_FORCE_INLINE UintVector& operator= (SCALAR_TYPE x) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
             for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 t0.store(&elements[i]);
             }
-            for (int i = LOOP_PEEL_OFFSET(); i < mLength(); i++) {
+            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
                 elements[i] = x;
-            }
-            return *this;
-        }
-
-        UintVector& operator= (SCALAR_TYPE* x) {
-            for (int i = 0; i < mLength(); i++) {
-                elements[i] = x[i];
             }
             return *this;
         }
