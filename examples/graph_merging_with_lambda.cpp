@@ -28,7 +28,16 @@
 //  7th Framework programme Marie Curie Actions under grant PITN-GA-2012-316596".
 //
 
-// This example shows how to allow
+// This example shows how to attach user-defined lambda function to an
+// evaluation graph defined by 4th order Runge-Kutta method.
+// In this particular case we have two classes:
+//   FrameworkClass - implementing what could be a content of some
+//                  numerical toolkit or a framework, implementing
+//                  a generalized RK methods.
+//
+//   UserClass -    implemented by a hypothetical user and using the
+//                  toolkit to solve RK4 for user-specific function,
+//                  defined as a lambda expression.
 
 #include "../UMEVector.h"
 
@@ -43,21 +52,22 @@ float randomValue(std::mt19937 & generator) {
     return dist(generator);
 }
 
-// This class is an example of a class defined within a framework. This could
-// be a standalone function as well. In this case only the member function has
-// to be a template to access derived type.
-// The class implements a very simple solver for Runge-Kutta equation solver.
+// This class is an example of a class defined within some framework. This could
+// be standalone functions as well. For simplicity of the example, only the
+// lambda function type is passed as a template parameter.
 class FrameworkClass {
 private:
     // RK internal state
  
 public:
-    // RK4 solver
-    //  result - vector object mapped to user-provided result buffer
-    //  x - user-defined 
-    //  userFunc - user defined lambda function to be evaluated
+    // Vectorized RK4 solver
+    //  result - user-managed results vector
+    //  x - user-managed input vector
+    //  y - user-managed output vector
+    //  dx - timestep
+    //  f - user provided lambda function to be evaluated
     template<typename USER_LAMBDA_T>
-    UME_FORCE_INLINE void rk4(
+    UME_FORCE_INLINE void rk4_vectorized(
         UME::VECTOR::Vector<float, STRIDE, VEC_LEN> & result,
         UME::VECTOR::Vector<float, STRIDE, VEC_LEN> x,
         UME::VECTOR::Vector<float, STRIDE, VEC_LEN> y,
@@ -71,8 +81,6 @@ public:
         UME::VECTOR::Scalar<float, STRIDE> two(2.0f);
         UME::VECTOR::Scalar<float, STRIDE> sixth(1.0f / 6.0f);
 
-        // Also bind the function parameters so that they persist through expression resolution.
-
         // Implement RK4 algorithm - very straightforward process.
         // the user function is here attached as a fragment of computation
         // graph, and it can be optimized for each 'k' independantly.
@@ -82,10 +90,14 @@ public:
         auto k4 = dx_s * f(x + dx_s, y + k3 * dx_s);
 
         // Merge into full computational graph and start evaluation.
-        auto t0 = y + sixth * (k1 + two * k2 + two * k3 + k4);
-        result = t0;
+        result = y + sixth * (k1 + two * k2 + two * k3 + k4);
     }
 
+    // Scalar RK4 solver
+    //  x - input
+    //  y - user-managed output vector
+    //  dx - timestep
+    //  f - user provided lambda function to be evaluated
     template<typename USER_LAMBDA_T>
     UME_FORCE_INLINE float rk4_scalar(
         float x,
@@ -116,11 +128,10 @@ public:
     }
 };
 
-
 // This class is what user defines in his code. The class makes use of 
 // the FrameworkClass to access domain specific functionality, and UME::VECTOR
 // to access vector EDSL.
-class UserClass 
+class UserClass
 {
 private:
     // Use framework class to do some computation
@@ -187,26 +198,24 @@ public:
             UME::VECTOR::Scalar<float, STRIDE> timestep_s(timestep);
             
             // Calculate the derivative
-            framework.rk4(
+            framework.rk4_vectorized(
                 result_vec,
                 x_vec,
                 y_vec,
                 timestep,
                 userFunction);
 
+            std::cout << "Iteration: " << i << "\n";
+            for (int i = 0; i < 5; i++) {
+                std::cout <<
+                    "    x(" << x_vec.elements[i] << ") "
+                    "y(" << y_vec.elements[i] << ") "
+                    "res(" << result_vec.elements[i] << ")\n";
+            }
+
             // Increment x with the timestep
             next_x_vec = x_vec + timestep_s;
 
-            /* 
-            // Useful for debugging
-            std::cout << "Iteration: " << i << "\n";
-            for (int i = 0; i < 5; i++) {
-                std::cout << 
-                    "    x(" << x_vec.elements[i] << ") "
-                    "y("     << y_vec.elements[i] << ") "
-                    "res("   << result_vec.elements[i] << ")\n";
-            }*/
-            
             // Swap the buffers
             y_swap.swap();
             x_swap.swap(); 
@@ -230,11 +239,6 @@ public:
                     userFunction);
             }
 
-            // Increment x with the timestep
-            x_vec[i] = x_vec[i] + timestep;
-
-            /*
-            // Useful for debugging
             std::cout << "Iteration: " << i << "\n";
             for (int j = 0; j < 5; i++) {
                 std::cout <<
@@ -242,15 +246,16 @@ public:
                     "y(" << y_vec[i] << ") "
                     "res(" << result_vec[i] << ")\n";
             }
-            */
+
+            // Increment x with the timestep
+            x_vec[i] = x_vec[i] + timestep;
+
             // Swap only the y buffer. X already holds new value.
             y_swap.swap();
         }
     }
 
 };
-
-
 
 int main()
 {
