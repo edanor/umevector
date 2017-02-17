@@ -52,10 +52,20 @@ namespace VECTOR {
         bool *elements;
 
     private:
-        MaskVector() { }
-
+        UME_FORCE_INLINE MaskVector() {}
+        
     public:
         MaskVector(bool *p) : elements(p) {}
+
+        UME_FORCE_INLINE MaskVector(MaskVector & origin) {
+            elements = origin.elements;
+            origin.elements = NULL;
+        }
+
+        UME_FORCE_INLINE MaskVector(MaskVector && origin) {
+            elements = origin.elements;
+            origin.elements = NULL;
+        }
 
         template<typename E>
         MaskVector(LogicalExpression<SIMD_STRIDE, E> && vec)

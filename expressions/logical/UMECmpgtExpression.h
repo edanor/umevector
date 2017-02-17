@@ -44,24 +44,18 @@ namespace VECTOR {
         typedef typename UME::SIMD::SIMDVecMask<SIMD_STRIDE> SIMD_MASK_TYPE;
         typedef typename UME::SIMD::SIMDVecMask<1> SIMD_1_MASK_TYPE;
 
-        E1 & _e1;
-        E2 & _e2;
+        E1 _e1;
+        E2 _e2;
 
     public:
-        UME_FORCE_INLINE LogicalCMPGTExpression(E1 & e1, E2 & e2) :
+        UME_FORCE_INLINE LogicalCMPGTExpression(E1 e1, E2 e2) :
             _e1(e1), _e2(e2) {}
 
-        UME_FORCE_INLINE LogicalCMPGTExpression(E1 & e1, E2 && e2) :
-            _e1(e1),
-            _e2(std::move(e2)) {}
+        UME_FORCE_INLINE LogicalCMPGTExpression(LogicalCMPGTExpression<SIMD_STRIDE, E1, E2> & origin) :
+            _e1(origin._e1), _e2(origin._e2) {}
 
-        UME_FORCE_INLINE LogicalCMPGTExpression(E1 && e1, E2 & e2) :
-            _e1(std::move(e1)),
-            _e2(e2) {}
-
-        UME_FORCE_INLINE LogicalCMPGTExpression(E1 && e1, E2 && e2) :
-            _e1(std::move(e1)),
-            _e2(std::move(e2)) {}
+        UME_FORCE_INLINE LogicalCMPGTExpression(LogicalCMPGTExpression<SIMD_STRIDE, E1, E2> && origin) :
+            _e1(std::move(origin._e1)), _e2(std::move(origin._e2)) {}
 
         UME_FORCE_INLINE SIMD_MASK_TYPE evaluate_SIMD(int index) {
             auto t0 = _e1.evaluate_SIMD(index);

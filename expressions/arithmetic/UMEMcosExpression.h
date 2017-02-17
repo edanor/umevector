@@ -44,25 +44,18 @@ namespace VECTOR {
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
-        E1 & _e1;
-        E_MASK & _e_mask;
+        E1 _e1;
+        E_MASK _e_mask;
 
     public:
-        UME_FORCE_INLINE ArithmeticMCOSExpression(E1 & e1, E_MASK & e_mask) :
-            _e1(e1),
-            _e_mask(e_mask) {}
+        UME_FORCE_INLINE ArithmeticMCOSExpression(E1 e1, E_MASK e_mask) :
+            _e1(e1), _e_mask(e_mask) {}
 
-        UME_FORCE_INLINE ArithmeticMCOSExpression(E1 && e1, E_MASK & e_mask) :
-            _e1(std::move(e1)),
-            _e_mask(e_mask) {}
+        UME_FORCE_INLINE ArithmeticMCOSExpression(ArithmeticMCOSExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK> & origin) :
+            _e1(origin._e1), _e_mask(origin._e_mask) {}
 
-        UME_FORCE_INLINE ArithmeticMCOSExpression(E1 & e1, E_MASK && e_mask) :
-            _e1(e1),
-            _e_mask(std::move(e_mask)) {}
-
-        UME_FORCE_INLINE ArithmeticMCOSExpression(E1 && e1, E_MASK && e_mask) :
-            _e1(std::move(e1)),
-            _e_mask(std::move(e_mask)) {}
+        UME_FORCE_INLINE ArithmeticMCOSExpression(ArithmeticMCOSExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK> && origin) :
+            _e1(std::move(origin._e1)), _e_mask(std::move(origin._e_mask)) {}
 
         UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)
         {

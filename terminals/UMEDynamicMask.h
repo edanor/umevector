@@ -41,7 +41,7 @@ namespace VECTOR {
     {
     private:
         int mLength;
-
+        
     public:
         typedef UME::SIMD::SIMDVecMask<SIMD_STRIDE>  SIMD_TYPE;
         typedef UME::SIMD::SIMDVecMask<1>       SIMD1_TYPE;
@@ -50,24 +50,27 @@ namespace VECTOR {
         UME_FORCE_INLINE int LOOP_COUNT() const { return mLength / SIMD_STRIDE; }
         UME_FORCE_INLINE int PEEL_COUNT() const { return mLength % SIMD_STRIDE; }
         UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT() * SIMD_STRIDE; }
-        //UME_FORCE_INLINE int SIMD_STRIDE() const { return SIMD_STRIDE; }
 
         bool* elements;
 
-        MaskVector(int length) : mLength(length)
+    private:
+        UME_FORCE_INLINE MaskVector() {}
+        
+    public:
+        UME_FORCE_INLINE MaskVector(int length) : mLength(length)
         {
             elements = (bool*)UME::DynamicMemory::AlignedMalloc(
                 length*sizeof(bool),
                 SIMD_TYPE::alignment());
         }
-        MaskVector(int length, bool value) : mLength(length)
+        UME_FORCE_INLINE MaskVector(int length, bool value) : mLength(length)
         {
             elements = (bool*)UME::DynamicMemory::AlignedMalloc(
                 length*sizeof(bool),
                 SIMD_TYPE::alignment());
             for (int i = 0; i < length; i++) elements[i] = value;
         }
-        MaskVector(int length, bool *p) : mLength(length)
+        UME_FORCE_INLINE MaskVector(int length, bool *p) : mLength(length)
         {
             elements = (bool*)UME::DynamicMemory::AlignedMalloc(
                 length*sizeof(bool),
@@ -75,13 +78,19 @@ namespace VECTOR {
             for (int i = 0; i < length; i++) elements[i] = p[i];
         }
 
-        MaskVector(MaskVector && origin) {
+        UME_FORCE_INLINE MaskVector(MaskVector & origin) {
             elements = origin.elements;
             mLength = origin.mLength;
             origin.elements = NULL;
         }
 
-        ~MaskVector() {
+        UME_FORCE_INLINE MaskVector(MaskVector && origin) {
+            elements = origin.elements;
+            mLength = origin.mLength;
+            origin.elements = NULL;
+        }
+
+        UME_FORCE_INLINE ~MaskVector() {
             UME::DynamicMemory::AlignedFree(elements);
         }
 
