@@ -44,11 +44,18 @@ namespace VECTOR {
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
-        E1 & _e1;
+        E1 _e1;
 
     public:
 
-        ArithmeticPOSTDECExpression(E1 & e1) : _e1(e1) {}
+        UME_FORCE_INLINE ArithmeticPOSTDECExpression(E1 e1) :
+            _e1(e1) {}
+
+        UME_FORCE_INLINE ArithmeticPOSTDECExpression(ArithmeticPOSTDECExpression<SCALAR_TYPE, SIMD_STRIDE, E1> & origin) :
+            _e1(origin._e1) {}
+
+        UME_FORCE_INLINE ArithmeticPOSTDECExpression(ArithmeticPOSTDECExpression<SCALAR_TYPE, SIMD_STRIDE, E1> && origin) :
+            _e1(std::move(origin._e1)) {}
 
         inline SIMD_TYPE evaluate_SIMD(int index)
         {

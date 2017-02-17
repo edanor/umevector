@@ -59,12 +59,10 @@ namespace VECTOR {
 
         UME_FORCE_INLINE MaskVector(MaskVector & origin) {
             elements = origin.elements;
-            origin.elements = NULL;
         }
 
         UME_FORCE_INLINE MaskVector(MaskVector && origin) {
             elements = origin.elements;
-            origin.elements = NULL;
         }
 
         template<typename E>

@@ -44,52 +44,20 @@ namespace VECTOR {
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
-        E1 & _e1;
-        E2 & _e2;
-        E3 & _e3;
+        E1 _e1;
+        E2 _e2;
+        E3 _e3;
 
     public:
-        UME_FORCE_INLINE ArithmeticFSUBMULExpression(E1 & e1,
-            E2 & e2,
-            E3 & e3) :
-            _e1(e1),
-            _e2(e2),
-            _e3(e3) {}
 
-        UME_FORCE_INLINE ArithmeticFSUBMULExpression(E1 && e1, E2 & e2, E3 & e3) :
-            _e1(std::move(e1)),
-            _e2(e2),
-            _e3(e3) {}
+        UME_FORCE_INLINE ArithmeticFSUBMULExpression(E1 e1, E2 e2, E3 e3) :
+            _e1(e1), _e2(e2), _e3(e3) {}
 
-        UME_FORCE_INLINE ArithmeticFSUBMULExpression(E1 & e1, E2 && e2, E3 & e3) :
-            _e1(e1),
-            _e2(std::move(e2)),
-            _e3(e3) {}
+        UME_FORCE_INLINE ArithmeticFSUBMULExpression(ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3> & origin) :
+            _e1(origin._e1), _e2(origin._e2), _e3(origin._e3) {}
 
-        UME_FORCE_INLINE ArithmeticFSUBMULExpression(E1 & e1, E2 & e2, E3 && e3) :
-            _e1(e1),
-            _e2(e2),
-            _e3(std::move(e3)) {}
-
-        UME_FORCE_INLINE ArithmeticFSUBMULExpression(E1 && e1, E2 && e2, E3 & e3) :
-            _e1(std::move(e1)),
-            _e2(std::move(e2)),
-            _e3(e3) {}
-
-        UME_FORCE_INLINE ArithmeticFSUBMULExpression(E1 && e1, E2 & e2, E3 && e3) :
-            _e1(std::move(e1)),
-            _e2(e2),
-            _e3(std::move(e3)) {}
-
-        UME_FORCE_INLINE ArithmeticFSUBMULExpression(E1 & e1, E2 && e2, E3 && e3) :
-            _e1(e1),
-            _e2(std::move(e2)),
-            _e3(std::move(e3)) {}
-
-        UME_FORCE_INLINE ArithmeticFSUBMULExpression(E1 && e1, E2 && e2, E3 && e3) :
-            _e1(std::move(e1)),
-            _e2(std::move(e2)),
-            _e3(std::move(e3)) {}
+        UME_FORCE_INLINE ArithmeticFSUBMULExpression(ArithmeticFSUBMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2, E3> && origin) :
+            _e1(std::move(origin._e1)), _e2(std::move(origin._e2)), _e3(std::move(origin._e3)) {}
 
         UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index) {
             auto t0 = _e1.evaluate_SIMD(index);

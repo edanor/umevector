@@ -81,13 +81,11 @@ namespace VECTOR {
         UME_FORCE_INLINE MaskVector(MaskVector & origin) {
             elements = origin.elements;
             mLength = origin.mLength;
-            origin.elements = NULL;
         }
 
         UME_FORCE_INLINE MaskVector(MaskVector && origin) {
             elements = origin.elements;
             mLength = origin.mLength;
-            origin.elements = NULL;
         }
 
         UME_FORCE_INLINE ~MaskVector() {
