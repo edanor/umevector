@@ -34,7 +34,7 @@
 // on the algorithm and hardware used. This default is provided
 // so that it is possible to simplify some code examples, rather than
 // as a hard setting.
-#define UME_DEFAULT_SIMD_STRIDE 4
+#define UME_DEFAULT_SIMD_STRIDE 8
 
 // Vectors of DYNAMIC_LENGTH may have lengths that
 // are unknowns at compile time. While the internal behaviour 

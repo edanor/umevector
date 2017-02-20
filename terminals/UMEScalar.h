@@ -33,7 +33,7 @@
 namespace UME {
 namespace VECTOR {
 
-    template<typename SCALAR_TYPE, int SIMD_STRIDE>
+    template<typename SCALAR_TYPE, int SIMD_STRIDE = UME_DEFAULT_SIMD_STRIDE>
     class Scalar : public ArithmeticExpression < SCALAR_TYPE, SIMD_STRIDE, Scalar<SCALAR_TYPE, SIMD_STRIDE> >
     {
         const SCALAR_TYPE _e1;

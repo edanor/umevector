@@ -34,7 +34,7 @@ namespace UME {
 namespace VECTOR {
 
     /* Static vector template. This template*/
-    template<typename SCALAR_TYPE, int SIMD_STRIDE = 4, int VEC_LEN = UME_DYNAMIC_LENGTH>
+    template<typename SCALAR_TYPE, int SIMD_STRIDE = UME_DEFAULT_SIMD_STRIDE, int VEC_LEN = UME_DYNAMIC_LENGTH>
     class FloatVector : 
         public FloatExpressionInterface<
             FloatVector<SCALAR_TYPE, SIMD_STRIDE, VEC_LEN>,
