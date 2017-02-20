@@ -57,13 +57,6 @@ int main()
     const int ITERATIONS = 100;
     const int ARRAY_SIZE = 1000000;
 
-    std::cout << "The result is amount of time it takes to calculate polynomial of\n" 
-                 "order 16 (no zero-coefficients) of: " << ARRAY_SIZE << " elements.\n" 
-                 "All timing results in nanoseconds. \n"
-                 "Speedup calculated with scalar floating point result as reference.\n\n"
-                 "SIMD version uses following operations: \n"
-                 " ZERO-CONSTR, SET-CONSTR, LOAD, STORE, MULV, FMULADDV, ADDVA\n";
-
     TimingStatistics stats_scalar_single_f, stats_ume_single_f, stats_blas_single_f;
     
     std::cout << "Single execution:\n";
@@ -100,7 +93,7 @@ int main()
 
 
     // Chained execution
-    std::cout << "CHAINED SUM:\n";
+    std::cout << "Chained execution:\n";
     TimingStatistics stats_scalar_chained_f, stats_ume_chained_f, stats_blas_chained_f;    
     
     // SCALAR
