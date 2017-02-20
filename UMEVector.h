@@ -45,7 +45,7 @@
 // compiler to perform additional code optimizations.
 const int UME_DYNAMIC_LENGTH = -1;
 
-#include <UMESimd.h>
+#include <umesimd/UMESimd.h>
 
 #include "UMEVectorInterface.h"
 
