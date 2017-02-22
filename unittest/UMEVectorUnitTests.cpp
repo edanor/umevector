@@ -612,63 +612,60 @@ void testADDS_random_static()
     std::mt19937 gen(rd());
     {
         SCALAR_TYPE raw_a[VEC_LEN];
-        SCALAR_TYPE raw_b;
+        SCALAR_TYPE b;
         SCALAR_TYPE result[VEC_LEN];
         SCALAR_TYPE raw_c[VEC_LEN];
 
-        raw_b = randomValue<SCALAR_TYPE>(gen);
+        b = randomValue<SCALAR_TYPE>(gen);
         for (int i = 0; i < VEC_LEN; i++) {
             raw_a[i] = randomValue<SCALAR_TYPE>(gen);
-            result[i] = raw_a[i] + raw_b;
+            result[i] = raw_a[i] + b;
         }
 
         VEC_TYPE A(raw_a);
-        UME::VECTOR::Scalar<SCALAR_TYPE, SIMD_STRIDE> B(raw_b);
         VEC_TYPE C(raw_c);
 
-        C = A.add(B);
+        C = A.add(b);
 
         bool inRange = valuesInRange(result, raw_c, VEC_LEN, 0.01f);
         check_condition(inRange, std::string("ADDS"));
     }
     {
         SCALAR_TYPE raw_a[VEC_LEN];
-        SCALAR_TYPE raw_b;
+        SCALAR_TYPE b;
         SCALAR_TYPE result[VEC_LEN];
         SCALAR_TYPE raw_c[VEC_LEN];
 
-        raw_b = randomValue<SCALAR_TYPE>(gen);
+        b = randomValue<SCALAR_TYPE>(gen);
         for (int i = 0; i < VEC_LEN; i++) {
             raw_a[i] = randomValue<SCALAR_TYPE>(gen);
-            result[i] = raw_a[i] + raw_b;
+            result[i] = raw_a[i] + b;
         }
 
         VEC_TYPE A(raw_a);
-        UME::VECTOR::Scalar<SCALAR_TYPE, SIMD_STRIDE> B(raw_b);
         VEC_TYPE C(raw_c);
 
-        C = A + B;
+        C = A + b;
 
         bool inRange = valuesInRange(result, raw_c, VEC_LEN, 0.01f);
         check_condition(inRange, std::string("ADDS (operator + RHS scalar)"));
     }
     {
         SCALAR_TYPE raw_a[VEC_LEN];
-        SCALAR_TYPE raw_b;
+        SCALAR_TYPE b;
         SCALAR_TYPE result[VEC_LEN];
         SCALAR_TYPE raw_c[VEC_LEN];
 
-        raw_b = randomValue<SCALAR_TYPE>(gen);
+        b = randomValue<SCALAR_TYPE>(gen);
         for (int i = 0; i < VEC_LEN; i++) {
             raw_a[i] = randomValue<SCALAR_TYPE>(gen);
-            result[i] = raw_a[i] + raw_b;
+            result[i] = raw_a[i] + b;
         }
 
         VEC_TYPE A(raw_a);
-        UME::VECTOR::Scalar<SCALAR_TYPE, SIMD_STRIDE> B(raw_b);
         VEC_TYPE C(raw_c);
 
-        C = B + A;
+        C = b + A;
 
         bool inRange = valuesInRange(result, raw_c, VEC_LEN, 0.01f);
         check_condition(inRange, std::string("ADDS (operator + LHS scalar)"));
@@ -682,24 +679,23 @@ void testMADDS_random_static()
     std::mt19937 gen(rd());
     {
         SCALAR_TYPE raw_a[VEC_LEN];
-        SCALAR_TYPE raw_b;
+        SCALAR_TYPE b;
         SCALAR_TYPE result[VEC_LEN];
         SCALAR_TYPE raw_c[VEC_LEN];
         bool        raw_mask[VEC_LEN];
 
-        raw_b = randomValue<SCALAR_TYPE>(gen);
+        b = randomValue<SCALAR_TYPE>(gen);
         for (int i = 0; i < VEC_LEN; i++) {
             raw_a[i] = randomValue<SCALAR_TYPE>(gen);
             raw_mask[i] = randomValue<bool>(gen);
-            result[i] = raw_mask[i] ? raw_a[i] + raw_b : raw_a[i];
+            result[i] = raw_mask[i] ? raw_a[i] + b : raw_a[i];
         }
 
         VEC_TYPE A(raw_a);
-        UME::VECTOR::Scalar<SCALAR_TYPE, 4> B(raw_b);
         VEC_TYPE C(raw_c);
         MASK_TYPE mask(raw_mask);
 
-        C = A.add(mask, B);
+        C = A.add(mask, b);
 
         bool inRange = valuesInRange(result, raw_c, VEC_LEN, 0.01f);
         check_condition(inRange, std::string("MADDS"));
@@ -818,11 +814,11 @@ void testHADD_random_static()
         }
 
         VEC_TYPE A(raw_a);
-        SCALAR_TYPE B;
+        SCALAR_TYPE b;
 
-        B = A.hadd();
+        b = A.hadd();
 
-        bool inRange = valueInRange(result, B, 0.01f);
+        bool inRange = valueInRange(result, b, 0.01f);
         check_condition(inRange, std::string("HADD"));
     }
 }
@@ -1171,9 +1167,9 @@ int main() {
         UME::VECTOR::Vector<int32_t, 4, 100> A(rawA);
         UME::VECTOR::Vector<int32_t, 4, 100> C(rawC);
 
-        UME::VECTOR::Scalar<int32_t, 4> B(4);
+        int32_t b = 4;
 
-        C = A.lsh(B);
+        C = A.lsh(4);
     }
     {
         int32_t rawA[8], rawB[8], rawC[8];
@@ -1184,12 +1180,31 @@ int main() {
             rawC[i] = i + 16;
         }
 
-        UME::VECTOR::Vector<int32_t, 4, 8> A(rawA);
+        UME::VECTOR::Vector<int32_t, UME_DEFAULT_SIMD_STRIDE, 8> A(rawA);
         UME::VECTOR::Vector<int32_t> B (8, rawB);
         UME::VECTOR::Vector<int32_t> C(8, rawC);
 
         A = B;
         B = A - (C + A);
+        }
+    {
+        int32_t rawA[8], rawB[8], rawC[8], rawD[8];
 
+        for (int i = 0; i < 8; i++) {
+            rawA[i] = i;
+            rawB[i] = i + 8;
+            rawC[i] = i + 16;
+            rawD[i] = 0;
+        }
+
+        UME::VECTOR::Vector<int32_t, UME_DEFAULT_SIMD_STRIDE, 8> A(rawA);
+        UME::VECTOR::Vector<int32_t> B(8, rawB);
+        UME::VECTOR::Vector<int32_t> C(8, rawC);
+        UME::VECTOR::Vector<int32_t> D(8, rawD);
+
+        A = B;
+        B = A - (C + A);
+
+        D = B.abs();
     }
 }

@@ -262,7 +262,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> add(T2 & srcB)
+            T2> add(T2 srcB)
         {
             return ArithmeticADDExpression<
                 SCALAR_TYPE,
@@ -271,18 +271,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > add(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> add(SCALAR_TYPE srcB)
         {
             return ArithmeticADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -290,7 +289,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> sadd(T2 & srcB)
+            T2> sadd(T2 srcB)
         {
             return ArithmeticSADDExpression<
                 SCALAR_TYPE,
@@ -299,18 +298,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticSADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > sadd(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> sadd(SCALAR_TYPE srcB)
         {
             return ArithmeticSADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -318,7 +316,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> mul(T2 & srcB)
+            T2> mul(T2 srcB)
         {
             return ArithmeticMULExpression<
                 SCALAR_TYPE,
@@ -327,18 +325,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > mul(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> mul(SCALAR_TYPE srcB)
         {
             return ArithmeticMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -346,7 +343,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> div(T2 & srcB)
+            T2> div(T2 srcB)
         {
             return ArithmeticDIVExpression<
                 SCALAR_TYPE,
@@ -355,18 +352,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > div(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> div(SCALAR_TYPE srcB)
         {
             return ArithmeticDIVExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -374,7 +370,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> sub(T2 & srcB)
+            T2> sub(T2 srcB)
         {
             return ArithmeticSUBExpression<
                 SCALAR_TYPE,
@@ -383,18 +379,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > sub(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> sub(SCALAR_TYPE srcB)
         {
             return ArithmeticSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -402,7 +397,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> ssub(T2 & srcB)
+            T2> ssub(T2 srcB)
         {
             return ArithmeticSSUBExpression<
                 SCALAR_TYPE,
@@ -411,18 +406,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticSSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > ssub(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> ssub(SCALAR_TYPE srcB)
         {
             return ArithmeticSSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -430,7 +424,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> max(T2 & srcB)
+            T2> max(T2 srcB)
         {
             return ArithmeticMAXExpression<
                 SCALAR_TYPE,
@@ -439,18 +433,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticMAXExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > max(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> max(SCALAR_TYPE srcB)
         {
             return ArithmeticMAXExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -458,7 +451,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> min(T2 & srcB)
+            T2> min(T2 srcB)
         {
             return ArithmeticMINExpression<
                 SCALAR_TYPE,
@@ -467,18 +460,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticMINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > min(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> min(SCALAR_TYPE srcB)
         {
             return ArithmeticMINExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -486,7 +478,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> band(T2 & srcB)
+            T2> band(T2 srcB)
         {
             return ArithmeticBANDExpression<
                 SCALAR_TYPE,
@@ -495,18 +487,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > band(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> band(SCALAR_TYPE srcB)
         {
             return ArithmeticBANDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -514,7 +505,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> bor(T2 & srcB)
+            T2> bor(T2 srcB)
         {
             return ArithmeticBORExpression<
                 SCALAR_TYPE,
@@ -523,18 +514,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > bor(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> bor(SCALAR_TYPE srcB)
         {
             return ArithmeticBORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -542,7 +532,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> bxor(T2 & srcB)
+            T2> bxor(T2 srcB)
         {
             return ArithmeticBXORExpression<
                 SCALAR_TYPE,
@@ -551,18 +541,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > bxor(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> bxor(SCALAR_TYPE srcB)
         {
             return ArithmeticBXORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -570,7 +559,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> bandnot(T2 & srcB)
+            T2> bandnot(T2 srcB)
         {
             return ArithmeticBANDNOTExpression<
                 SCALAR_TYPE,
@@ -579,18 +568,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticBANDNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > bandnot(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> bandnot(SCALAR_TYPE srcB)
         {
             return ArithmeticBANDNOTExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -598,7 +586,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> rem(T2 & srcB)
+            T2> rem(T2 srcB)
         {
             return ArithmeticREMExpression<
                 SCALAR_TYPE,
@@ -607,18 +595,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticREMExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > rem(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> rem(SCALAR_TYPE srcB)
         {
             return ArithmeticREMExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -626,7 +613,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> lsh(T2 & srcB)
+            T2> lsh(T2 srcB)
         {
             return ArithmeticLSHExpression<
                 SCALAR_TYPE,
@@ -635,18 +622,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticLSHExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > lsh(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> lsh(SCALAR_TYPE srcB)
         {
             return ArithmeticLSHExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -654,7 +640,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> rsh(T2 & srcB)
+            T2> rsh(T2 srcB)
         {
             return ArithmeticRSHExpression<
                 SCALAR_TYPE,
@@ -663,18 +649,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticRSHExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > rsh(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> rsh(SCALAR_TYPE srcB)
         {
             return ArithmeticRSHExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -682,7 +667,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> rol(T2 & srcB)
+            T2> rol(T2 srcB)
         {
             return ArithmeticROLExpression<
                 SCALAR_TYPE,
@@ -691,18 +676,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticROLExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > rol(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> rol(SCALAR_TYPE srcB)
         {
             return ArithmeticROLExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T2>
@@ -710,7 +694,7 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> ror(T2 & srcB)
+            T2> ror(T2 srcB)
         {
             return ArithmeticRORExpression<
                 SCALAR_TYPE,
@@ -719,18 +703,17 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE ArithmeticRORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > ror(T2 && srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> ror(SCALAR_TYPE srcB)
         {
             return ArithmeticRORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
         template<typename T_MASK, typename T2>
@@ -739,7 +722,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> blend(T_MASK & mask, T2 & srcB)
+            T2> blend(T_MASK mask, T2 srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
@@ -749,52 +732,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticBLENDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> blend(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> blend(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticBLENDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticBLENDExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> blend(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticBLENDExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticBLENDExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> blend(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticBLENDExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -803,7 +754,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> add(T_MASK & mask, T2 & srcB)
+            T2> add(T_MASK mask, T2 srcB)
         {
             return ArithmeticMADDExpression<
                 SCALAR_TYPE,
@@ -813,52 +764,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> add(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> add(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMADDExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> add(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMADDExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMADDExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> add(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMADDExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -867,7 +786,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> sadd(T_MASK & mask, T2 & srcB)
+            T2> sadd(T_MASK mask, T2 srcB)
         {
             return ArithmeticMSADDExpression<
                 SCALAR_TYPE,
@@ -877,52 +796,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMSADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> sadd(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> sadd(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMSADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMSADDExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> sadd(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMSADDExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMSADDExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> sadd(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMSADDExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -931,7 +818,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> mul(T_MASK & mask, T2 & srcB)
+            T2> mul(T_MASK mask, T2 srcB)
         {
             return ArithmeticMMULExpression<
                 SCALAR_TYPE,
@@ -941,52 +828,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> mul(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> mul(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMMULExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> mul(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMMULExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMMULExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> mul(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMMULExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -995,7 +850,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> div(T_MASK & mask, T2 & srcB)
+            T2> div(T_MASK mask, T2 srcB)
         {
             return ArithmeticMDIVExpression<
                 SCALAR_TYPE,
@@ -1005,52 +860,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> div(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> div(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMDIVExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMDIVExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> div(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMDIVExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMDIVExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> div(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMDIVExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -1059,7 +882,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> sub(T_MASK & mask, T2 & srcB)
+            T2> sub(T_MASK mask, T2 srcB)
         {
             return ArithmeticMSUBExpression<
                 SCALAR_TYPE,
@@ -1069,52 +892,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> sub(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> sub(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMSUBExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> sub(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMSUBExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMSUBExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> sub(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMSUBExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -1123,7 +914,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> ssub(T_MASK & mask, T2 & srcB)
+            T2> ssub(T_MASK mask, T2 srcB)
         {
             return ArithmeticMSSUBExpression<
                 SCALAR_TYPE,
@@ -1133,52 +924,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMSSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> ssub(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> ssub(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMSSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMSSUBExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> ssub(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMSSUBExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMSSUBExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> ssub(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMSSUBExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -1187,7 +946,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> max(T_MASK & mask, T2 & srcB)
+            T2> max(T_MASK mask, T2 srcB)
         {
             return ArithmeticMMAXExpression<
                 SCALAR_TYPE,
@@ -1197,52 +956,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMMAXExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> max(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> max(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMMAXExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMMAXExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> max(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMMAXExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMMAXExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> max(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMMAXExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -1251,7 +978,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> min(T_MASK & mask, T2 & srcB)
+            T2> min(T_MASK mask, T2 srcB)
         {
             return ArithmeticMMINExpression<
                 SCALAR_TYPE,
@@ -1261,52 +988,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMMINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> min(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> min(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMMINExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMMINExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> min(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMMINExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMMINExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> min(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMMINExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -1315,7 +1010,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> band(T_MASK & mask, T2 & srcB)
+            T2> band(T_MASK mask, T2 srcB)
         {
             return ArithmeticMBANDExpression<
                 SCALAR_TYPE,
@@ -1325,52 +1020,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> band(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> band(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMBANDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMBANDExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> band(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMBANDExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMBANDExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> band(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMBANDExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -1379,7 +1042,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> bor(T_MASK & mask, T2 & srcB)
+            T2> bor(T_MASK mask, T2 srcB)
         {
             return ArithmeticMBORExpression<
                 SCALAR_TYPE,
@@ -1389,52 +1052,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> bor(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> bor(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMBORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMBORExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> bor(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMBORExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMBORExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> bor(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMBORExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -1443,7 +1074,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> bxor(T_MASK & mask, T2 & srcB)
+            T2> bxor(T_MASK mask, T2 srcB)
         {
             return ArithmeticMBXORExpression<
                 SCALAR_TYPE,
@@ -1453,52 +1084,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> bxor(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> bxor(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMBXORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMBXORExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> bxor(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMBXORExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMBXORExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> bxor(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMBXORExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -1507,7 +1106,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> bandnot(T_MASK & mask, T2 & srcB)
+            T2> bandnot(T_MASK mask, T2 srcB)
         {
             return ArithmeticMBANDNOTExpression<
                 SCALAR_TYPE,
@@ -1517,52 +1116,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMBANDNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> bandnot(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> bandnot(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMBANDNOTExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMBANDNOTExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> bandnot(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMBANDNOTExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMBANDNOTExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> bandnot(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMBANDNOTExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -1571,7 +1138,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> lsh(T_MASK & mask, T2 & srcB)
+            T2> lsh(T_MASK mask, T2 srcB)
         {
             return ArithmeticMLSHExpression<
                 SCALAR_TYPE,
@@ -1581,52 +1148,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMLSHExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> lsh(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> lsh(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMLSHExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMLSHExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> lsh(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMLSHExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMLSHExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> lsh(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMLSHExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -1635,7 +1170,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> rsh(T_MASK & mask, T2 & srcB)
+            T2> rsh(T_MASK mask, T2 srcB)
         {
             return ArithmeticMRSHExpression<
                 SCALAR_TYPE,
@@ -1645,52 +1180,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMRSHExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> rsh(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> rsh(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMRSHExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMRSHExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> rsh(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMRSHExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMRSHExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> rsh(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMRSHExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -1699,7 +1202,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> rol(T_MASK & mask, T2 & srcB)
+            T2> rol(T_MASK mask, T2 srcB)
         {
             return ArithmeticMROLExpression<
                 SCALAR_TYPE,
@@ -1709,52 +1212,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMROLExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> rol(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> rol(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMROLExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMROLExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> rol(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMROLExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMROLExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> rol(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMROLExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T_MASK, typename T2>
@@ -1763,7 +1234,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> ror(T_MASK & mask, T2 & srcB)
+            T2> ror(T_MASK mask, T2 srcB)
         {
             return ArithmeticMRORExpression<
                 SCALAR_TYPE,
@@ -1773,52 +1244,20 @@ namespace VECTOR {
                 T2> (*this, mask, srcB);
         }
 
-        template<typename T_MASK, typename T2>
+        template<typename T_MASK>
         UME_FORCE_INLINE ArithmeticMRORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T_MASK,
-            T2> ror(T_MASK && mask, T2 & srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> ror(T_MASK mask, SCALAR_TYPE srcB)
         {
             return ArithmeticMRORExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMRORExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> ror(T_MASK & mask, T2 && srcB)
-        {
-            return ArithmeticMRORExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
-        }
-
-        template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMRORExpression<
-            SCALAR_TYPE,
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION, // this expression
-            T_MASK,
-            T2> ror(T_MASK && mask, T2 && srcB)
-        {
-            return ArithmeticMRORExpression<
-                SCALAR_TYPE,
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION,
-                T_MASK,
-                T2> (*this, mask, srcB);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, mask, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2, typename T3>
@@ -1827,7 +1266,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T2,
-            T3> fmuladd(T2 & srcB, T3 & srcC)
+            T3> fmuladd(T2 srcB, T3 srcC)
         {
             return ArithmeticFMULADDExpression<
                 SCALAR_TYPE,
@@ -1837,52 +1276,51 @@ namespace VECTOR {
                 T3> (*this, srcB, srcC);
         }
 
-        template<typename T2, typename T3>
+        template<typename T2>
         UME_FORCE_INLINE ArithmeticFMULADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T2,
-            T3> fmuladd(T2 && srcB, T3 & srcC)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> fmuladd(T2 srcB, SCALAR_TYPE srcC)
         {
             return ArithmeticFMULADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T2,
-                T3> (*this, srcB, srcC);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcC));
         }
 
-        template<typename T2, typename T3>
+        template<typename T2>
         UME_FORCE_INLINE ArithmeticFMULADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2,
-            T3> fmuladd(T2 & srcB, T3 && srcC)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+            T2> fmuladd(SCALAR_TYPE srcB, T2 srcC)
         {
             return ArithmeticFMULADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2,
-                T3> (*this, srcB, srcC);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+                T2> (*this, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB), srcC);
         }
 
-        template<typename T2, typename T3>
         UME_FORCE_INLINE ArithmeticFMULADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2,
-            T3> fmuladd(T2 && srcB, T3 && srcC)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> fmuladd(SCALAR_TYPE srcB, SCALAR_TYPE srcC)
         {
             return ArithmeticFMULADDExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2,
-                T3> (*this, srcB, srcC);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB), Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcC));
         }
 
         template<typename T2, typename T3>
@@ -1891,7 +1329,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T2,
-            T3> fmulsub(T2 & srcB, T3 & srcC)
+            T3> fmulsub(T2 srcB, T3 srcC)
         {
             return ArithmeticFMULSUBExpression<
                 SCALAR_TYPE,
@@ -1901,52 +1339,51 @@ namespace VECTOR {
                 T3> (*this, srcB, srcC);
         }
 
-        template<typename T2, typename T3>
+        template<typename T2>
         UME_FORCE_INLINE ArithmeticFMULSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T2,
-            T3> fmulsub(T2 && srcB, T3 & srcC)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> fmulsub(T2 srcB, SCALAR_TYPE srcC)
         {
             return ArithmeticFMULSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T2,
-                T3> (*this, srcB, srcC);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcC));
         }
 
-        template<typename T2, typename T3>
+        template<typename T2>
         UME_FORCE_INLINE ArithmeticFMULSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2,
-            T3> fmulsub(T2 & srcB, T3 && srcC)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+            T2> fmulsub(SCALAR_TYPE srcB, T2 srcC)
         {
             return ArithmeticFMULSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2,
-                T3> (*this, srcB, srcC);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+                T2> (*this, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB), srcC);
         }
 
-        template<typename T2, typename T3>
         UME_FORCE_INLINE ArithmeticFMULSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2,
-            T3> fmulsub(T2 && srcB, T3 && srcC)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> fmulsub(SCALAR_TYPE srcB, SCALAR_TYPE srcC)
         {
             return ArithmeticFMULSUBExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2,
-                T3> (*this, srcB, srcC);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB), Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcC));
         }
 
         template<typename T2, typename T3>
@@ -1955,7 +1392,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T2,
-            T3> faddmul(T2 & srcB, T3 & srcC)
+            T3> faddmul(T2 srcB, T3 srcC)
         {
             return ArithmeticFADDMULExpression<
                 SCALAR_TYPE,
@@ -1965,52 +1402,51 @@ namespace VECTOR {
                 T3> (*this, srcB, srcC);
         }
 
-        template<typename T2, typename T3>
+        template<typename T2>
         UME_FORCE_INLINE ArithmeticFADDMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T2,
-            T3> faddmul(T2 && srcB, T3 & srcC)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> faddmul(T2 srcB, SCALAR_TYPE srcC)
         {
             return ArithmeticFADDMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T2,
-                T3> (*this, srcB, srcC);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcC));
         }
 
-        template<typename T2, typename T3>
+        template<typename T2>
         UME_FORCE_INLINE ArithmeticFADDMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2,
-            T3> faddmul(T2 & srcB, T3 && srcC)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+            T2> faddmul(SCALAR_TYPE srcB, T2 srcC)
         {
             return ArithmeticFADDMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2,
-                T3> (*this, srcB, srcC);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+                T2> (*this, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB), srcC);
         }
 
-        template<typename T2, typename T3>
         UME_FORCE_INLINE ArithmeticFADDMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2,
-            T3> faddmul(T2 && srcB, T3 && srcC)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> faddmul(SCALAR_TYPE srcB, SCALAR_TYPE srcC)
         {
             return ArithmeticFADDMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2,
-                T3> (*this, srcB, srcC);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB), Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcC));
         }
 
         template<typename T2, typename T3>
@@ -2019,7 +1455,7 @@ namespace VECTOR {
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T2,
-            T3> fsubmul(T2 & srcB, T3 & srcC)
+            T3> fsubmul(T2 srcB, T3 srcC)
         {
             return ArithmeticFSUBMULExpression<
                 SCALAR_TYPE,
@@ -2029,52 +1465,51 @@ namespace VECTOR {
                 T3> (*this, srcB, srcC);
         }
 
-        template<typename T2, typename T3>
+        template<typename T2>
         UME_FORCE_INLINE ArithmeticFSUBMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T2,
-            T3> fsubmul(T2 && srcB, T3 & srcC)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> fsubmul(T2 srcB, SCALAR_TYPE srcC)
         {
             return ArithmeticFSUBMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
                 T2,
-                T3> (*this, srcB, srcC);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcC));
         }
 
-        template<typename T2, typename T3>
+        template<typename T2>
         UME_FORCE_INLINE ArithmeticFSUBMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2,
-            T3> fsubmul(T2 & srcB, T3 && srcC)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+            T2> fsubmul(SCALAR_TYPE srcB, T2 srcC)
         {
             return ArithmeticFSUBMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2,
-                T3> (*this, srcB, srcC);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+                T2> (*this, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB), srcC);
         }
 
-        template<typename T2, typename T3>
         UME_FORCE_INLINE ArithmeticFSUBMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2,
-            T3> fsubmul(T2 && srcB, T3 && srcC)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> fsubmul(SCALAR_TYPE srcB, SCALAR_TYPE srcC)
         {
             return ArithmeticFSUBMULExpression<
                 SCALAR_TYPE,
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2,
-                T3> (*this, srcB, srcC);
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>,
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB), Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcC));
         }
 
         UME_FORCE_INLINE ArithmeticHADDExpression<
@@ -2172,7 +1607,7 @@ namespace VECTOR {
         UME_FORCE_INLINE LogicalCMPGTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            T2> cmpgt(T2 & srcB)
+            T2> cmpgt(T2 srcB)
         {
             return LogicalCMPGTExpression<
                 SIMD_STRIDE,
@@ -2180,23 +1615,22 @@ namespace VECTOR {
                 T2>((*this), srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE LogicalCMPGTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            T2> cmpgt(T2 && srcB)
+            Scalar<bool, SIMD_STRIDE>> cmpgt(SCALAR_TYPE srcB)
         {
             return LogicalCMPGTExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2>((*this), srcB);
+                Scalar<bool, SIMD_STRIDE>>((*this), Scalar<bool, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPLTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            T2> cmplt(T2 & srcB)
+            T2> cmplt(T2 srcB)
         {
             return LogicalCMPLTExpression<
                 SIMD_STRIDE,
@@ -2204,23 +1638,22 @@ namespace VECTOR {
                 T2>((*this), srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE LogicalCMPLTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            T2> cmplt(T2 && srcB)
+            Scalar<bool, SIMD_STRIDE>> cmplt(SCALAR_TYPE srcB)
         {
             return LogicalCMPLTExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2>((*this), srcB);
+                Scalar<bool, SIMD_STRIDE>>((*this), Scalar<bool, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPGEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            T2> cmpge(T2 & srcB)
+            T2> cmpge(T2 srcB)
         {
             return LogicalCMPGEExpression<
                 SIMD_STRIDE,
@@ -2228,23 +1661,22 @@ namespace VECTOR {
                 T2>((*this), srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE LogicalCMPGEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            T2> cmpge(T2 && srcB)
+            Scalar<bool, SIMD_STRIDE>> cmpge(SCALAR_TYPE srcB)
         {
             return LogicalCMPGEExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2>((*this), srcB);
+                Scalar<bool, SIMD_STRIDE>>((*this), Scalar<bool, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPLEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            T2> cmple(T2 & srcB)
+            T2> cmple(T2 srcB)
         {
             return LogicalCMPLEExpression<
                 SIMD_STRIDE,
@@ -2252,23 +1684,22 @@ namespace VECTOR {
                 T2>((*this), srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE LogicalCMPLEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            T2> cmple(T2 && srcB)
+            Scalar<bool, SIMD_STRIDE>> cmple(SCALAR_TYPE srcB)
         {
             return LogicalCMPLEExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2>((*this), srcB);
+                Scalar<bool, SIMD_STRIDE>>((*this), Scalar<bool, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPEQExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            T2> cmpeq(T2 & srcB)
+            T2> cmpeq(T2 srcB)
         {
             return LogicalCMPEQExpression<
                 SIMD_STRIDE,
@@ -2276,23 +1707,22 @@ namespace VECTOR {
                 T2>((*this), srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE LogicalCMPEQExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            T2> cmpeq(T2 && srcB)
+            Scalar<bool, SIMD_STRIDE>> cmpeq(SCALAR_TYPE srcB)
         {
             return LogicalCMPEQExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2>((*this), srcB);
+                Scalar<bool, SIMD_STRIDE>>((*this), Scalar<bool, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalCMPNEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            T2> cmpne(T2 & srcB)
+            T2> cmpne(T2 srcB)
         {
             return LogicalCMPNEExpression<
                 SIMD_STRIDE,
@@ -2300,16 +1730,15 @@ namespace VECTOR {
                 T2>((*this), srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE LogicalCMPNEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            T2> cmpne(T2 && srcB)
+            Scalar<bool, SIMD_STRIDE>> cmpne(SCALAR_TYPE srcB)
         {
             return LogicalCMPNEExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2>((*this), srcB);
+                Scalar<bool, SIMD_STRIDE>>((*this), Scalar<bool, SIMD_STRIDE>(srcB));
         }
     };
 

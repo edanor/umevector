@@ -67,7 +67,7 @@ public:
     //  dx - timestep
     //  f - user provided lambda function to be evaluated
     template<typename USER_LAMBDA_T>
-    UME_FORCE_INLINE void rk4_vectorized(
+    UME_NEVER_INLINE void rk4_vectorized(
         UME::VECTOR::Vector<float, STRIDE, VEC_LEN> & result,
         UME::VECTOR::Vector<float, STRIDE, VEC_LEN> x,
         UME::VECTOR::Vector<float, STRIDE, VEC_LEN> y,
@@ -76,21 +76,18 @@ public:
     {
         // All scalars have to be mapped to special type to
         // make sure they are not destroyed before they are actually needed.
-        UME::VECTOR::Scalar<float, STRIDE> dx_s(dx);
-        UME::VECTOR::Scalar<float, STRIDE> halfdx_s(dx * 0.5f);
-        UME::VECTOR::Scalar<float, STRIDE> two(2.0f);
-        UME::VECTOR::Scalar<float, STRIDE> sixth(1.0f / 6.0f);
+        float halfdx = dx * 0.5f;
 
         // Implement RK4 algorithm - very straightforward process.
         // the user function is here attached as a fragment of computation
         // graph, and it can be optimized for each 'k' independantly.
-        auto k1 = dx_s * f(x, y);
-        auto k2 = dx_s * f(x + halfdx_s, y + k1 * halfdx_s);
-        auto k3 = dx_s * f(x + halfdx_s, y + k2 * halfdx_s);
-        auto k4 = dx_s * f(x + dx_s, y + k3 * dx_s);
+        auto k1 = dx * f(x, y);
+        auto k2 = dx * f(x + halfdx, y + k1 * halfdx);
+        auto k3 = dx * f(x + halfdx, y + k2 * halfdx);
+        auto k4 = dx * f(x + dx, y + k3 * dx);
 
         // Merge into full computational graph and start evaluation.
-        result = y + sixth * (k1 + two * k2 + two * k3 + k4);
+        result = y + (1.0f / 6.0f) * (k1 + 2.0f * k2 + 2.0f * k3 + k4);
     }
 
     // Scalar RK4 solver
@@ -107,23 +104,20 @@ public:
     {
         // All scalars have to be mapped to special type to
         // make sure they are not destroyed before they are actually needed.
-        float dx_s(dx);
-        float halfdx_s(dx * 0.5f);
-        float two(2.0f);
-        float sixth(1.0f / 6.0f);
+        float halfdx = dx * 0.5f;
 
         // Also bind the function parameters so that they persist through expression resolution.
 
         // Implement RK4 algorithm - very straightforward process.
         // the user function is here attached as a fragment of computation
         // graph, and it can be optimized for each 'k' independantly.
-        auto k1 = dx_s * f(x, y);
-        auto k2 = dx_s * f(x + halfdx_s, y + k1 * halfdx_s);
-        auto k3 = dx_s * f(x + halfdx_s, y + k2 * halfdx_s);
-        auto k4 = dx_s * f(x + dx_s, y + k3 * dx_s);
+        auto k1 = dx * f(x, y);
+        auto k2 = dx * f(x + halfdx, y + k1 * halfdx);
+        auto k3 = dx * f(x + halfdx, y + k2 * halfdx);
+        auto k4 = dx * f(x + dx, y + k3 * dx);
 
         // Merge into full computational graph and start evaluation.
-        auto t0 = y + sixth * (k1 + two * k2 + two * k3 + k4);
+        auto t0 = y + (1.0f / 6.0f) * (k1 + 2.0f * k2 + 2.0f * k3 + k4);
         return t0;
     }
 };
@@ -206,11 +200,11 @@ public:
                 userFunction);
 
             std::cout << "Iteration: " << i << "\n";
-            for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
                 std::cout <<
-                    "    x(" << x_vec.elements[i] << ") "
-                    "y(" << y_vec.elements[i] << ") "
-                    "res(" << result_vec.elements[i] << ")\n";
+                    "    x(" << x_vec.elements[j] << ") "
+                    "y(" << y_vec.elements[j] << ") "
+                    "res(" << result_vec.elements[j] << ")\n";
             }
 
             // Increment x with the timestep
@@ -240,7 +234,7 @@ public:
             }
 
             std::cout << "Iteration: " << i << "\n";
-            for (int j = 0; j < 5; i++) {
+            for (int j = 0; j < 5; j++) {
                 std::cout <<
                     "    x(" << x_vec[i] << ") "
                     "y(" << y_vec[i] << ") "

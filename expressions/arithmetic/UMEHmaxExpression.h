@@ -44,7 +44,7 @@ namespace VECTOR {
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
-        E1 & _e1;
+        E1 _e1;
 
         // Value of this expression has to be calculated only once, and can be returned for every
         // call to 'evaluate_SIMD' or 'evaluate_scalar'.
@@ -52,13 +52,15 @@ namespace VECTOR {
         SCALAR_TYPE _value; // This value is correct only if 'evaluated == true'
 
     public:
-        UME_FORCE_INLINE ArithmeticHMAXExpression(E1 & e1) :
-            _e1(e1), 
-            _evaluated(false) {}
 
-        UME_FORCE_INLINE ArithmeticHMAXExpression(E1 && e1) :
-            _e1(std::move(e1)),
-            _evaluated(false) {}
+        UME_FORCE_INLINE ArithmeticHMAXExpression(E1 e1) :
+            _e1(e1) {}
+
+        UME_FORCE_INLINE ArithmeticHMAXExpression(ArithmeticHMAXExpression<SCALAR_TYPE, SIMD_STRIDE, E1> & origin) :
+            _e1(origin._e1) {}
+
+        UME_FORCE_INLINE ArithmeticHMAXExpression(ArithmeticHMAXExpression<SCALAR_TYPE, SIMD_STRIDE, E1> && origin) :
+            _e1(std::move(origin._e1)) {}
 
         // First reduce to scalar and then return
         UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)
@@ -73,7 +75,7 @@ namespace VECTOR {
                 _value = A.hmax();
                 for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
                     SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
-                    _value = t1[0];
+                    _value = t1.hmax();
                 }
                 _evaluated = true;
             }
@@ -93,7 +95,7 @@ namespace VECTOR {
                 _value = A.hmax();
                 for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
                     SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
-                    _value = t1[0];
+                    _value = t1.hmax();
                 }
                 _evaluated = true;
             }
@@ -111,7 +113,7 @@ namespace VECTOR {
             SCALAR_TYPE B = A.hmax();
             for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
                 SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
-                B = t1[0];
+                B = t1.hmax();
             }
             return B;
         }

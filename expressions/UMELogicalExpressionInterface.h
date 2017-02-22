@@ -151,7 +151,7 @@ namespace VECTOR {
         UME_FORCE_INLINE LogicalLANDExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> land(T2 & srcB)
+            T2> land(T2 srcB)
         {
             return LogicalLANDExpression<
                 SIMD_STRIDE,
@@ -159,23 +159,22 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE LogicalLANDExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > land(T2 && srcB)
+            Scalar<bool, SIMD_STRIDE>> land(bool srcB)
         {
             return LogicalLANDExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<bool, SIMD_STRIDE>> (*this, Scalar<bool, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalLORExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> lor(T2 & srcB)
+            T2> lor(T2 srcB)
         {
             return LogicalLORExpression<
                 SIMD_STRIDE,
@@ -183,23 +182,22 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE LogicalLORExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > lor(T2 && srcB)
+            Scalar<bool, SIMD_STRIDE>> lor(bool srcB)
         {
             return LogicalLORExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<bool, SIMD_STRIDE>> (*this, Scalar<bool, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalLXORExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> lxor(T2 & srcB)
+            T2> lxor(T2 srcB)
         {
             return LogicalLXORExpression<
                 SIMD_STRIDE,
@@ -207,23 +205,22 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE LogicalLXORExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > lxor(T2 && srcB)
+            Scalar<bool, SIMD_STRIDE>> lxor(bool srcB)
         {
             return LogicalLXORExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<bool, SIMD_STRIDE>> (*this, Scalar<bool, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>
         UME_FORCE_INLINE LogicalLANDNOTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2> landnot(T2 & srcB)
+            T2> landnot(T2 srcB)
         {
             return LogicalLANDNOTExpression<
                 SIMD_STRIDE,
@@ -231,16 +228,15 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        template<typename T2>
         UME_FORCE_INLINE LogicalLANDNOTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
-            T2 > landnot(T2 && srcB)
+            Scalar<bool, SIMD_STRIDE>> landnot(bool srcB)
         {
             return LogicalLANDNOTExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                T2> (*this, srcB);
+                Scalar<bool, SIMD_STRIDE>> (*this, Scalar<bool, SIMD_STRIDE>(srcB));
         }
     };
 
