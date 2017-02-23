@@ -427,7 +427,7 @@ bool randomValue<bool>(std::mt19937 & generator) {
     return t0 > 0;
 }
 
-template<typename MASK_TYPE, int SIMD_STRIDE, int VEC_LEN>
+template<typename MASK_TYPE, int VEC_LEN, int SIMD_STRIDE>
 void testLAND_random_static()
 {
     std::random_device rd;
@@ -476,7 +476,7 @@ void testLAND_random_static()
     }
 }
 
-template<typename MASK_TYPE, int SIMD_STRIDE, int VEC_LEN>
+template<typename MASK_TYPE, int VEC_LEN, int SIMD_STRIDE>
 void testLOR_random_static()
 {
     std::random_device rd;
@@ -525,7 +525,7 @@ void testLOR_random_static()
     }
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, int SIMD_STRIDE, int VEC_LEN> 
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE>
 void testADDV_random_static()
 {
     std::random_device rd;
@@ -574,7 +574,7 @@ void testADDV_random_static()
     }
 }
 
-template<typename VEC_TYPE, typename MASK_TYPE, typename SCALAR_TYPE, int SIMD_STRIDE, int VEC_LEN>
+template<typename VEC_TYPE, typename MASK_TYPE, typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE>
 void testMADDV_random_static()
 {
     std::random_device rd;
@@ -605,7 +605,7 @@ void testMADDV_random_static()
     }
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, int SIMD_STRIDE, int VEC_LEN>
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE>
 void testADDS_random_static()
 {
     std::random_device rd;
@@ -672,7 +672,7 @@ void testADDS_random_static()
     }
 }
 
-template<typename VEC_TYPE, typename MASK_TYPE, typename SCALAR_TYPE, int SIMD_STRIDE, int VEC_LEN>
+template<typename VEC_TYPE, typename MASK_TYPE, typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE>
 void testMADDS_random_static()
 {
     std::random_device rd;
@@ -701,7 +701,7 @@ void testMADDS_random_static()
         check_condition(inRange, std::string("MADDS"));
     }
 }
-template<typename VEC_TYPE, typename SCALAR_TYPE, int SIMD_STRIDE, int VEC_LEN>
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE>
 void testSUBV_random_static()
 {
     std::random_device rd;
@@ -750,7 +750,7 @@ void testSUBV_random_static()
     }
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, int SIMD_STRIDE, int VEC_LEN>
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE>
 void testMULV_random_static()
 {
     std::random_device rd;
@@ -799,7 +799,7 @@ void testMULV_random_static()
     }
 }
 
-template<typename VEC_TYPE, typename SCALAR_TYPE, int SIMD_STRIDE, int VEC_LEN>
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE>
 void testHADD_random_static()
 {
     std::random_device rd;
@@ -827,55 +827,55 @@ int main() {
     {
         char header[] = { "Mask Vector test (STRIDE 8):" };
         INIT_TEST(header, false);
-        testLAND_random_static<UME::VECTOR::MaskVector<8, 100>, 8, 100>();
-        testLOR_random_static<UME::VECTOR::MaskVector<8, 100>, 8, 100>();
+        testLAND_random_static<UME::VECTOR::MaskVector<100, 8>, 100, 8>();
+        testLOR_random_static<UME::VECTOR::MaskVector<100, 8>, 100, 8>();
     }
 
     {
         char header[] = { "Uint32_t Vector test (STRIDE 4):" };
         INIT_TEST(header, false);
-        testADDV_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, uint32_t, 4, 100>();
-        testMADDV_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, UME::VECTOR::MaskVector<4, 100>, uint32_t, 4, 100>();
-        testADDS_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, uint32_t, 4, 100>();
-        testMADDS_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, UME::VECTOR::MaskVector<4, 100>, uint32_t, 4, 100>();
-        testSUBV_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, uint32_t, 4, 100>();
-        testMULV_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, uint32_t, 4, 100>();
+        testADDV_random_static<UME::VECTOR::UintVector<uint32_t, 100, 4>, uint32_t, 100, 4>();
+        testMADDV_random_static<UME::VECTOR::UintVector<uint32_t, 100, 4>, UME::VECTOR::MaskVector<100, 4>, uint32_t, 100, 4>();
+        testADDS_random_static<UME::VECTOR::UintVector<uint32_t, 100, 4>, uint32_t, 100, 4>();
+        testMADDS_random_static<UME::VECTOR::UintVector<uint32_t, 100, 4>, UME::VECTOR::MaskVector<100, 4>, uint32_t, 100, 4>();
+        testSUBV_random_static<UME::VECTOR::UintVector<uint32_t, 100, 4>, uint32_t, 100, 4>();
+        testMULV_random_static<UME::VECTOR::UintVector<uint32_t, 100, 4>, uint32_t, 100, 4>();
 
-        testHADD_random_static<UME::VECTOR::UintVector<uint32_t, 4, 100>, uint32_t, 4, 100>();
+        testHADD_random_static<UME::VECTOR::UintVector<uint32_t, 100, 4>, uint32_t, 100, 4>();
     }
     {
         char header[] = { "Int32_t Vector test (STRIDE 4):" };
         INIT_TEST(header, false);
-        testADDV_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, int32_t, 4, 100>();
-        testMADDV_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, UME::VECTOR::MaskVector<4, 100>, int32_t, 4, 100>();
-        testADDS_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, int32_t, 4, 100>();
-        testMADDS_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, UME::VECTOR::MaskVector<4, 100>, int32_t, 4, 100>();
-        testSUBV_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, int32_t, 4, 100>();
-        testMULV_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, int32_t, 4, 100>();
+        testADDV_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, int32_t, 100, 4>();
+        testMADDV_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, UME::VECTOR::MaskVector<100, 4>, int32_t, 100, 4>();
+        testADDS_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, int32_t, 100, 4>();
+        testMADDS_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, UME::VECTOR::MaskVector<100, 4>, int32_t, 100, 4>();
+        testSUBV_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, int32_t, 100, 4>();
+        testMULV_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, int32_t, 100, 4>();
 
-        testHADD_random_static<UME::VECTOR::UintVector<int32_t, 4, 100>, int32_t, 4, 100>();
+        testHADD_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, int32_t, 100, 4>();
     }
     {
         char header[] = { "Float Vector test (STRIDE 4):" };
         INIT_TEST(header, false);
 
-        testADDV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
-        testMADDV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, UME::VECTOR::MaskVector<4, 1000>, float, 4, 1000>();
-        testADDS_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
-        testMADDS_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, UME::VECTOR::MaskVector<4, 1000>, float, 4, 1000>();
-        testSUBV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
-        testMULV_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
+        testADDV_random_static<UME::VECTOR::FloatVector<float, 1000, 4>, float, 1000, 4>();
+        testMADDV_random_static<UME::VECTOR::FloatVector<float, 1000, 4>, UME::VECTOR::MaskVector<1000, 4>, float, 1000, 4>();
+        testADDS_random_static<UME::VECTOR::FloatVector<float, 1000, 4>, float, 1000, 4>();
+        testMADDS_random_static<UME::VECTOR::FloatVector<float, 1000, 4>, UME::VECTOR::MaskVector<1000, 4>, float, 1000, 4>();
+        testSUBV_random_static<UME::VECTOR::FloatVector<float, 1000, 4>, float, 1000, 4>();
+        testMULV_random_static<UME::VECTOR::FloatVector<float, 1000, 4>, float, 1000, 4>();
 
-        testHADD_random_static<UME::VECTOR::FloatVector<float, 4, 1000>, float, 4, 1000>();
+        testHADD_random_static<UME::VECTOR::FloatVector<float, 1000, 4>, float, 1000, 4>();
     }
     {
         float rawA[100], rawB[100], rawC[100], rawD[100], rawE[100], rawF[100];
-        UME::VECTOR::FloatVector<float, 4, 100> A(rawA);
-        UME::VECTOR::FloatVector<float, 4, 100> B(rawB);
-        UME::VECTOR::FloatVector<float, 4, 100> C(rawC);
-        UME::VECTOR::FloatVector<float, 4, 100> D(rawD);
-        UME::VECTOR::FloatVector<float, 4, 100> E(rawE);
-        UME::VECTOR::FloatVector<float, 4, 100> F(rawF);
+        UME::VECTOR::FloatVector<float, 100, 4> A(rawA);
+        UME::VECTOR::FloatVector<float, 100, 4> B(rawB);
+        UME::VECTOR::FloatVector<float, 100, 4> C(rawC);
+        UME::VECTOR::FloatVector<float, 100, 4> D(rawD);
+        UME::VECTOR::FloatVector<float, 100, 4> E(rawE);
+        UME::VECTOR::FloatVector<float, 100, 4> F(rawF);
 
         auto t0 = A.add(B);
         auto t1 = t0.mul(C);
@@ -900,13 +900,13 @@ int main() {
             rawM[i] = (i % 2) == 0 ? true : false;
         }
 
-        UME::VECTOR::FloatVector<float, 4, 100> A(rawA);
-        UME::VECTOR::FloatVector<float, 4, 100> B(rawB);
-        UME::VECTOR::FloatVector<float, 4, 100> C(rawC);
-        UME::VECTOR::FloatVector<float, 4, 100> D(rawD);
-        UME::VECTOR::FloatVector<float, 4, 100> E(rawE);
-        UME::VECTOR::FloatVector<float, 4, 100> F(rawF);
-        UME::VECTOR::MaskVector<4, 100> mask(rawM);
+        UME::VECTOR::FloatVector<float, 100, 4> A(rawA);
+        UME::VECTOR::FloatVector<float, 100, 4> B(rawB);
+        UME::VECTOR::FloatVector<float, 100, 4> C(rawC);
+        UME::VECTOR::FloatVector<float, 100, 4> D(rawD);
+        UME::VECTOR::FloatVector<float, 100, 4> E(rawE);
+        UME::VECTOR::FloatVector<float, 100, 4> F(rawF);
+        UME::VECTOR::MaskVector<100, 4> mask(rawM);
 
         auto t0 = A.add(mask, B);
         auto t1 = t0.mul(C);
@@ -931,14 +931,14 @@ int main() {
             rawM[i] = (i % 2) == 0 ? true : false;
         }
 
-        UME::VECTOR::FloatVector<float, 4, 100> A(rawA);
-        UME::VECTOR::FloatVector<float, 4, 100> B(rawB);
-        UME::VECTOR::FloatVector<float, 4, 100> C(rawC);
-        UME::VECTOR::FloatVector<float, 4, 100> D(rawD);
-        UME::VECTOR::FloatVector<float, 4, 100> E(rawE);
-        UME::VECTOR::FloatVector<float, 4, 100> F(rawF);
-        UME::VECTOR::FloatVector<float, 4, 100> G(rawG);
-        UME::VECTOR::MaskVector<4, 100> mask(rawM);
+        UME::VECTOR::FloatVector<float, 100, 4> A(rawA);
+        UME::VECTOR::FloatVector<float, 100, 4> B(rawB);
+        UME::VECTOR::FloatVector<float, 100, 4> C(rawC);
+        UME::VECTOR::FloatVector<float, 100, 4> D(rawD);
+        UME::VECTOR::FloatVector<float, 100, 4> E(rawE);
+        UME::VECTOR::FloatVector<float, 100, 4> F(rawF);
+        UME::VECTOR::FloatVector<float, 100, 4> G(rawG);
+        UME::VECTOR::MaskVector<100, 4> mask(rawM);
 
         auto t0 = A.add(mask, B);
         auto t1 = t0.fmuladd(C, D);
@@ -963,14 +963,14 @@ int main() {
             rawM[i] = (i % 2) == 0 ? true : false;
         }
 
-        UME::VECTOR::FloatVector<float, 4, 100> A(rawA);
-        UME::VECTOR::FloatVector<float, 4, 100> B(rawB);
-        UME::VECTOR::FloatVector<float, 4, 100> C(rawC);
-        UME::VECTOR::FloatVector<float, 4, 100> D(rawD);
-        UME::VECTOR::FloatVector<float, 4, 100> E(rawE);
-        UME::VECTOR::FloatVector<float, 4, 100> F(rawF);
-        UME::VECTOR::FloatVector<float, 4, 100> G(rawG);
-        UME::VECTOR::MaskVector<4, 100> mask(rawM);
+        UME::VECTOR::FloatVector<float, 100, 4> A(rawA);
+        UME::VECTOR::FloatVector<float, 100, 4> B(rawB);
+        UME::VECTOR::FloatVector<float, 100, 4> C(rawC);
+        UME::VECTOR::FloatVector<float, 100, 4> D(rawD);
+        UME::VECTOR::FloatVector<float, 100, 4> E(rawE);
+        UME::VECTOR::FloatVector<float, 100, 4> F(rawF);
+        UME::VECTOR::FloatVector<float, 100, 4> G(rawG);
+        UME::VECTOR::MaskVector<100, 4> mask(rawM);
 
         auto t0 = A.add(mask, B);
         auto t1 = t0.fmuladd(C, D);
@@ -990,10 +990,10 @@ int main() {
             rawD[i] = float(i) + 4.0f;
         }
 
-        UME::VECTOR::IntVector<int32_t, 4, 100> A(rawA);
-        UME::VECTOR::IntVector<int32_t, 4, 100> B(rawB);
-        UME::VECTOR::FloatVector<float, 4, 100> C(rawC);
-        UME::VECTOR::FloatVector<float, 4, 100> D(rawD);
+        UME::VECTOR::IntVector<int32_t, 100, 4> A(rawA);
+        UME::VECTOR::IntVector<int32_t, 100, 4> B(rawB);
+        UME::VECTOR::FloatVector<float, 100, 4> C(rawC);
+        UME::VECTOR::FloatVector<float, 100, 4> D(rawD);
 
         auto t0 = A.add(B);
         auto t1 = t0.itof();
@@ -1011,10 +1011,10 @@ int main() {
             rawD[i] = i + 4;
         }
 
-        UME::VECTOR::IntVector<int32_t, 4, 100> A(rawA);
-        UME::VECTOR::IntVector<int32_t, 4, 100> B(rawB);
-        UME::VECTOR::UintVector<uint32_t, 4, 100> C(rawC);
-        UME::VECTOR::UintVector<uint32_t, 4, 100> D(rawD);
+        UME::VECTOR::IntVector<int32_t, 100, 4> A(rawA);
+        UME::VECTOR::IntVector<int32_t, 100, 4> B(rawB);
+        UME::VECTOR::UintVector<uint32_t, 100, 4> C(rawC);
+        UME::VECTOR::UintVector<uint32_t, 100, 4> D(rawD);
 
         auto t0 = A.add(B);
         auto t1 = t0.itou();
@@ -1032,10 +1032,10 @@ int main() {
             rawD[i] = i + 4;
         }
 
-        UME::VECTOR::UintVector<uint32_t, 4, 100> A(rawA);
-        UME::VECTOR::UintVector<uint32_t, 4, 100> B(rawB);
-        UME::VECTOR::IntVector<int32_t, 4, 100> C(rawC);
-        UME::VECTOR::IntVector<int32_t, 4, 100> D(rawD);
+        UME::VECTOR::UintVector<uint32_t, 100, 4> A(rawA);
+        UME::VECTOR::UintVector<uint32_t, 100, 4> B(rawB);
+        UME::VECTOR::IntVector<int32_t, 100, 4> C(rawC);
+        UME::VECTOR::IntVector<int32_t, 100, 4> D(rawD);
 
         auto t0 = A.add(B);
         auto t1 = t0.utoi();
@@ -1055,11 +1055,11 @@ int main() {
             rawE[i] = float(i) + 5.0f;
         }
 
-        UME::VECTOR::FloatVector<float, 4, 100> A(rawA);
-        UME::VECTOR::FloatVector<float, 4, 100> B(rawB);
-        UME::VECTOR::FloatVector<float, 4, 100> C(rawC);
-        UME::VECTOR::FloatVector<float, 4, 100> D(rawD);
-        UME::VECTOR::FloatVector<float, 4, 100> E(rawE);
+        UME::VECTOR::FloatVector<float, 100, 4> A(rawA);
+        UME::VECTOR::FloatVector<float, 100, 4> B(rawB);
+        UME::VECTOR::FloatVector<float, 100, 4> C(rawC);
+        UME::VECTOR::FloatVector<float, 100, 4> D(rawD);
+        UME::VECTOR::FloatVector<float, 100, 4> E(rawE);
 
         auto t0 = A.cmpgt(B);
         auto t1 = C.add(t0, D);
@@ -1078,11 +1078,11 @@ int main() {
             rawE[i] = i + 5;
         }
 
-        UME::VECTOR::FloatVector<float, 4, 100> A(rawA);
-        UME::VECTOR::IntVector<int32_t, 4, 100> B(rawB);
-        UME::VECTOR::IntVector<int32_t, 4, 100> C(rawC);
-        UME::VECTOR::IntVector<int32_t, 4, 100> D(rawD);
-        UME::VECTOR::IntVector<int32_t, 4, 100> E(rawE);
+        UME::VECTOR::FloatVector<float, 100, 4> A(rawA);
+        UME::VECTOR::IntVector<int32_t, 100, 4> B(rawB);
+        UME::VECTOR::IntVector<int32_t, 100, 4> C(rawC);
+        UME::VECTOR::IntVector<int32_t, 100, 4> D(rawD);
+        UME::VECTOR::IntVector<int32_t, 100, 4> E(rawE);
 
         auto t0 = B.cmpgt(A.ftoi());
         auto t1 = C.add(t0, D);
@@ -1099,10 +1099,10 @@ int main() {
             rawM[i] = (i % 2) == 0 ? true : false;
         }
 
-        UME::VECTOR::FloatVector<float, 4, 100> A(rawA);
-        UME::VECTOR::FloatVector<float, 4, 100> B(rawB);
-        UME::VECTOR::FloatVector<float, 4, 100> C(rawC);
-        UME::VECTOR::MaskVector<4, 100> mask(rawM);
+        UME::VECTOR::FloatVector<float, 100, 4> A(rawA);
+        UME::VECTOR::FloatVector<float, 100, 4> B(rawB);
+        UME::VECTOR::FloatVector<float, 100, 4> C(rawC);
+        UME::VECTOR::MaskVector<100, 4> mask(rawM);
 
         C = A.blend(mask, B);
     }
@@ -1115,9 +1115,9 @@ int main() {
             rawC[i] = (i % 2) == 0 ? true : false;
         }
 
-        UME::VECTOR::MaskVector<4, 100> maskA(rawA);
-        UME::VECTOR::MaskVector<4, 100> maskB(rawB);
-        UME::VECTOR::MaskVector<4, 100> maskC(rawC);
+        UME::VECTOR::MaskVector<100, 4> maskA(rawA);
+        UME::VECTOR::MaskVector<100, 4> maskB(rawB);
+        UME::VECTOR::MaskVector<100, 4> maskC(rawC);
 
         auto t0 = maskA.land(maskB);
         maskC = t0.lnot();
@@ -1126,18 +1126,18 @@ int main() {
     {
         uint32_t rawA[100], rawB[100], rawC[100];
 
-        UME::VECTOR::Vector<uint32_t, 4, 100> A(rawA);
-        UME::VECTOR::Vector<uint32_t, 4, 100> B(rawB);
-        UME::VECTOR::Vector<uint32_t, 4, 100> C(rawC);
+        UME::VECTOR::Vector<uint32_t, 100, 4> A(rawA);
+        UME::VECTOR::Vector<uint32_t, 100, 4> B(rawB);
+        UME::VECTOR::Vector<uint32_t, 100, 4> C(rawC);
 
         C = (((A + B).utof()).sin()).ftou();
     }
     {
         float rawA[100], rawB[100], rawC[100];
 
-        UME::VECTOR::Vector<float, 4, 100> A(rawA);
-        UME::VECTOR::Vector<float, 4, 100> B(rawB);
-        UME::VECTOR::Vector<float, 4, 100> C(rawC);
+        UME::VECTOR::Vector<float, 100, 4> A(rawA);
+        UME::VECTOR::Vector<float, 100, 4> B(rawB);
+        UME::VECTOR::Vector<float, 100, 4> C(rawC);
 
         C = (A + B).sin();
         //C = A.band(B);
@@ -1145,9 +1145,9 @@ int main() {
     {
         uint32_t rawA[100], rawB[100], rawC[100];
 
-        UME::VECTOR::Vector<uint32_t, 4, 100> A(rawA);
-        UME::VECTOR::Vector<uint32_t, 4, 100> B(rawB);
-        UME::VECTOR::Vector<uint32_t, 4, 100> C(rawC);
+        UME::VECTOR::Vector<uint32_t, 100, 4> A(rawA);
+        UME::VECTOR::Vector<uint32_t, 100, 4> B(rawB);
+        UME::VECTOR::Vector<uint32_t, 100, 4> C(rawC);
 
         C = A.lsh(B);
     }
@@ -1155,17 +1155,17 @@ int main() {
         int32_t rawA[100], rawC[100];
         uint32_t rawB[100];
 
-        UME::VECTOR::Vector<int32_t, 4, 100> A(rawA);
-        UME::VECTOR::Vector<uint32_t, 4, 100> B(rawB);
-        UME::VECTOR::Vector<int32_t, 4, 100> C(rawC);
+        UME::VECTOR::Vector<int32_t, 100, 4> A(rawA);
+        UME::VECTOR::Vector<uint32_t, 100, 4> B(rawB);
+        UME::VECTOR::Vector<int32_t, 100, 4> C(rawC);
 
         C = A.lsh(B);
     }
     {
         int32_t rawA[100], rawC[100];
 
-        UME::VECTOR::Vector<int32_t, 4, 100> A(rawA);
-        UME::VECTOR::Vector<int32_t, 4, 100> C(rawC);
+        UME::VECTOR::Vector<int32_t, 100, 4> A(rawA);
+        UME::VECTOR::Vector<int32_t, 100, 4> C(rawC);
 
         int32_t b = 4;
 

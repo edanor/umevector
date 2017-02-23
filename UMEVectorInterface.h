@@ -36,7 +36,7 @@
 
 namespace UME {
     namespace SIMD {
-        template<int SIMD_STRIDE, int VEC_LEN> class MaskVector;
+        template<int VEC_LEN, int SIMD_STRIDE> class MaskVector;
         template<typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE> class UintVector;
         template<typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE> class IntVector;
         template<typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE> class FloatVector;

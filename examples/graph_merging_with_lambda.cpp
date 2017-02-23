@@ -68,9 +68,9 @@ public:
     //  f - user provided lambda function to be evaluated
     template<typename USER_LAMBDA_T>
     UME_NEVER_INLINE void rk4_vectorized(
-        UME::VECTOR::Vector<float, STRIDE, VEC_LEN> & result,
-        UME::VECTOR::Vector<float, STRIDE, VEC_LEN> x,
-        UME::VECTOR::Vector<float, STRIDE, VEC_LEN> y,
+        UME::VECTOR::Vector<float, VEC_LEN, STRIDE> & result,
+        UME::VECTOR::Vector<float, VEC_LEN, STRIDE> x,
+        UME::VECTOR::Vector<float, VEC_LEN, STRIDE> y,
         float dx,
         USER_LAMBDA_T & f)
     {
@@ -178,10 +178,10 @@ public:
         
         for(int i = 0; i < steps; i++) {
             // Bind the buffers to the UME::VECTOR objects.
-            UME::VECTOR::Vector<float, STRIDE, VEC_LEN> y_vec(y_swap.getActiveBuffer());
-            UME::VECTOR::Vector<float, STRIDE, VEC_LEN> result_vec(y_swap.getOtherBuffer());
-            UME::VECTOR::Vector<float, STRIDE, VEC_LEN> x_vec(x_swap.getActiveBuffer());
-            UME::VECTOR::Vector<float, STRIDE, VEC_LEN> next_x_vec(x_swap.getOtherBuffer());
+            UME::VECTOR::Vector<float, VEC_LEN, STRIDE> y_vec(y_swap.getActiveBuffer());
+            UME::VECTOR::Vector<float, VEC_LEN, STRIDE> result_vec(y_swap.getOtherBuffer());
+            UME::VECTOR::Vector<float, VEC_LEN, STRIDE> x_vec(x_swap.getActiveBuffer());
+            UME::VECTOR::Vector<float, VEC_LEN, STRIDE> next_x_vec(x_swap.getOtherBuffer());
             UME::VECTOR::Scalar<float, STRIDE> timestep_s(timestep);
             
             // Calculate the derivative
