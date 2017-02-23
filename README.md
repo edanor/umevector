@@ -243,39 +243,19 @@ with vector variables. Consider following:
   C = t0 + t1;
 //--------------------------------------------
 
-Mind that this is will not work. The reason is the scope of objects created
-by c++ runtime. A, B and C are objects that are guaranteed to be stored until
-the end of '{}' block in which they are declared. This means that when C is
-evaluated, all three vector primitives exist.
+In order to handle the expressions containing scalars, a special wrapper type
+UME::VECTOR::Scalar<float, 8> has to be created. This is necessary for the
+library to handle the scalars in semanticaly correct way. From the user
+perspective awareness of this type might be useful during debugging. Since this
+type is an expression type, it can be used in a similar way as Vector<> type is
+used at the user level:
 
-For scalar literals (and any other temporarily created object which is not
-assigned to any 'auto' variable directly), the scope ends when a statement in
-which they appear is fully evaluated. For:
+UME::VECTOR::Scalar<float, 8> two(2.0f);
 
-  auto t0 = A*2.0f;
+auto t0 = A*two;
+...
 
-the statement is fully evaluated (mind that we are talking about evaluation of
-t0 variable as a computation graph, and not as the expression!!!) after ';' is
-recognized by the compiler. Translating this to human: once this line ends,
-there is no place where '2.0f' could be stored!
-
-In order to provide additional storage for the scalar variables, we need to 
-'attach' them to the computational graph. This can be done simply using
-UME::VECTOR:Scalar type:
-
-//--------------------------------------------
-  float a[1000000], b[1000000], c[1000000], d[1000000];
-
-  UME::VECTOR::Vector<float, 8, 1000000> A(a), B(b), C(c);
-  UME::VECTOR::Scalar<float, 8> two(2.0f), three(3.0f);
-  
-  auto t0 = A*two;
-  auto t1 = B*three;
-  C = t0 + t1;
-//--------------------------------------------
-
-In this case we replace short-living scalar literals with long-living 'scalar'
-types.
+The difference is purely syntactic.
 
 // ***************************************************************************
 // V. COMPATIBILITY WITH UME::SIMD INTERFACE
