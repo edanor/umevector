@@ -74,8 +74,6 @@ public:
         float dx,
         USER_LAMBDA_T & f)
     {
-        // All scalars have to be mapped to special type to
-        // make sure they are not destroyed before they are actually needed.
         float halfdx = dx * 0.5f;
 
         // Implement RK4 algorithm - very straightforward process.
@@ -102,11 +100,7 @@ public:
         float dx,
         USER_LAMBDA_T & f)
     {
-        // All scalars have to be mapped to special type to
-        // make sure they are not destroyed before they are actually needed.
         float halfdx = dx * 0.5f;
-
-        // Also bind the function parameters so that they persist through expression resolution.
 
         // Implement RK4 algorithm - very straightforward process.
         // the user function is here attached as a fragment of computation
@@ -117,8 +111,7 @@ public:
         auto k4 = dx * f(x + dx, y + k3 * dx);
 
         // Merge into full computational graph and start evaluation.
-        auto t0 = y + (1.0f / 6.0f) * (k1 + 2.0f * k2 + 2.0f * k3 + k4);
-        return t0;
+        return y + (1.0f / 6.0f) * (k1 + 2.0f * k2 + 2.0f * k3 + k4);
     }
 };
 
