@@ -44,10 +44,10 @@ namespace VECTOR {
         typedef typename UME::SIMD::SIMDVecMask<SIMD_STRIDE> SIMD_MASK_TYPE;
         typedef typename UME::SIMD::SIMDVecMask<1> SIMD_1_MASK_TYPE;
 
+    public:
         E1 _e1;
         E2 _e2;
 
-    public:
         UME_FORCE_INLINE LogicalCMPLEExpression(E1 e1, E2 e2) :
             _e1(e1), _e2(e2) {}
 

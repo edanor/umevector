@@ -44,14 +44,13 @@ namespace VECTOR {
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
+    public:
         E1 _e1;
 
         // Value of this expression has to be calculated only once, and can be returned for every
         // call to 'evaluate_SIMD' or 'evaluate_scalar'.
         bool _evaluated;
         SCALAR_TYPE _value; // This value is correct only if 'evaluated == true'
-
-    public:
 
         UME_FORCE_INLINE ArithmeticHBANDExpression(E1 e1) :
             _e1(e1) {}

@@ -46,9 +46,8 @@ namespace VECTOR {
 
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
-        E1 _e1;
-
     public:
+        E1 _e1;
 
         UME_FORCE_INLINE ArithmeticUTOFExpression(E1 e1) :
             _e1(e1) {}

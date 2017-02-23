@@ -44,10 +44,10 @@ namespace VECTOR {
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
         typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
+    public:
         E1 _e1;
         E_MASK _e_mask;
 
-    public:
         UME_FORCE_INLINE ArithmeticMRCPExpression(E1 e1, E_MASK e_mask) :
             _e1(e1), _e_mask(e_mask) {}
 
