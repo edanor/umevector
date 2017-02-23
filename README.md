@@ -87,7 +87,7 @@ The same piece of code in UME::VECTOR:
 //--------------------------------------------
   float a[10], b[10], c[10];
 
-  UME::VECTOR::Vector<float, 8, 10> A(a), B(b), C(c);
+  UME::VECTOR::Vector<float, 10, 8> A(a), B(b), C(c);
   
   C = A + B;
 //--------------------------------------------
@@ -100,10 +100,12 @@ fragment, represented also by arrays 'a','b' and 'c'. Three template
 parameters are passed to this object:
 
 - **scalar type** (float) - a type used for internal representation of each value
+- **vector length** (10) - number of elements in an array.
 - **SIMD stride** (8) - the maximum simd vector length that should be used by the 
                     computational engine. This parameter has to be equal or less to 
-                    **vector length**
-- **vector length** (10) - number of elements in an array.
+                    **vector length**. You can ommit this value to rely on library
+                    supplied defaults. In some situations it might be necessary to
+                    handle this value manually.
 
 
 // ***************************************************************************
@@ -145,7 +147,7 @@ Let us now consider more advanced example which shows a true power of this libra
 //--------------------------------------------
   float a[1000000], b[1000000], c[1000000], d[1000000];
 
-  UME::VECTOR::Vector<float, 8, 1000000> A(a), B(b), C(c), D(d);
+  UME::VECTOR::Vector<float, 1000000, 8> A(a), B(b), C(c), D(d);
   
   D = A + B + C;
 //--------------------------------------------
@@ -186,7 +188,7 @@ You can try and debug through following piece of code:
 //--------------------------------------------
   float a[1000000], b[1000000], c[1000000], d[1000000];
 
-  UME::VECTOR::Vector<float, 8, 1000000> A(a), B(b), C(c), D(d); (1)
+  UME::VECTOR::Vector<float, 1000000, 8> A(a), B(b), C(c), D(d); (1)
   
   auto t0 = A + B + C; (2)
   D = t0; (3)
@@ -209,9 +211,9 @@ to create a recursive type:
 
     UME::VECTOR::ArithmeticADDExpression<float,8,
         UME::VECTOR::ArithmeticADDExpression<float,8,
-            UME::VECTOR::FloatVector<float,8,1000000>,
-            UME::VECTOR::FloatVector<float,8,1000000> >,
-        UME::VECTOR::FloatVector<float,8,1000000>
+            UME::VECTOR::FloatVector<float,1000000,8>,
+            UME::VECTOR::FloatVector<float,1000000,8> >,
+        UME::VECTOR::FloatVector<float,1000000,8>
 
 This type essentially represents the sequence of operations that is mapped
 to a 't0' object. Not going into details: this representation is necessary to
@@ -236,7 +238,7 @@ with vector variables. Consider following:
 //--------------------------------------------
   float a[1000000], b[1000000], c[1000000], d[1000000];
 
-  UME::VECTOR::Vector<float, 8, 1000000> A(a), B(b), C(c); (1)
+  UME::VECTOR::Vector<float, 1000000, 8> A(a), B(b), C(c); (1)
   
   auto t0 = A*2.0f;
   auto t1 = B*3.0f;
@@ -267,7 +269,7 @@ These can be accessed using MFI (Member Function Interface):
 //--------------------------------------------
   float a[1000000], b[1000000], c[1000000], d[1000000];
 
-  UME::VECTOR::Vector<float, 8, 1000000> A(a), B(b), C(c);
+  UME::VECTOR::Vector<float, 1000000, 8> A(a), B(b), C(c);
   
   auto t0 = A.mul(2.0f); // MFI call to 'MUL'
   auto t1 = B.mul(3.0f); 
@@ -284,8 +286,8 @@ Following example shows usage of a mask:
   float a[100], b[100], c[100], d[100];
   bool m[100];
 
-  UME::VECTOR::Vector<float, 8, 100> A(a), B(b), C(c); 
-  UME::VECTOR::MaskVector<8, 100> M(m); // Mask vectors use 'bool' as scalar type
+  UME::VECTOR::Vector<float, 100, 8> A(a), B(b), C(c); 
+  UME::VECTOR::MaskVector<100, 8> M(m); // Mask vectors use 'bool' as scalar type
   auto t0 = A.mul(m, 2.0f);
   auto t1 = B.mul(3.0f); 
   C = t0.add(m, t1);
