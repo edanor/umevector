@@ -179,7 +179,7 @@ int main()
 
     // Mind that analysis is performed on the expression graph only.
     // Actual evaluation is deferred until here.
-    E = t10;
+    RES = t10;
 
     std::cout << "Total Memory Ops         : " << E.LOOP_COUNT()*c2.total_memops() << "\n";
     std::cout << "Total Floating Point Ops : " << E.LOOP_COUNT()*c2.total_uops() << "\n";
