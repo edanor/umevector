@@ -30,7 +30,7 @@
 
 #include <time.h>
 
-#include <UMESimd.h>
+#include <umesimd/UMESimd.h>
 #include "../utilities/TimingStatistics.h"
 
 // define RDTSC getter function

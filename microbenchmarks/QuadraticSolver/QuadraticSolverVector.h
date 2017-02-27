@@ -32,32 +32,23 @@
 #define QUADRATIC_SOLVER_VECTOR_H_
 
 #include "../../UMEVector.h"
+#include "../../evaluators/TriadicEvaluator.h"
 
 template <typename SCALAR_FLOAT_T, typename SCALAR_INT_T, int SIMD_STRIDE, int ARRAY_SIZE>
 UME_NEVER_INLINE void QuadSolveVECTOR(
-#if defined(_MSC_VER)
-    // TODO: problem with 'const' keyword in expression templates
-    SCALAR_FLOAT_T* __restrict a,
-    SCALAR_FLOAT_T* __restrict b,
-    SCALAR_FLOAT_T* __restrict c,
-    SCALAR_FLOAT_T* __restrict x1,
-    SCALAR_FLOAT_T* __restrict x2,
-    int* __restrict roots
-#else
-    SCALAR_FLOAT_T* __restrict__ a,
-    SCALAR_FLOAT_T* __restrict__ b,
-    SCALAR_FLOAT_T* __restrict__ c,
-    SCALAR_FLOAT_T* __restrict__ x1,
-    SCALAR_FLOAT_T* __restrict__ x2,
-    int* __restrict__ roots
-#endif
+    SCALAR_FLOAT_T* UME_RESTRICT a,
+    SCALAR_FLOAT_T* UME_RESTRICT b,
+    SCALAR_FLOAT_T* UME_RESTRICT c,
+    SCALAR_FLOAT_T* UME_RESTRICT x1,
+    SCALAR_FLOAT_T* UME_RESTRICT x2,
+    int* UME_RESTRICT roots
     )
 {
-    typedef typename UME::VECTOR::FloatVector<SCALAR_FLOAT_T, SIMD_STRIDE, ARRAY_SIZE> FLOAT_VEC_T;
-    typedef typename UME::VECTOR::IntVector<SCALAR_INT_T, SIMD_STRIDE, ARRAY_SIZE> INT_VEC_T;
+    // Comments reflect equivalent of UME::SIMD operations
+    typedef typename UME::VECTOR::FloatVector<SCALAR_FLOAT_T, ARRAY_SIZE, SIMD_STRIDE> FLOAT_VEC_T;
+    typedef typename UME::VECTOR::IntVector<SCALAR_INT_T, ARRAY_SIZE, SIMD_STRIDE> INT_VEC_T;
 
     typedef typename UME::VECTOR::Scalar<SCALAR_FLOAT_T, SIMD_STRIDE> SCALAR_FLOAT_EXP_T;
-    typedef typename UME::VECTOR::Scalar<SCALAR_INT_T, SIMD_STRIDE> SCALAR_INT_EXP_T;
 
     //FLOAT_VEC_T one(1.0f);
     SCALAR_FLOAT_EXP_T one(1.0f);
@@ -66,16 +57,17 @@ UME_NEVER_INLINE void QuadSolveVECTOR(
     //FLOAT_VEC_T zero(0.0f);
     SCALAR_FLOAT_EXP_T zero(0.0f);
     //FLOAT_VEC_T a_inv = one / va;
-    auto a_inv = one / va;
+    auto a_inv = 1.0f / va;
     //FLOAT_VEC_T b2 = vb * vb;
     auto b2 = vb * vb;
     //FLOAT_VEC_T eps(std::numeric_limits<SCALAR_FLOAT_T>::epsilon());
-    SCALAR_FLOAT_EXP_T eps(std::numeric_limits<SCALAR_FLOAT_T>::epsilon());
+    SCALAR_FLOAT_T eps = std::numeric_limits<SCALAR_FLOAT_T>::epsilon();
     FLOAT_VEC_T vc(&c[0]);
-    //FLOAT_VEC_T negone(-1.0f);
-    SCALAR_FLOAT_EXP_T negone(-1.0f);
     //FLOAT_VEC_T ac = va * vc;
     auto ac = va * vc;
+    //FLOAT_VEC_T negone(-1.0f);
+    // This needs to by expression to be able to call .blend() on it
+    SCALAR_FLOAT_EXP_T negone(-1.0f);
     //FLOAT_VEC_T sign = negone.blend(vb >= zero, one);
     auto sign = negone.blend(vb >= zero, one);
     //FLOAT_VEC_T negfour(-4.0f);
@@ -89,7 +81,7 @@ UME_NEVER_INLINE void QuadSolveVECTOR(
     //MASK_T mask2 = delta >= eps;
     auto mask2 = delta >= eps;
     //r1 = r1.mul(-0.5f);
-    SCALAR_FLOAT_EXP_T neghalf(-0.5f);
+    SCALAR_FLOAT_T neghalf = -0.5f;
     auto r1_1 = r1_0.mul(neghalf);
     //FLOAT_VEC_T r2 = vc / r1;
     auto r2_0 = vc / r1_1;
@@ -98,7 +90,7 @@ UME_NEVER_INLINE void QuadSolveVECTOR(
     //FLOAT_VEC_T r3 = vb * a_inv * (-0.5f);
     auto r3_0 = vb * a_inv * neghalf;
     //FLOAT_VEC_T two(2.0f);
-    SCALAR_FLOAT_EXP_T two(2.0f);
+    SCALAR_FLOAT_T two = 2.0f;
     //FLOAT_VEC_T nr = one.blend(mask2, two);
     auto nr_0 = one.blend(mask2, two);
     //nr = nr.blend(mask0, zero);
@@ -114,20 +106,110 @@ UME_NEVER_INLINE void QuadSolveVECTOR(
     INT_VEC_T int_roots(roots);
     //UME::SIMD::SIMDVec<int, INT_VEC_T::length()> int_roots2(int_roots);
     //int_roots2.store(roots);
-    int_roots = nr_1.ftoi();
+    auto nr_1_i = nr_1.ftoi();
+    //int_roots = nr_1.ftoi(); // First evaluation trigger
     //r1.store(x1);
     FLOAT_VEC_T x1_vec(&x1[0]);
-    x1_vec = r1_3;
+    //x1_vec = r1_3; // Second evaluation trigger
     //r2.store(x2);
     FLOAT_VEC_T x2_vec(&x2[0]);
-    x2_vec = r2_1;
+    //x2_vec = r2_1; // Third evaluation trigger
+
+    UME::VECTOR::TriadicEvaluator eval(int_roots, nr_1_i, x1_vec, r1_3, x2_vec, r2_1);
+}
+
+// TODO: there is an issue with both ICC and G++, not being able to handle
+// the generic version. This needs looking into.
+template <int SIMD_STRIDE, int ARRAY_SIZE>
+UME_NEVER_INLINE void QuadSolveVECTOR(
+    float* UME_RESTRICT a,
+    float* UME_RESTRICT b,
+    float* UME_RESTRICT c,
+    float* UME_RESTRICT x1,
+    float* UME_RESTRICT x2,
+    int* UME_RESTRICT roots
+)
+{
+    // Comments reflect equivalent of UME::SIMD operations
+    typedef typename UME::VECTOR::FloatVector<float, ARRAY_SIZE, SIMD_STRIDE> FLOAT_VEC_T;
+    typedef typename UME::VECTOR::IntVector<int32_t, ARRAY_SIZE, SIMD_STRIDE> INT_VEC_T;
+
+    typedef typename UME::VECTOR::Scalar<float, SIMD_STRIDE> SCALAR_FLOAT_EXP_T;
+
+    //FLOAT_VEC_T one(1.0f);
+    SCALAR_FLOAT_EXP_T one(1.0f);
+    FLOAT_VEC_T va(&a[0]);
+    FLOAT_VEC_T vb(&b[0]);
+    //FLOAT_VEC_T zero(0.0f);
+    SCALAR_FLOAT_EXP_T zero(0.0f);
+    //FLOAT_VEC_T a_inv = one / va;
+    auto a_inv = 1.0f / va;
+    //FLOAT_VEC_T b2 = vb * vb;
+    auto b2 = vb * vb;
+    //FLOAT_VEC_T eps(std::numeric_limits<SCALAR_FLOAT_T>::epsilon());
+    float eps = std::numeric_limits<float>::epsilon();
+    FLOAT_VEC_T vc(&c[0]);
+    //FLOAT_VEC_T ac = va * vc;
+    auto ac = va * vc;
+    //FLOAT_VEC_T negone(-1.0f);
+    // This needs to by expression to be able to call .blend() on it
+    SCALAR_FLOAT_EXP_T negone(-1.0f);
+    //FLOAT_VEC_T sign = negone.blend(vb >= zero, one);
+    auto sign = negone.blend(vb >= zero, one);
+    //FLOAT_VEC_T negfour(-4.0f);
+    SCALAR_FLOAT_EXP_T negfour(-4.0f);
+    //FLOAT_VEC_T delta = negfour.fmuladd(ac, b2);
+    auto delta = negfour.fmuladd(ac, b2);
+    //FLOAT_VEC_T r1 = sign.fmuladd(delta.sqrt(), vb);
+    auto r1_0 = sign.fmuladd(delta.sqrt(), vb);
+    //MASK_T mask0 = delta < zero;
+    auto mask0 = delta < zero;
+    //MASK_T mask2 = delta >= eps;
+    auto mask2 = delta >= eps;
+    //r1 = r1.mul(-0.5f);
+    float neghalf = -0.5f;
+    auto r1_1 = r1_0.mul(neghalf);
+    //FLOAT_VEC_T r2 = vc / r1;
+    auto r2_0 = vc / r1_1;
+    //r1 = a_inv * r1;
+    auto r1_2 = a_inv * r1_1;
+    //FLOAT_VEC_T r3 = vb * a_inv * (-0.5f);
+    auto r3_0 = vb * a_inv * neghalf;
+    //FLOAT_VEC_T two(2.0f);
+    float two = 2.0f;
+    //FLOAT_VEC_T nr = one.blend(mask2, two);
+    auto nr_0 = one.blend(mask2, two);
+    //nr = nr.blend(mask0, zero);
+    auto nr_1 = nr_0.blend(mask0, zero);
+    //r3 = r3.blend(mask0, zero);
+    auto r3_1 = r3_0.blend(mask0, zero);
+    //r1 = r3.blend(mask2, r1);
+    auto r1_3 = r3_1.blend(mask2, r1_2);
+    //r2 = r3.blend(mask2, r2);
+    auto r2_1 = r3_1.blend(mask2, r2_0);
+
+    //INT_VEC_T int_roots(nr);
+    INT_VEC_T int_roots(roots);
+    //UME::SIMD::SIMDVec<int, INT_VEC_T::length()> int_roots2(int_roots);
+    //int_roots2.store(roots);
+    auto nr_1_i = nr_1.ftoi();
+    //int_roots = nr_1.ftoi(); // First evaluation trigger
+    //r1.store(x1);
+    FLOAT_VEC_T x1_vec(&x1[0]);
+    //x1_vec = r1_3; // Second evaluation trigger
+    //r2.store(x2);
+    FLOAT_VEC_T x2_vec(&x2[0]);
+    //x2_vec = r2_1; // Third evaluation trigger
+
+    // Triadic evaluator takes three expressions and
+    // evaluates them in parallel. This improves data locality.
+    UME::VECTOR::TriadicEvaluator eval(int_roots, nr_1_i, x1_vec, r1_3, x2_vec, r2_1);
 }
 
 template<typename FLOAT_T, uint32_t SIMD_STRIDE>
 UME_NEVER_INLINE TIMING_RES run_VECTOR()
 {
-    typedef typename UME::SIMD::SIMDVec<FLOAT_T, SIMD_STRIDE>                FLOAT_VEC_T;
-    typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::INT_VEC_T      INT_VEC_T;
+    typedef typename UME::SIMD::SIMDVec<FLOAT_T, SIMD_STRIDE>           FLOAT_VEC_T;
     typedef typename UME::SIMD::SIMDTraits<FLOAT_VEC_T>::SCALAR_INT_T   INT_T;
 
     unsigned long long start, end; // Time measurements

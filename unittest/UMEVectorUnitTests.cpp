@@ -1180,7 +1180,7 @@ int main() {
             rawC[i] = i + 16;
         }
 
-        UME::VECTOR::Vector<int32_t, UME_DEFAULT_SIMD_STRIDE, 8> A(rawA);
+        UME::VECTOR::Vector<int32_t, 8, UME_DEFAULT_SIMD_STRIDE> A(rawA);
         UME::VECTOR::Vector<int32_t> B (8, rawB);
         UME::VECTOR::Vector<int32_t> C(8, rawC);
 
@@ -1197,7 +1197,7 @@ int main() {
             rawD[i] = 0;
         }
 
-        UME::VECTOR::Vector<int32_t, UME_DEFAULT_SIMD_STRIDE, 8> A(rawA);
+        UME::VECTOR::Vector<int32_t, 8, UME_DEFAULT_SIMD_STRIDE> A(rawA);
         UME::VECTOR::Vector<int32_t> B(8, rawB);
         UME::VECTOR::Vector<int32_t> C(8, rawC);
         UME::VECTOR::Vector<int32_t> D(8, rawD);

@@ -32,12 +32,12 @@ public:
     }
 
     float getAverage() { return average; }
-    float getStdDev() { return sqrtf(variance)/float(count); }
+    float getStdDev() { return count > 0 ? sqrtf(variance)/float(count) : 0.0f; }
     float calculateSpeedup(float reference) {
         return reference / average;
     }
     float calculateSpeedup(TimingStatistics & reference) {
-        return reference.getAverage() / average;
+        return average > 0.0f ? reference.getAverage() / average : 0.0f;
     }
 
     void printList() {
@@ -64,7 +64,7 @@ public:
 template<typename IN_TYPE>
 class Statistics {
 private:
-    std::list<IN_TYPE> measurements;
+    typename std::list<IN_TYPE> measurements;
     double average, variance;
     int count;
 
@@ -90,7 +90,7 @@ public:
     }
 
     double getAverage() { return average; }
-    double getStdDev() { std::sqrt(variance) / double(count); }
+    double getStdDev() { return std::sqrt(variance) / double(count); }
     double calculateSpeedup(double reference) {
         return reference / average;
     }
@@ -117,5 +117,16 @@ public:
         return 1.96 * getStdDev() / sqrt(double(count));
     }
 };
+
+#include <chrono>
+static inline unsigned long long get_timestamp(void)
+{
+    auto t0 = std::chrono::high_resolution_clock::now().time_since_epoch();
+    auto t1 = std::chrono::duration_cast<std::chrono::nanoseconds>(t0);
+    return t1.count();
+}
+
+
+typedef unsigned long long TIMING_RES;
 
 #endif
