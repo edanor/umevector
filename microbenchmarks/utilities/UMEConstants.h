@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 CERN
+// Copyright (c) 2015-2017 CERN
 //
 // Author: Przemyslaw Karpinski
 //
@@ -40,7 +40,7 @@ namespace UME
         const double PI_HALF         = 1.5707963267948966192313216916398;
         const double PI_ONE_AND_HALF = 4.7123889803846898576939650749193;
         const double PI_TWO          = 6.2831853071795864769252867665590;
-    };
+    }
 }
 
 
