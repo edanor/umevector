@@ -48,6 +48,11 @@ namespace VECTOR {
         E1 _e1;
         E_MASK _e_mask;
 
+        UME_FORCE_INLINE int LENGTH() const { return _e1.LENGTH(); }
+        UME_FORCE_INLINE int LOOP_COUNT() const { return _e1.LENGTH() / SIMD_STRIDE; }
+        UME_FORCE_INLINE int PEEL_COUNT() const { return _e1.LENGTH() % SIMD_STRIDE; }
+        UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*SIMD_STRIDE; }
+
         UME_FORCE_INLINE ArithmeticMABSExpression(E1 e1, E_MASK e_mask) :
             _e1(e1), _e_mask(e_mask) {}
 

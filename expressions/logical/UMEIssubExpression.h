@@ -47,6 +47,11 @@ namespace VECTOR {
     public:
         E1 _e1;
 
+        UME_FORCE_INLINE int LENGTH() const { return _e1.LENGTH(); }
+        UME_FORCE_INLINE int LOOP_COUNT() const { return _e1.LENGTH() / SIMD_STRIDE; }
+        UME_FORCE_INLINE int PEEL_COUNT() const { return _e1.LENGTH() % SIMD_STRIDE; }
+        UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*SIMD_STRIDE; }
+
         UME_FORCE_INLINE LogicalISSUBExpression(E1 e1) :
             _e1(e1) {}
 

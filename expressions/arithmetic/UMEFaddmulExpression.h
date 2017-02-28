@@ -49,6 +49,11 @@ namespace VECTOR {
         E2 _e2;
         E3 _e3;
 
+        UME_FORCE_INLINE int LENGTH() const { return _e1.LENGTH(); }
+        UME_FORCE_INLINE int LOOP_COUNT() const { return _e1.LENGTH() / SIMD_STRIDE; }
+        UME_FORCE_INLINE int PEEL_COUNT() const { return _e1.LENGTH() % SIMD_STRIDE; }
+        UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*SIMD_STRIDE; }
+
         UME_FORCE_INLINE ArithmeticFADDMULExpression(E1 e1, E2 e2, E3 e3) :
             _e1(e1), _e2(e2), _e3(e3) {}
 
