@@ -716,6 +716,33 @@ namespace VECTOR {
                 Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
         }
 
+        template<typename T2>
+        UME_FORCE_INLINE ArithmeticADDAExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2> adda(T2 srcB)
+        {
+            return ArithmeticADDAExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        UME_FORCE_INLINE ArithmeticADDAExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> adda(SCALAR_TYPE srcB)
+        {
+            return ArithmeticADDAExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, srcB);
+        }
+
         template<typename T_MASK, typename T2>
         UME_FORCE_INLINE ArithmeticBLENDExpression<
             SCALAR_TYPE,

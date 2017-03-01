@@ -40,12 +40,15 @@ namespace VECTOR {
         //SCALAR_TYPE * _e1;
 
     public:
+    
         UME_FORCE_INLINE Scalar(SCALAR_TYPE & value) : _e1(value) {}
         UME_FORCE_INLINE Scalar(SCALAR_TYPE && value) : _e1(value) {}
 
         UME_FORCE_INLINE Scalar(Scalar && other) : _e1(other._e1) { } //: _e1(value._e1) {}
         UME_FORCE_INLINE Scalar(const Scalar & other) : _e1(other._e1) { }
 
+        UME_FORCE_INLINE static int LENGTH() { return 1; }
+        
         UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> evaluate_SIMD(int index)
         {
             return UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE>(_e1);
@@ -75,6 +78,8 @@ namespace VECTOR {
 
         UME_FORCE_INLINE Scalar(Scalar && other) : _e1(other._e1) { } //: _e1(value._e1) {}
         UME_FORCE_INLINE Scalar(const Scalar & other) : _e1(other._e1) { }
+
+        UME_FORCE_INLINE static int LENGTH() { return 1; }
 
         UME_FORCE_INLINE UME::SIMD::SIMDVecMask<SIMD_STRIDE> evaluate_SIMD(int index)
         {

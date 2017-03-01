@@ -101,6 +101,17 @@ namespace VECTOR {
             return t0;
         }
 
+        // Terminal call for scalar version of expression template expressions.
+        // Some operations require implicit assignment. This assignment needs to
+        // be propagated from evaluated register, back to vector data localization.
+        UME_FORCE_INLINE void update_SIMD(SIMD_TYPE & x, int index) {
+            x.store(&elements[index]);
+        }
+
+        UME_FORCE_INLINE void update_scalar(SIMD1_TYPE & x, int index) {
+            x.store(&elements[index]);
+        }
+
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
         UME_FORCE_INLINE UintVector& operator= (UintVector & origin) {
             for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
