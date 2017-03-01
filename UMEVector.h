@@ -125,6 +125,6 @@ namespace UME {
 }
 
 
-
+#include "evaluators/MonadicEvaluator.h"
 
 #endif

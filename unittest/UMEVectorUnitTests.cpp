@@ -1207,4 +1207,40 @@ int main() {
 
         D = B.abs();
     }
+    {
+        float rawA[100], rawB[100], rawC[100];
+
+        for (int i = 0; i < 100; i++) {
+            rawA[i] = i;
+            rawB[i] = 100 * i;
+            rawC[i] = 10000 * i;
+        }
+
+        UME::VECTOR::Vector<float, 100, 4> A(rawA);
+        UME::VECTOR::Vector<float, 100, 4> B(rawB);
+        UME::VECTOR::Vector<float, 100, 4> C(rawC);
+
+        auto t0 = A.adda(B);
+
+        // Trigger the evaluation
+        UME::VECTOR::MonadicEvaluator eval(t0);
+    }
+    {
+        float rawA[100], rawB[100], rawC[100];
+
+        for (int i = 0; i < 100; i++) {
+            rawA[i] = i;
+            rawB[i] = 100 * i;
+            rawC[i] = 10000 * i;
+        }
+
+        UME::VECTOR::Vector<float, 100, 4> A(rawA);
+        UME::VECTOR::Vector<float, 100, 4> B(rawB);
+        UME::VECTOR::Vector<float, 100, 4> C(rawC);
+
+        auto t0 = (A.adda(B)).adda(C);
+
+        // Trigger the evaluation
+        UME::VECTOR::MonadicEvaluator eval(t0);
+    }
 }
