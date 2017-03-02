@@ -286,6 +286,8 @@ public:
         EXP2 & reinterpret_exp2 = static_cast<EXP2 &>(exp2);
         EXP3 & reinterpret_exp3 = static_cast<EXP3 &>(exp3);
 
+        assert(dst1.LENGTH() == dst2.LENGTH());
+        assert(dst1.LENGTH() == dst3.LENGTH());
         // TODO: transform original expression
 
         //ExpressionDepth<SCALAR_TYPE1, SIMD_STRIDE> depth1(reinterpret_exp1);
@@ -300,23 +302,19 @@ public:
 
         for (int i = 0; i < dst1.LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
             UME::SIMD::SIMDVec<SCALAR_TYPE1, SIMD_STRIDE> t0 = reinterpret_exp1.evaluate_SIMD(i);
-            t0.store(&dst1.elements[i]);
-
             UME::SIMD::SIMDVec<SCALAR_TYPE2, SIMD_STRIDE> t1 = reinterpret_exp2.evaluate_SIMD(i);
-            t1.store(&dst2.elements[i]);
-
             UME::SIMD::SIMDVec<SCALAR_TYPE3, SIMD_STRIDE> t2 = reinterpret_exp3.evaluate_SIMD(i);
+            t0.store(&dst1.elements[i]);
+            t1.store(&dst2.elements[i]);
             t2.store(&dst3.elements[i]);
         }
 
         for (int i = dst1.LOOP_PEEL_OFFSET(); i < dst1.LENGTH(); i++) {
             UME::SIMD::SIMDVec<SCALAR_TYPE1, 1> t0 = reinterpret_exp1.evaluate_scalar(i);
-            t0.store(&dst1.elements[i]);
-
             UME::SIMD::SIMDVec<SCALAR_TYPE2, 1> t1 = reinterpret_exp2.evaluate_scalar(i);
-            t1.store(&dst2.elements[i]);
-
             UME::SIMD::SIMDVec<SCALAR_TYPE3, 1> t2 = reinterpret_exp3.evaluate_scalar(i);
+            t0.store(&dst1.elements[i]);
+            t1.store(&dst2.elements[i]);
             t2.store(&dst3.elements[i]);
         }
     }

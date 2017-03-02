@@ -25,12 +25,12 @@ public:
 
         for (int i = 0; i < reinterpret_exp.LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_exp.evaluate_SIMD(i);
-            t0.store(&elements[i]);
+            dst.update_SIMD(t0, i);
         }
 
         for (int i = reinterpret_exp.LOOP_PEEL_OFFSET(); i < reinterpret_exp.LENGTH(); i++) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_exp.evaluate_scalar(i);
-            t1.store(&elements[i]);
+            dst.update_scalar(t1, i);
         }
 
         // Dispose of the expression and release all temporary storage.
@@ -51,7 +51,7 @@ public:
         dst = exp1.evaluate_scalar(0);
     }
 
-    // Evaluate expression with implicit destination (e.g. destructive operation).
+    // Evaluate expression with no destination, but side-effects (e.g. destructive ADD operation).
     template<
         typename SCALAR_TYPE,
         int SIMD_STRIDE,
