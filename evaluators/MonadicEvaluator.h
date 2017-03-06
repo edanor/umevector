@@ -2,6 +2,8 @@
 
 #include "../UMEVector.h"
 
+#include "../utilities/ExpressionPrinter.h"
+
 namespace UME
 {
 namespace VECTOR {
@@ -14,11 +16,11 @@ public:
     // vector destination.
     template<
         typename SCALAR_TYPE,
+        int VEC_LEN,
         int SIMD_STRIDE,
-        typename DST_T,
         typename EXP_T>
         inline MonadicEvaluator(
-        DST_T & dst,
+        UME::VECTOR::Vector<SCALAR_TYPE, VEC_LEN, SIMD_STRIDE> & dst,
         UME::VECTOR::ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, EXP_T> & exp)
     {
         EXP_T & reinterpret_exp = static_cast<EXP_T &>(exp);
@@ -43,12 +45,13 @@ public:
         int SIMD_STRIDE,
         typename EXP_T>
         inline MonadicEvaluator(
-            SCALAR_TYPE & dst,
+            SCALAR_TYPE * dst,
             UME::VECTOR::ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, EXP_T> & exp)
     {
         EXP_T & reinterpret_exp = static_cast<EXP_T &>(exp);
+
         UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_exp.evaluate_scalar(0);
-        dst = t1[0];
+        *dst = t1[0];
     }
 
     // Evaluate expression with no destination, but side-effects (e.g. destructive ADD operation).
