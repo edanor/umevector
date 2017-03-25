@@ -30,11 +30,28 @@
 #ifndef UME_VECTOR_H_
 #define UME_VECTOR_H_
 
+#include <umesimd/UMESimd.h>
+
 // The stride can and should be controlled by the user, depending
 // on the algorithm and hardware used. This default is provided
 // so that it is possible to simplify some code examples, rather than
 // as a hard setting.
 #define UME_DEFAULT_SIMD_STRIDE 8
+
+// TODO: this should be made platform specific!
+template<typename SCALAR_T>
+class DefaultStride {};
+
+template<> struct DefaultStride<uint8_t> { static const int value = 32; };
+template<> struct DefaultStride<int8_t> { static const int value = 32; };
+template<> struct DefaultStride<uint16_t> { static const int value = 16; };
+template<> struct DefaultStride<int16_t> { static const int value = 16; };
+template<> struct DefaultStride<uint32_t> { static const int value = 8; };
+template<> struct DefaultStride<int32_t> { static const int value = 8; };
+template<> struct DefaultStride<uint64_t> { static const int value = 4; };
+template<> struct DefaultStride<int64_t> { static const int value = 4; };
+template<> struct DefaultStride<float> { static const int value = 8; };
+template<> struct DefaultStride<double> { static const int value =4; };
 
 // Vectors of DYNAMIC_LENGTH may have lengths that
 // are unknowns at compile time. While the internal behaviour 
@@ -43,9 +60,7 @@
 // as long as vector lengths are the same. For performance reasons
 // it is best to use static vectors since then it is possible for the
 // compiler to perform additional code optimizations.
-const int UME_DYNAMIC_LENGTH = -1;
-
-#include <umesimd/UMESimd.h>
+const int UME_DYNAMIC_LENGTH = std::numeric_limits<uint32_t>::max();
 
 #include "UMEVectorInterface.h"
 
@@ -118,7 +133,7 @@ namespace UME {
             typedef typename UME::VECTOR::FloatVector<double, VEC_LEN, SIMD_STRIDE> BASE_T;
         };
 
-        template<typename SCALAR_T, uint32_t VEC_LEN = UME_DYNAMIC_LENGTH, uint32_t SIMD_STRIDE = UME_DEFAULT_SIMD_STRIDE>
+        template<typename SCALAR_T, uint32_t VEC_LEN = UME_DYNAMIC_LENGTH, uint32_t SIMD_STRIDE = DefaultStride<SCALAR_T>::value>
         using Vector = typename BaseVectorType<SCALAR_T, VEC_LEN, SIMD_STRIDE>::BASE_T;
 
     }
