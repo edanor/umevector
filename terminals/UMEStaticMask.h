@@ -35,7 +35,7 @@
 namespace UME {
 namespace VECTOR {
 
-    template<int VEC_LEN = UME_DYNAMIC_LENGTH, int SIMD_STRIDE = UME_DEFAULT_SIMD_STRIDE>
+    template<int VEC_LEN = UME_DYNAMIC_LENGTH, int SIMD_STRIDE = UME_DEFAULT_SIMD_STRIDE, class Allocator=UME::AlignedAllocator<bool, SIMD_STRIDE>>
     class MaskVector : public LogicalExpression<
         SIMD_STRIDE,
         MaskVector<VEC_LEN, SIMD_STRIDE>>
@@ -50,19 +50,34 @@ namespace VECTOR {
         UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT() * SIMD_STRIDE; }
 
         bool *elements;
-
-    private:
-        UME_FORCE_INLINE MaskVector() {}
         
-    public:
-        MaskVector(bool *p) : elements(p) {}
+        // Used for dynamic memory allocation
+        bool ownsMemory;
 
+    public:
+        UME_FORCE_INLINE MaskVector(bool *p) : elements(p), ownsMemory(false) {}
+
+        UME_FORCE_INLINE MaskVector() : ownsMemory(true) {
+            Allocator alloc;
+            elements = alloc.allocate(sizeof(bool)*VEC_LEN);
+        }
+        
         UME_FORCE_INLINE MaskVector(MaskVector & origin) {
             elements = origin.elements;
+            // TODO: we need a reference counter to manage memory properly in this case!
+            ownsMemory = false;
         }
 
         UME_FORCE_INLINE MaskVector(MaskVector && origin) {
             elements = origin.elements;
+            ownsMemory = origin.ownsMemory;
+        }
+        
+        UME_FORCE_INLINE ~MaskVector() {
+            if(ownsMemory) {
+                Allocator alloc;
+                alloc.deallocate(elements, sizeof(bool)*VEC_LEN);
+            }
         }
 
         template<typename E>

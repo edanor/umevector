@@ -34,7 +34,7 @@ namespace UME {
 namespace VECTOR {
 
     /* Static vector template. This template*/
-    template<typename SCALAR_TYPE, int VEC_LEN = UME_DYNAMIC_LENGTH, int SIMD_STRIDE = DefaultStride<SCALAR_TYPE>::value>
+    template<typename SCALAR_TYPE, int VEC_LEN = UME_DYNAMIC_LENGTH, int SIMD_STRIDE = DefaultStride<SCALAR_TYPE>::value, class Allocator=UME::AlignedAllocator<SCALAR_TYPE, SIMD_STRIDE>>
     class FloatVector : 
         public FloatExpressionInterface<
             FloatVector<SCALAR_TYPE, VEC_LEN, SIMD_STRIDE>,
@@ -53,22 +53,39 @@ namespace VECTOR {
         //UME_FORCE_INLINE int SIMD_STRIDE() const { return SIMD_STRIDE; }
 
         SCALAR_TYPE *elements;
-    private:
-        // Vector class should be intialized with proper user-managed memory buffer.
-        UME_FORCE_INLINE FloatVector() {}
+        
+        // Used for dynamic memory allocation
+        bool ownsMemory;
 
     public:
         // pointer should be properly aligned!
-        UME_FORCE_INLINE FloatVector(SCALAR_TYPE *p) : elements(p) {
+        UME_FORCE_INLINE FloatVector(SCALAR_TYPE *p) : elements(p), ownsMemory(false) {
+        }
+        
+        // Initialize with memory ownership 
+        UME_FORCE_INLINE FloatVector() : ownsMemory(true){
+            Allocator alloc;
+            elements = alloc.allocate(sizeof(SCALAR_TYPE)*VEC_LEN);
         }
 
         UME_FORCE_INLINE FloatVector(FloatVector & origin) {
             elements = origin.elements;
+            // TODO: we need a reference counter to manage memory properly in this case!
+            ownsMemory = false;
         }
 
         UME_FORCE_INLINE FloatVector(FloatVector && origin) {
             elements = origin.elements;
+            ownsMemory = origin.ownsMemory;
         }
+        
+        UME_FORCE_INLINE ~FloatVector() {
+            if(ownsMemory) {
+                Allocator alloc;
+                alloc.deallocate(elements, sizeof(SCALAR_TYPE)*VEC_LEN);
+            }
+        }
+        
 
         template<typename E>
         UME_FORCE_INLINE FloatVector(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)

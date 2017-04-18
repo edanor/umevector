@@ -38,11 +38,14 @@
 // as a hard setting.
 #define UME_DEFAULT_SIMD_STRIDE 8
 
-// TODO: this should be made platform specific!
-template<typename SCALAR_T>
-class DefaultStride {};
+// TODO: this should be made platform/compiler specific!
+template<typename SCALAR_T> 
+struct DefaultStride { 
+    static const int value = UME::SIMD::SuggestedVecLen<SCALAR_T>::value;
+};
 
-template<> struct DefaultStride<uint8_t> { static const int value = 32; };
+/*
+template<> struct DefaultStride<uint8_t> { static const int value = UME::SIMD::SuggestedVecLen<uint8_t>; };
 template<> struct DefaultStride<int8_t> { static const int value = 32; };
 template<> struct DefaultStride<uint16_t> { static const int value = 16; };
 template<> struct DefaultStride<int16_t> { static const int value = 16; };
@@ -52,7 +55,7 @@ template<> struct DefaultStride<uint64_t> { static const int value = 4; };
 template<> struct DefaultStride<int64_t> { static const int value = 4; };
 template<> struct DefaultStride<float> { static const int value = 8; };
 template<> struct DefaultStride<double> { static const int value =4; };
-
+*/
 // Vectors of DYNAMIC_LENGTH may have lengths that
 // are unknowns at compile time. While the internal behaviour 
 // is different than for static vector lengths, the interoperation
@@ -79,61 +82,61 @@ const int UME_DYNAMIC_LENGTH = std::numeric_limits<uint32_t>::max();
 
 namespace UME {
     namespace VECTOR {
-        template<typename SCALAR_T, uint32_t SIMD_STRIDE = UME_DEFAULT_SIMD_STRIDE, uint32_t VEC_LEN = UME_DYNAMIC_LENGTH>
+        template<typename SCALAR_T, int VEC_LEN = UME_DYNAMIC_LENGTH, uint32_t SIMD_STRIDE = UME_DEFAULT_SIMD_STRIDE>
         struct BaseVectorType {
         };
 
-        template<uint32_t VEC_LEN, uint32_t SIMD_STRIDE>
+        template<int VEC_LEN, uint32_t SIMD_STRIDE>
         struct BaseVectorType<uint8_t, VEC_LEN, SIMD_STRIDE> {
             typedef typename UME::VECTOR::UintVector<uint8_t, VEC_LEN, SIMD_STRIDE> BASE_T;
         };
 
-        template<uint32_t VEC_LEN, uint32_t SIMD_STRIDE>
+        template<int VEC_LEN, uint32_t SIMD_STRIDE>
         struct BaseVectorType<uint16_t, VEC_LEN, SIMD_STRIDE> {
             typedef typename UME::VECTOR::UintVector<uint16_t, VEC_LEN, SIMD_STRIDE> BASE_T;
         };
 
-        template<uint32_t VEC_LEN, uint32_t SIMD_STRIDE>
+        template<int VEC_LEN, uint32_t SIMD_STRIDE>
         struct BaseVectorType<uint32_t, VEC_LEN, SIMD_STRIDE> {
             typedef typename UME::VECTOR::UintVector<uint32_t, VEC_LEN, SIMD_STRIDE> BASE_T;
         };
 
-        template<uint32_t VEC_LEN, uint32_t SIMD_STRIDE>
+        template<int VEC_LEN, uint32_t SIMD_STRIDE>
         struct BaseVectorType<uint64_t, VEC_LEN, SIMD_STRIDE> {
             typedef typename UME::VECTOR::UintVector<uint64_t, VEC_LEN, SIMD_STRIDE> BASE_T;
         };
 
-        template<uint32_t VEC_LEN, uint32_t SIMD_STRIDE>
+        template<int VEC_LEN, uint32_t SIMD_STRIDE>
         struct BaseVectorType<int8_t, VEC_LEN, SIMD_STRIDE> {
             typedef typename UME::VECTOR::IntVector<int8_t, VEC_LEN, SIMD_STRIDE> BASE_T;
         };
 
-        template<uint32_t VEC_LEN, uint32_t SIMD_STRIDE>
+        template<int VEC_LEN, uint32_t SIMD_STRIDE>
         struct BaseVectorType<int16_t, VEC_LEN, SIMD_STRIDE> {
             typedef typename UME::VECTOR::IntVector<int16_t, VEC_LEN, SIMD_STRIDE> BASE_T;
         };
 
-        template<uint32_t VEC_LEN, uint32_t SIMD_STRIDE>
+        template<int VEC_LEN, uint32_t SIMD_STRIDE>
         struct BaseVectorType<int32_t, VEC_LEN, SIMD_STRIDE> {
             typedef typename UME::VECTOR::IntVector<int32_t, VEC_LEN, SIMD_STRIDE> BASE_T;
         };
 
-        template<uint32_t VEC_LEN, uint32_t SIMD_STRIDE>
+        template<int VEC_LEN, uint32_t SIMD_STRIDE>
         struct BaseVectorType<int64_t, VEC_LEN, SIMD_STRIDE> {
             typedef typename UME::VECTOR::IntVector<int64_t, VEC_LEN, SIMD_STRIDE> BASE_T;
         };
 
-        template<uint32_t VEC_LEN, uint32_t SIMD_STRIDE>
+        template<int VEC_LEN, uint32_t SIMD_STRIDE>
         struct BaseVectorType<float, VEC_LEN, SIMD_STRIDE> {
             typedef typename UME::VECTOR::FloatVector<float, VEC_LEN, SIMD_STRIDE> BASE_T;
         };
 
-        template<uint32_t VEC_LEN, uint32_t SIMD_STRIDE>
+        template<int VEC_LEN, uint32_t SIMD_STRIDE>
         struct BaseVectorType<double, VEC_LEN, SIMD_STRIDE> {
             typedef typename UME::VECTOR::FloatVector<double, VEC_LEN, SIMD_STRIDE> BASE_T;
         };
 
-        template<typename SCALAR_T, uint32_t VEC_LEN = UME_DYNAMIC_LENGTH, uint32_t SIMD_STRIDE = DefaultStride<SCALAR_T>::value>
+        template<typename SCALAR_T, int VEC_LEN = UME_DYNAMIC_LENGTH, uint32_t SIMD_STRIDE = DefaultStride<SCALAR_T>::value>
         using Vector = typename BaseVectorType<SCALAR_T, VEC_LEN, SIMD_STRIDE>::BASE_T;
 
     }

@@ -823,12 +823,36 @@ void testHADD_random_static()
     }
 }
 
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE>
+void testMemoryOwnership() 
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    {
+        SCALAR_TYPE raw_a[VEC_LEN];
+        
+        for (int i=0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<SCALAR_TYPE>(gen);
+        }
+        
+        VEC_TYPE A; // Vector owns the memory.
+        
+        for (int i=0; i < VEC_LEN; i++) {
+            A.elements[i] = raw_a[i];
+        }
+        
+        bool inRange = valueInRange(A.elements, raw_a, 0.01f);
+        check_condition(inRange, std::string("Memory ownership"));
+    }
+}
+
 int main() {
     {
         char header[] = { "Mask Vector test (STRIDE 8):" };
         INIT_TEST(header, false);
         testLAND_random_static<UME::VECTOR::MaskVector<100, 8>, 100, 8>();
         testLOR_random_static<UME::VECTOR::MaskVector<100, 8>, 100, 8>();
+        testMemoryOwnership<UME::VECTOR::MaskVector<100, 8>, bool, 100, 8>();
     }
 
     {
@@ -842,18 +866,22 @@ int main() {
         testMULV_random_static<UME::VECTOR::UintVector<uint32_t, 100, 4>, uint32_t, 100, 4>();
 
         testHADD_random_static<UME::VECTOR::UintVector<uint32_t, 100, 4>, uint32_t, 100, 4>();
+        
+        testMemoryOwnership<UME::VECTOR::UintVector<uint32_t, 100, 4>, uint32_t, 100, 4>();
     }
     {
         char header[] = { "Int32_t Vector test (STRIDE 4):" };
         INIT_TEST(header, false);
-        testADDV_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, int32_t, 100, 4>();
-        testMADDV_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, UME::VECTOR::MaskVector<100, 4>, int32_t, 100, 4>();
-        testADDS_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, int32_t, 100, 4>();
-        testMADDS_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, UME::VECTOR::MaskVector<100, 4>, int32_t, 100, 4>();
-        testSUBV_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, int32_t, 100, 4>();
-        testMULV_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, int32_t, 100, 4>();
+        testADDV_random_static<UME::VECTOR::IntVector<int32_t, 100, 4>, int32_t, 100, 4>();
+        testMADDV_random_static<UME::VECTOR::IntVector<int32_t, 100, 4>, UME::VECTOR::MaskVector<100, 4>, int32_t, 100, 4>();
+        testADDS_random_static<UME::VECTOR::IntVector<int32_t, 100, 4>, int32_t, 100, 4>();
+        testMADDS_random_static<UME::VECTOR::IntVector<int32_t, 100, 4>, UME::VECTOR::MaskVector<100, 4>, int32_t, 100, 4>();
+        testSUBV_random_static<UME::VECTOR::IntVector<int32_t, 100, 4>, int32_t, 100, 4>();
+        testMULV_random_static<UME::VECTOR::IntVector<int32_t, 100, 4>, int32_t, 100, 4>();
 
-        testHADD_random_static<UME::VECTOR::UintVector<int32_t, 100, 4>, int32_t, 100, 4>();
+        testHADD_random_static<UME::VECTOR::IntVector<int32_t, 100, 4>, int32_t, 100, 4>();
+        
+        testMemoryOwnership<UME::VECTOR::IntVector<int32_t, 100, 4>, int32_t, 100, 4>();
     }
     {
         char header[] = { "Float Vector test (STRIDE 4):" };
@@ -867,6 +895,7 @@ int main() {
         testMULV_random_static<UME::VECTOR::FloatVector<float, 1000, 4>, float, 1000, 4>();
 
         testHADD_random_static<UME::VECTOR::FloatVector<float, 1000, 4>, float, 1000, 4>();
+        testMemoryOwnership<UME::VECTOR::IntVector<float, 1000, 4>, float, 1000, 4>();
     }
     {
         float rawA[100], rawB[100], rawC[100], rawD[100], rawE[100], rawF[100];

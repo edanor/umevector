@@ -34,7 +34,7 @@ namespace UME {
 namespace VECTOR {
 
     /* Static vector template. This template*/
-    template<typename SCALAR_TYPE, int VEC_LEN = UME_DYNAMIC_LENGTH, int SIMD_STRIDE = UME_DEFAULT_SIMD_STRIDE>
+    template<typename SCALAR_TYPE, int VEC_LEN = UME_DYNAMIC_LENGTH, int SIMD_STRIDE = UME_DEFAULT_SIMD_STRIDE, class Allocator=UME::AlignedAllocator<SCALAR_TYPE, SIMD_STRIDE>>
     class UintVector : 
         public UintExpressionInterface<
             UintVector<SCALAR_TYPE, VEC_LEN, SIMD_STRIDE>,
@@ -52,21 +52,35 @@ namespace VECTOR {
         //UME_FORCE_INLINE int SIMD_STRIDE() const { return SIMD_STRIDE; }
 
         SCALAR_TYPE *elements;
-    private:
-        // Vector class should be intialized with proper user-managed memory buffer.
-        UME_FORCE_INLINE UintVector() { }
-
+        
+        // Used for dynamic memory allocation
+        bool ownsMemory;
     public:
         // pointer should be properly aligned!
-        UME_FORCE_INLINE UintVector(SCALAR_TYPE *p) : elements(p) {
+        UME_FORCE_INLINE UintVector(SCALAR_TYPE *p) : elements(p), ownsMemory(false) {
+        }
+        
+        UME_FORCE_INLINE UintVector() : ownsMemory(true) {
+            Allocator alloc;
+            elements = alloc.allocate(sizeof(SCALAR_TYPE)*VEC_LEN);
         }
 
         UME_FORCE_INLINE UintVector(UintVector & origin) {
             elements = origin.elements;
+            // TODO: we need a reference counter to manage memory properly in this case!
+            ownsMemory = false;
         }
 
         UME_FORCE_INLINE UintVector(UintVector && origin) {
             elements = origin.elements;
+            ownsMemory = origin.ownsMemory;
+        }
+        
+        UME_FORCE_INLINE ~UintVector() {
+            if(ownsMemory) {
+                Allocator alloc;
+                alloc.deallocate(elements, sizeof(SCALAR_TYPE)*VEC_LEN);
+            }
         }
 
         template<typename E>
