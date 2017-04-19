@@ -46,7 +46,7 @@ namespace VECTOR {
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD1_TYPE;
 
         UME_FORCE_INLINE int LENGTH() const { return VEC_LEN; }
-        static const constexpr int ALIGNMENT() { return SIMD_TYPE::alignment(); }
+        static constexpr int ALIGNMENT() { return SIMD_TYPE::alignment(); }
         UME_FORCE_INLINE int LOOP_COUNT() const { return VEC_LEN / SIMD_STRIDE; }
         UME_FORCE_INLINE int PEEL_COUNT() const { return VEC_LEN % SIMD_STRIDE; }
         UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT() * SIMD_STRIDE; }

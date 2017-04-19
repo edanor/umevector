@@ -33,15 +33,16 @@
 namespace UME {
 namespace VECTOR {
 
-    template<int SIMD_STRIDE>
-    class MaskVector<UME_DYNAMIC_LENGTH, SIMD_STRIDE> :
+    template<int SIMD_STRIDE, class Allocator>
+    class MaskVector<UME_DYNAMIC_LENGTH, SIMD_STRIDE, Allocator> :
         public LogicalExpression<
             SIMD_STRIDE,
             MaskVector<UME_DYNAMIC_LENGTH, SIMD_STRIDE>>
     {
     private:
         int mLength;
-        
+        int mGatherStride;
+
     public:
         typedef UME::SIMD::SIMDVecMask<SIMD_STRIDE>  SIMD_TYPE;
         typedef UME::SIMD::SIMDVecMask<1>       SIMD1_TYPE;
@@ -53,43 +54,57 @@ namespace VECTOR {
 
         bool* elements;
 
+        // Used for dynamic memory allocation
+        bool ownsMemory;
+
     private:
         UME_FORCE_INLINE MaskVector() {}
-        
+
     public:
-        UME_FORCE_INLINE MaskVector(int length) : mLength(length)
+        UME_FORCE_INLINE MaskVector(int length, bool value) : mLength(length), mGatherStride(1), ownsMemory(true)
         {
-            elements = (bool*)UME::DynamicMemory::AlignedMalloc(
-                length*sizeof(bool),
-                SIMD_TYPE::alignment());
-        }
-        UME_FORCE_INLINE MaskVector(int length, bool value) : mLength(length)
-        {
-            elements = (bool*)UME::DynamicMemory::AlignedMalloc(
-                length*sizeof(bool),
-                SIMD_TYPE::alignment());
+            Allocator alloc;
+            elements = alloc.allocate(sizeof(bool)*mLength);
             for (int i = 0; i < length; i++) elements[i] = value;
         }
-        UME_FORCE_INLINE MaskVector(int length, bool *p) : mLength(length)
+        
+        UME_FORCE_INLINE MaskVector(int length, bool *p) : mLength(length), mGatherStride(1), ownsMemory(false)
         {
-            elements = (bool*)UME::DynamicMemory::AlignedMalloc(
-                length*sizeof(bool),
-                SIMD_TYPE::alignment());
-            for (int i = 0; i < length; i++) elements[i] = p[i];
+            elements = p;
+        }
+        
+        // This is the only constructor taking 'gatherStride' parameter. There is no need for it if
+        // the memory is library-managed.
+        UME_FORCE_INLINE MaskVector(int length, bool *p, int gatherStride) : mLength(length), mGatherStride(gatherStride), ownsMemory(false)
+        {
+            elements = p;
+        }
+
+        UME_FORCE_INLINE MaskVector(int length) : mLength(length), mGatherStride(1)
+        {
+            Allocator alloc;
+            elements = alloc.allocate(sizeof(bool)*length);
         }
 
         UME_FORCE_INLINE MaskVector(MaskVector & origin) {
             elements = origin.elements;
             mLength = origin.mLength;
+            mGatherStride = origin.mGatherStride;
+            ownsMemory = false;
         }
 
         UME_FORCE_INLINE MaskVector(MaskVector && origin) {
             elements = origin.elements;
             mLength = origin.mLength;
+            mGatherStride = origin.mGatherStride;
+            ownsMemory(true);
         }
 
         UME_FORCE_INLINE ~MaskVector() {
-            UME::DynamicMemory::AlignedFree(elements);
+            if(ownsMemory) {
+                Allocator alloc;
+                alloc.deallocate(elements, sizeof(bool)*mLength);
+            }
         }
 
         // Terminal call for SIMD version of expression template expressions. 
@@ -97,7 +112,13 @@ namespace VECTOR {
         // storage into proper SIMD vectors.
         UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index) const {
             SIMD_TYPE t0;
-            t0.loada(&elements[index]);
+            if(mGatherStride == 1)
+            {
+                t0.loada(&elements[index]);
+            }
+            else {
+                t0.gatheru(&elements[index*mGatherStride], mGatherStride);
+            }
             return t0;
         }
 
@@ -106,7 +127,7 @@ namespace VECTOR {
         // storage into proper scalar equivalent.
         UME_FORCE_INLINE SIMD1_TYPE evaluate_scalar(int index) const {
             SIMD1_TYPE t0;
-            t0.load(&elements[index]);
+            t0.load(&elements[index*mGatherStride]);
             return t0;
         }
 
@@ -114,28 +135,47 @@ namespace VECTOR {
         // Some operations require implicit assignment. This assignment needs to
         // be propagated from evaluated register, back to vector data localization.
         UME_FORCE_INLINE void update_SIMD(SIMD_TYPE & x, int index) {
-            x.storea(&elements[index]);
+            if(mGatherStride == 1)
+            {
+                x.storea(&elements[index]);
+            }
+            else {
+                x.scatteru(&elements[index*mGatherStride], mGatherStride);
+            }
         }
 
         UME_FORCE_INLINE void update_scalar(SIMD1_TYPE & x, int index) {
-            x.store(&elements[index]);
+            x.store(&elements[index*mGatherStride]);
         }
 
-
         template<typename E>
-        UME_FORCE_INLINE MaskVector<UME_DYNAMIC_LENGTH, SIMD_STRIDE>(LogicalExpression<SIMD_STRIDE, E> && vec)
+        UME_FORCE_INLINE MaskVector<UME_DYNAMIC_LENGTH, SIMD_STRIDE, Allocator>(LogicalExpression<SIMD_STRIDE, E> && vec)   
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
-                SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
-                t0.storea(&elements[i]);
-            }
+            if(mGatherStride == 1)
+            {
+                for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                    SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                    t0.storea(&elements[i]);
+                }
 
-            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
-                t1.store(&elements[i]);
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                    t1.store(&elements[i]);
+                }
+            }
+            else {
+                for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                    SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                    t0.scatteru(&elements[i*mGatherStride], mGatherStride);
+                }
+
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                    t1.store(&elements[i*mGatherStride]);
+                }
             }
 
             reinterpret_vec.dispose();
@@ -147,12 +187,12 @@ namespace VECTOR {
         UME_FORCE_INLINE operator MaskVector<UME_DYNAMIC_LENGTH, SIMD_STRIDE>() {
             // Create dynamic Row vector, and copy data
             MaskVector<UME_DYNAMIC_LENGTH, SIMD_STRIDE> temp(LENGTH());
-            for (int i = 0; i < LENGTH();i++) temp.elements[i] = elements[i];
+            for (int i = 0; i < LENGTH();i++) temp.elements[i] = elements[i*mGatherStride];
             return temp;
         }
 
         MaskVector& operator= (MaskVector & origin) {
-            for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
+            for (int i = 0; i < LENGTH(); i++) elements[i*mGatherStride] = origin.elements[i*origin.mGatherStride];
             return *this;
         }
 
@@ -164,14 +204,29 @@ namespace VECTOR {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
-                SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
-                t0.storea(&elements[i]);
-            }
+            
+            if(mGatherStride == 1)
+            {
+                for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                    SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                    t0.storea(&elements[i]);
+                }
 
-            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
-                t1.store(&elements[i]);
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                    t1.store(&elements[i]);
+                }
+            }
+            else {
+                for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                    SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                    t0.scatteru(&elements[i*mGatherStride], mGatherStride);
+                }
+
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                    t1.store(&elements[i*mGatherStride]);
+                }
             }
 
             reinterpret_vec.dispose();
@@ -186,32 +241,64 @@ namespace VECTOR {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
-                SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
-                t0.storea(&elements[i]);
-            }
+            if(mGatherStride == 1) {
+                for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                    SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                    t0.storea(&elements[i]);
+                }
 
-            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
-                t1.store(&elements[i]);
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                    t1.store(&elements[i]);
+                }
+            }
+            else {
+                for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                    SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                    t0.scatteru(&elements[i*mGatherStride], mGatherStride);
+                }
+
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                    t1.store(&elements[i*mGatherStride]);
+                }
             }
             return *this;
         }
 
         MaskVector& operator= (bool x) {
             SIMD_TYPE t0(x);
-            for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
-                t0.storea(&elements[i]);
+            if(mGatherStride == 1) {
+                for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                    t0.storea(&elements[i]);
+                }
+                
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    elements[i] = x;
+                }
             }
-            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                elements[i] = x;
+            else {
+                for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
+                    t0.scatteru(&elements[i*mGatherStride], mGatherStride);
+                }
+                
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    elements[i*mGatherStride] = x;
+                }
             }
             return *this;
         }
 
         MaskVector& operator= (bool* x) {
-            for (int i = 0; i < LENGTH(); i++) {
-                elements[i] = x[i];
+            if(mGatherStride == 1) {
+                for (int i = 0; i < LENGTH(); i++) {
+                    elements[i] = x[i];
+                }
+            }
+            else {
+                for (int i = 0; i < LENGTH(); i++) {
+                    elements[i*mGatherStride] = x[i];
+                }
             }
             return *this;
         }

@@ -841,8 +841,177 @@ void testMemoryOwnership()
             A.elements[i] = raw_a[i];
         }
         
-        bool inRange = valueInRange(A.elements, raw_a, 0.01f);
+        bool inRange = valueInRange(A.elements, &raw_a[0], 0.01f);
         check_condition(inRange, std::string("Memory ownership"));
+    }
+}
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE>
+void testGatherScatterDynamic()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    {
+        SCALAR_TYPE raw_a[VEC_LEN*10];
+        SCALAR_TYPE expected[VEC_LEN];
+        SCALAR_TYPE raw_b[VEC_LEN];
+        
+        for (int i=0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<SCALAR_TYPE>(gen);
+        }
+        
+        for (int i=0; i < VEC_LEN; i++) {
+            expected[i] = raw_a[i*4];
+        }
+
+        VEC_TYPE A(VEC_LEN, raw_a, 4); // gather with stride '4'
+        VEC_TYPE B(VEC_LEN, raw_b); // scatter (store) with stride '1'
+        
+        B = A; // Gather from 'raw_a' with stride, and store to 'raw_b'.
+        
+        bool inRange = valueInRange(&raw_b[0], &expected[0], 0.01f);
+        check_condition(inRange, std::string("Gather + store (dynamic)"));
+    }
+    {
+        SCALAR_TYPE raw_a[VEC_LEN*10];
+        SCALAR_TYPE expected[VEC_LEN*10];
+        SCALAR_TYPE raw_b[VEC_LEN*10];
+        
+        for (int i=0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<SCALAR_TYPE>(gen);
+        }
+        
+        // Initialize passive elements
+        for (int i=0; i < VEC_LEN*10; i++) {
+            expected[i] = SCALAR_TYPE(0);
+            raw_b[i] = SCALAR_TYPE(0);
+        }
+        
+        // Initialize expected elements
+        for (int i=0; i < VEC_LEN; i++) {
+            expected[i*8] = raw_a[i*2];
+        }
+
+        VEC_TYPE A(VEC_LEN, raw_a, 2); // gather with stride '2'
+        VEC_TYPE B(VEC_LEN, raw_b, 8); // scatter with stride '8'
+        
+        B = A; // Gather from 'raw_a' with stride, and store to 'raw_b'.
+        
+        bool inRange = valueInRange(&raw_b[0], &expected[0], 0.01f);
+        check_condition(inRange, std::string("Gather + scatter (dynamic)"));
+    }
+    
+    {
+        SCALAR_TYPE raw_a[VEC_LEN];
+        SCALAR_TYPE expected[VEC_LEN*10];
+        SCALAR_TYPE raw_b[VEC_LEN*10];
+        
+        for (int i=0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<SCALAR_TYPE>(gen);
+        }
+        
+        // Initialize passive elements
+        for (int i=0; i < VEC_LEN*10; i++) {
+            expected[i] = SCALAR_TYPE(0);
+            raw_b[i] = SCALAR_TYPE(0);
+        }
+        
+        // Initialize expected elements
+        for (int i=0; i < VEC_LEN; i++) {
+            expected[i*8] = raw_a[i];
+        }
+        VEC_TYPE A(VEC_LEN, raw_a); // gather (load) with stride '1'
+        VEC_TYPE B(VEC_LEN, raw_b, 8); // scatter with stride '8'
+        
+        B = A; // Gather from 'raw_a' with stride, and store to 'raw_b'.
+        
+        bool inRange = valueInRange(&raw_b[0], &expected[0], 0.01f);
+        check_condition(inRange, std::string("load + scatter (dynamic)"));
+    }
+}
+
+
+template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE>
+void testGatherScatterStatic()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    {
+        SCALAR_TYPE raw_a[VEC_LEN*10];
+        SCALAR_TYPE expected[VEC_LEN];
+        SCALAR_TYPE raw_b[VEC_LEN];
+        
+        for (int i=0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<SCALAR_TYPE>(gen);
+        }
+        
+        for (int i=0; i < VEC_LEN; i++) {
+            expected[i] = raw_a[i*4];
+        }
+
+        VEC_TYPE A(raw_a, 4); // gather with stride '4'
+        VEC_TYPE B(raw_b); // scatter (store) with stride '1'
+        
+        B = A; // Gather from 'raw_a' with stride, and store to 'raw_b'.
+        
+        bool inRange = valueInRange(&raw_b[0], &expected[0], 0.01f);
+        check_condition(inRange, std::string("Gather + store (static)"));
+    }
+    {
+        SCALAR_TYPE raw_a[VEC_LEN*10];
+        SCALAR_TYPE expected[VEC_LEN*10];
+        SCALAR_TYPE raw_b[VEC_LEN*10];
+        
+        for (int i=0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<SCALAR_TYPE>(gen);
+        }
+        
+        // Initialize passive elements
+        for (int i=0; i < VEC_LEN*10; i++) {
+            expected[i] = SCALAR_TYPE(0);
+            raw_b[i] = SCALAR_TYPE(0);
+        }
+        
+        // Initialize expected elements
+        for (int i=0; i < VEC_LEN; i++) {
+            expected[i*8] = raw_a[i*2];
+        }
+
+        VEC_TYPE A(raw_a, 2); // gather with stride '2'
+        VEC_TYPE B(raw_b, 8); // scatter with stride '8'
+        
+        B = A; // Gather from 'raw_a' with stride, and store to 'raw_b'.
+        
+        bool inRange = valueInRange(&raw_b[0], &expected[0], 0.01f);
+        check_condition(inRange, std::string("Gather + scatter (static)"));
+    }
+    
+    {
+        SCALAR_TYPE raw_a[VEC_LEN];
+        SCALAR_TYPE expected[VEC_LEN*10];
+        SCALAR_TYPE raw_b[VEC_LEN*10];
+        
+        for (int i=0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<SCALAR_TYPE>(gen);
+        }
+        
+        // Initialize passive elements
+        for (int i=0; i < VEC_LEN*10; i++) {
+            expected[i] = SCALAR_TYPE(0);
+            raw_b[i] = SCALAR_TYPE(0);
+        }
+        
+        // Initialize expected elements
+        for (int i=0; i < VEC_LEN; i++) {
+            expected[i*8] = raw_a[i];
+        }
+        VEC_TYPE A(raw_a); // gather (load) with stride '1'
+        VEC_TYPE B(raw_b, 8); // scatter with stride '8'
+        
+        B = A; // Gather from 'raw_a' with stride, and store to 'raw_b'.
+        
+        bool inRange = valueInRange(&raw_b[0], &expected[0], 0.01f);
+        check_condition(inRange, std::string("load + scatter (static)"));
     }
 }
 
@@ -853,6 +1022,8 @@ int main() {
         testLAND_random_static<UME::VECTOR::MaskVector<100, 8>, 100, 8>();
         testLOR_random_static<UME::VECTOR::MaskVector<100, 8>, 100, 8>();
         testMemoryOwnership<UME::VECTOR::MaskVector<100, 8>, bool, 100, 8>();
+        testGatherScatterDynamic<UME::VECTOR::MaskVector<UME_DYNAMIC_LENGTH, 8>, bool, 100, 8>();
+        testGatherScatterStatic<UME::VECTOR::MaskVector<100, 8>, bool, 100, 8>();
     }
 
     {
@@ -868,6 +1039,8 @@ int main() {
         testHADD_random_static<UME::VECTOR::UintVector<uint32_t, 100, 4>, uint32_t, 100, 4>();
         
         testMemoryOwnership<UME::VECTOR::UintVector<uint32_t, 100, 4>, uint32_t, 100, 4>();
+        testGatherScatterDynamic<UME::VECTOR::UintVector<uint32_t, UME_DYNAMIC_LENGTH, 4>, uint32_t, 100, 4>();
+        testGatherScatterStatic<UME::VECTOR::UintVector<uint32_t, 100, 4>, uint32_t, 100, 4>();
     }
     {
         char header[] = { "Int32_t Vector test (STRIDE 4):" };
@@ -882,6 +1055,8 @@ int main() {
         testHADD_random_static<UME::VECTOR::IntVector<int32_t, 100, 4>, int32_t, 100, 4>();
         
         testMemoryOwnership<UME::VECTOR::IntVector<int32_t, 100, 4>, int32_t, 100, 4>();
+        testGatherScatterDynamic<UME::VECTOR::IntVector<int32_t, UME_DYNAMIC_LENGTH, 4>, int32_t, 100, 4>();
+        testGatherScatterStatic<UME::VECTOR::IntVector<int32_t, 100, 4>, int32_t, 100, 4>();
     }
     {
         char header[] = { "Float Vector test (STRIDE 4):" };
@@ -896,6 +1071,8 @@ int main() {
 
         testHADD_random_static<UME::VECTOR::FloatVector<float, 1000, 4>, float, 1000, 4>();
         testMemoryOwnership<UME::VECTOR::IntVector<float, 1000, 4>, float, 1000, 4>();
+        testGatherScatterDynamic<UME::VECTOR::IntVector<float, UME_DYNAMIC_LENGTH, 4>, float, 1000, 4>();
+        testGatherScatterStatic<UME::VECTOR::IntVector<float, 100, 4>, float, 1000, 4>();
     }
     {
         float rawA[100], rawB[100], rawC[100], rawD[100], rawE[100], rawF[100];
@@ -1209,7 +1386,7 @@ int main() {
             rawC[i] = i + 16;
         }
 
-        UME::VECTOR::Vector<int32_t, 8, UME_DEFAULT_SIMD_STRIDE> A(rawA);
+        UME::VECTOR::Vector<int32_t, 8, DefaultStride<int32_t>::value> A(rawA);
         UME::VECTOR::Vector<int32_t> B (8, rawB);
         UME::VECTOR::Vector<int32_t> C(8, rawC);
 
@@ -1226,7 +1403,7 @@ int main() {
             rawD[i] = 0;
         }
 
-        UME::VECTOR::Vector<int32_t, 8, UME_DEFAULT_SIMD_STRIDE> A(rawA);
+        UME::VECTOR::Vector<int32_t, 8, DefaultStride<int32_t>::value> A(rawA);
         UME::VECTOR::Vector<int32_t> B(8, rawB);
         UME::VECTOR::Vector<int32_t> C(8, rawC);
         UME::VECTOR::Vector<int32_t> D(8, rawD);
