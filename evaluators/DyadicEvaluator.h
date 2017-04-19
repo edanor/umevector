@@ -34,17 +34,17 @@ public:
         assert(dst1.LENGTH() == dst2.LENGTH());
 
         for (int i = 0; i < dst1.LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
-            UME::SIMD::SIMDVec<SCALAR_T_1, SIMD_STRIDE> t0 = reinterpret_exp1.evaluate_SIMD(i);
-            UME::SIMD::SIMDVec<SCALAR_T_2, SIMD_STRIDE> t1 = reinterpret_exp2.evaluate_SIMD(i);
-            dst1.update_SIMD(t0, i);
-            dst2.update_SIMD(t1, i);
+            auto t0 = reinterpret_exp1.template evaluate<SIMD_STRIDE>(i);
+            auto t1 = reinterpret_exp2.template evaluate<SIMD_STRIDE>(i);
+            dst1.update<SIMD_STRIDE>(t0, i);
+            dst2.update<SIMD_STRIDE>(t1, i);
         }
 
         for (int i = dst1.LOOP_PEEL_OFFSET(); i < dst1.LENGTH(); i++) {
-            UME::SIMD::SIMDVec<SCALAR_T_1, 1> t0 = reinterpret_exp1.evaluate_scalar(i);
-            UME::SIMD::SIMDVec<SCALAR_T_2, 1> t1 = reinterpret_exp2.evaluate_scalar(i);
-            dst1.update_scalar(t0, i);
-            dst2.update_scalar(t1, i);
+            auto t0 = reinterpret_exp1.template evaluate<1>(i);
+            auto t1 = reinterpret_exp2.template evaluate<1>(i);
+            dst1.update<1>(t0, i);
+            dst2.update<1>(t1, i);
         }
 
         // Dispose of the expression and release all temporary storage.

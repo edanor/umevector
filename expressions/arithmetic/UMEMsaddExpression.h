@@ -41,8 +41,6 @@ namespace VECTOR {
     class ArithmeticMSADDExpression :
         public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMSADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> >
     {
-        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
-        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
     public:
         E1 _e1;
@@ -63,20 +61,12 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMSADDExpression(ArithmeticMSADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E_MASK, E2> && origin) :
             _e1(std::move(origin._e1)), _e_mask(std::move(origin._e_mask)), _e2(std::move(origin._e2)) {}
 
-        UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index)
         {
-            auto t0 = _e1.evaluate_SIMD(index);
-            auto t1 = _e_mask.evaluate_SIMD(index);
-            auto t2 = _e2.evaluate_SIMD(index);
-            auto t3 = t0.sadd(t1, t2);
-            return t3;
-        }
-
-        UME_FORCE_INLINE SIMD_1_TYPE evaluate_scalar(int index)
-        {
-            auto t0 = _e1.evaluate_scalar(index);
-            auto t1 = _e_mask.evaluate_scalar(index);
-            auto t2 = _e2.evaluate_scalar(index);
+            auto t0 = _e1.template evaluate<N>(index);
+            auto t1 = _e_mask.template evaluate<N>(index);
+            auto t2 = _e2.template evaluate<N>(index);
             auto t3 = t0.sadd(t1, t2);
             return t3;
         }

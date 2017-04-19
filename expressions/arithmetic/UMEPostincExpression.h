@@ -41,8 +41,6 @@ namespace VECTOR {
     class ArithmeticPOSTINCExpression :
     public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTINCExpression<SCALAR_TYPE, SIMD_STRIDE, E1> >
     {
-        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
-        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
     public:
         E1 _e1;
@@ -61,19 +59,12 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticPOSTINCExpression(ArithmeticPOSTINCExpression<SCALAR_TYPE, SIMD_STRIDE, E1> && origin) :
             _e1(std::move(origin._e1)) {}
 
-        inline SIMD_TYPE evaluate_SIMD(int index)
+        template<int N>
+        inline UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index)
         {
-            auto t0 = _e1.evaluate_SIMD(index);
+            auto t0 = _e1.template evaluate<N>(index);
             auto t1 = t0.postinc();
-            _e1.update_SIMD(t0, index); // For postinc expression, the _e1 operand should be a proper lvalue.
-            return t1;
-        }
-
-        inline SIMD_1_TYPE evaluate_scalar(int index)
-        {
-            auto t0 = _e1.evaluate_scalar(index);
-            auto t1 = t0.postinc();
-            _e1.update_scalar(t0, index); // For postinc expression, the _e1 subexpression should be a proper lvalue.
+            _e1.template update<N>(t0, index); // For postinc expression, the _e1 operand should be a proper lvalue.
             return t1;
         }
 

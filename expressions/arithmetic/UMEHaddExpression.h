@@ -41,8 +41,6 @@ namespace VECTOR {
     class ArithmeticHADDExpression :
         public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticHADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1> >
     {
-        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
-        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
     public:
         E1 _e1;
@@ -53,7 +51,7 @@ namespace VECTOR {
         UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*SIMD_STRIDE; }
 
         // Value of this expression has to be calculated only once, and can be returned for every
-        // call to 'evaluate_SIMD' or 'evaluate_scalar'.
+        // call to 'evaluate'.
         bool _evaluated;
         SCALAR_TYPE _value; // This value is correct only if 'evaluated == true'
 
@@ -67,56 +65,37 @@ namespace VECTOR {
             _e1(std::move(origin._e1)) {}
 
         // First reduce to scalar and then return
-        UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index)
         {
             if (!_evaluated) {
-                SIMD_TYPE A(SCALAR_TYPE(0));
+                UME::SIMD::SIMDVec<SCALAR_TYPE, N> A(SCALAR_TYPE(0));
                 int loop_count = _e1.LOOP_PEEL_OFFSET();
                 for (int i = 0; i < loop_count; i += SIMD_STRIDE) {
-                    SIMD_TYPE t0 = _e1.evaluate_SIMD(i);
+                    auto t0 = _e1.template evaluate<N>(i);
                     A.adda(t0);
                 }
                 _value = A.hadd();
                 for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
-                    SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
+                    auto t1 = _e1.template evaluate<1>(i);
                     _value += t1[0];
                 }
                 _evaluated = true;
             }
-            return SIMD_TYPE(_value);
-        }
-
-        UME_FORCE_INLINE SIMD_1_TYPE evaluate_scalar(int index)
-        {
-            if (!_evaluated)
-            {
-                SIMD_TYPE A(SCALAR_TYPE(0));
-                int loop_count = _e1.LOOP_PEEL_OFFSET();
-                for (int i = 0; i < loop_count; i += SIMD_STRIDE) {
-                    SIMD_TYPE t0 = _e1.evaluate_SIMD(i);
-                    A.adda(t0);
-                }
-                _value = A.hadd();
-                for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
-                    SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
-                    _value += t1[0];
-                }
-                _evaluated = true;
-            }
-            return SIMD_1_TYPE(_value);
+            return UME::SIMD::SIMDVec<SCALAR_TYPE, N>(_value);
         }
 
         // Reduction operations require to be cast-able into scalar types.
         UME_FORCE_INLINE operator SCALAR_TYPE() {
-            SIMD_TYPE A(SCALAR_TYPE(0));
+            UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> A(SCALAR_TYPE(0));
             int loop_count = _e1.LOOP_PEEL_OFFSET();
             for (int i = 0; i < loop_count; i += SIMD_STRIDE) {
-                SIMD_TYPE t0 = _e1.evaluate_SIMD(i);
+                auto t0 = _e1.template evaluate<SIMD_STRIDE>(i);
                 A.adda(t0);
             }
             SCALAR_TYPE B = A.hadd();
             for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
-                SIMD_1_TYPE t1 = _e1.evaluate_scalar(i);
+                auto t1 = _e1.template evaluate<1>(i);
                 B += t1[0];
             }
             return B;

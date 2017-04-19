@@ -50,8 +50,6 @@ namespace VECTOR {
 
     public:
         // Can we make this private?
-        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
-        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1>      SIMD1_TYPE;
         typedef UME::SIMD::SIMDVecMask<SIMD_STRIDE>          MASK_TYPE;
         typedef UME::SIMD::SIMDVecMask<1>               MASK1_TYPE;
 

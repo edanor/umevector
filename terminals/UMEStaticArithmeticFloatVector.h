@@ -41,12 +41,12 @@ namespace VECTOR {
             SCALAR_TYPE,
             SIMD_STRIDE>
     {
+    private:
+        int mGatherStride;
+    
     public:
-        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
-        typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD1_TYPE;
-
         UME_FORCE_INLINE int LENGTH() const { return VEC_LEN; }
-        static constexpr int ALIGNMENT() { return SIMD_TYPE::alignment(); }
+        static constexpr int ALIGNMENT() { return UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE>::alignment(); }
         UME_FORCE_INLINE int LOOP_COUNT() const { return VEC_LEN / SIMD_STRIDE; }
         UME_FORCE_INLINE int PEEL_COUNT() const { return VEC_LEN % SIMD_STRIDE; }
         UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT() * SIMD_STRIDE; }
@@ -59,11 +59,14 @@ namespace VECTOR {
 
     public:
         // pointer should be properly aligned!
-        UME_FORCE_INLINE FloatVector(SCALAR_TYPE *p) : elements(p), ownsMemory(false) {
+        UME_FORCE_INLINE FloatVector(SCALAR_TYPE *p) : mGatherStride(1), elements(p), ownsMemory(false) {
+        }
+        
+        UME_FORCE_INLINE FloatVector(SCALAR_TYPE *p, int gatherStride) : mGatherStride(gatherStride), elements(p), ownsMemory(false) {
         }
         
         // Initialize with memory ownership 
-        UME_FORCE_INLINE FloatVector() : ownsMemory(true){
+        UME_FORCE_INLINE FloatVector() : mGatherStride(1), ownsMemory(true){
             Allocator alloc;
             elements = alloc.allocate(sizeof(SCALAR_TYPE)*VEC_LEN);
         }
@@ -72,11 +75,13 @@ namespace VECTOR {
             elements = origin.elements;
             // TODO: we need a reference counter to manage memory properly in this case!
             ownsMemory = false;
+            mGatherStride = origin.mGatherStride;
         }
 
         UME_FORCE_INLINE FloatVector(FloatVector && origin) {
             elements = origin.elements;
             ownsMemory = origin.ownsMemory;
+            mGatherStride = origin.mGatherStride;
         }
         
         UME_FORCE_INLINE ~FloatVector() {
@@ -93,44 +98,56 @@ namespace VECTOR {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
-                UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
-                t0.store(&elements[i]);
-            }
+            if(mGatherStride == 1) {
+                for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
+                    auto t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
+                    t0.store(&elements[i]);
+                }
 
-            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
-                t1.store(&elements[i]);
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    auto t1 = reinterpret_vec.template evaluate<1>(i);
+                    t1.store(&elements[i]);
+                }
+            }
+            else {
+                for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
+                    auto t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
+                    t0.scatteru(&elements[i*mGatherStride], mGatherStride);
+                }
+
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    auto t1 = reinterpret_vec.template evaluate<1>(i);
+                    t1.store(&elements[i*mGatherStride]);
+                }
             }
         }
 
         // Terminal call for SIMD version of expression template expressions. 
         // Every expression evaluation starts with loading values from memory 
         // storage into proper SIMD vectors.
-        UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index) const {
-            SIMD_TYPE t0;
-            t0.load(&elements[index]);
-            return t0;
-        }
-
-        // Terminal call for scalar version of expression template expressions.
-        // Every expression evaluation starts with loading values from memory
-        // storage into proper scalar equivalent.
-        UME_FORCE_INLINE SIMD1_TYPE evaluate_scalar(int index) const {
-            SIMD1_TYPE t0;
-            t0.load(&elements[index]);
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index) const {
+            UME::SIMD::SIMDVec<SCALAR_TYPE, N> t0;
+            if(mGatherStride == 1) {
+                t0.load(&elements[index]);
+            }
+            else {
+                t0.gatheru(&elements[index*mGatherStride], mGatherStride);
+            }
             return t0;
         }
 
         // Terminal call for scalar version of expression template expressions.
         // Some operations require implicit assignment. This assignment needs to
         // be propagated from evaluated register, back to vector data localization.
-        UME_FORCE_INLINE void update_SIMD(SIMD_TYPE & x, int index) {
-            x.store(&elements[index]);
-        }
-
-        UME_FORCE_INLINE void update_scalar(SIMD1_TYPE & x, int index) {
-            x.store(&elements[index]);
+        template<int N>
+        UME_FORCE_INLINE void update(UME::SIMD::SIMDVec<SCALAR_TYPE, N> & x, int index) {
+            if(mGatherStride == 1) {
+                x.store(&elements[index]);
+            }
+            else {
+                x.scatteru(&elements[index*mGatherStride], mGatherStride);
+            }
         }
 
         // Cast operator to convert from static to dynamic form. Because of
@@ -146,19 +163,19 @@ namespace VECTOR {
 
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
         UME_FORCE_INLINE FloatVector& operator= (FloatVector & origin) {
-            for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
+            for (int i = 0; i < VEC_LEN; i++) elements[i*mGatherStride] = origin.elements[i*origin.gatherStride()];
             return *this;
         }
 
         UME_FORCE_INLINE FloatVector& operator= (FloatVector&& origin) {
-            for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
+            for (int i = 0; i < VEC_LEN; i++) elements[i*mGatherStride] = origin.elements[i*origin.gatherStride()];
             return *this;
         }
 
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
         UME_FORCE_INLINE FloatVector& operator= (FloatVector<SCALAR_TYPE, UME_DYNAMIC_LENGTH, SIMD_STRIDE> & origin) {
             assert(VEC_LEN == origin.LENGTH()); // Cannot re-allocate static
-            for (int i = 0; i < VEC_LEN; i++) elements[i] = origin.elements[i];
+            for (int i = 0; i < VEC_LEN; i++) elements[i*mGatherStride] = origin.elements[i*origin.gatherStride()];
             return *this;
         }
 
@@ -170,16 +187,28 @@ namespace VECTOR {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
-                UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
-                t0.store(&elements[i]);
-            }
+            if(mGatherStride == 1) {
+                for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
+                    auto t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
+                    t0.store(&elements[i]);
+                }
 
-            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
-                t1.store(&elements[i]);
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    auto t1 = reinterpret_vec.template evaluate<1>(i);
+                    t1.store(&elements[i]);
+                }
             }
+            else {
+                for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
+                    auto t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
+                    t0.scatteru(&elements[i*mGatherStride], mGatherStride);
+                }
 
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    auto t1 = reinterpret_vec.template evaluate<1>(i);
+                    t1.store(&elements[i*mGatherStride]);
+                }
+            }
             // Dispose of the expression and release all temporary storage.
             reinterpret_vec.dispose();
             return *this;
@@ -193,16 +222,29 @@ namespace VECTOR {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
             E & reinterpret_vec = static_cast<E &>(vec);
-            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
-                UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.evaluate_SIMD(i);
-                t0.store(&elements[i]);
-            }
+            
+            if(mGatherStride == 1) {
+                for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
+                    auto t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
+                    t0.store(&elements[i]);
+                }
 
-            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.evaluate_scalar(i);
-                t1.store(&elements[i]);
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    auto t1 = reinterpret_vec.template evaluate<1>(i);
+                    t1.store(&elements[i]);
+                }
             }
+            else {
+                for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
+                    auto t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
+                    t0.scatteru(&elements[i*mGatherStride], mGatherStride);
+                }
 
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    auto t1 = reinterpret_vec.template evaluate<1>(i);
+                    t1.store(&elements[i*mGatherStride]);
+                }
+            }
             return *this;
         }
 
@@ -210,11 +252,21 @@ namespace VECTOR {
         // TODO: also should be done using lazy evaluation
         UME_FORCE_INLINE FloatVector& operator= (SCALAR_TYPE x) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
-            for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
-                t0.store(&elements[i]);
+            if(mGatherStride == 1) {
+                for (int i = 0; i < LOOP_PEEL_OFFSET(); i+=SIMD_STRIDE) {
+                    t0.store(&elements[i]);
+                }
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    elements[i] = x;
+                }
             }
-            for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                elements[i] = x;
+            else {
+                for (int i = 0; i < LOOP_PEEL_OFFSET(); i+=SIMD_STRIDE) {
+                    t0.scatteru(&elements[i*mGatherStride], mGatherStride);
+                }
+                for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
+                    elements[i*mGatherStride] = x;
+                }
             }
             return *this;
         }
@@ -223,7 +275,7 @@ namespace VECTOR {
         // TODO: can this be done using lazy evaluation?
         UME_FORCE_INLINE FloatVector& operator= (SCALAR_TYPE* x) {
             for (int i = 0; i < LENGTH(); i++) {
-                elements[i] = x[i];
+                elements[i*mGatherStride] = x[i];
             }
             return *this;
         }

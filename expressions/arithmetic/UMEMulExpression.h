@@ -43,8 +43,6 @@ namespace VECTOR {
     class ArithmeticMULExpression :
     public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> >
     {
-        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
-        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
 
     public:
         E1 _e1;
@@ -64,17 +62,11 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticMULExpression(ArithmeticMULExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> && origin) :
             _e1(std::move(origin._e1)), _e2(std::move(origin._e2)) {}
 
-        UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index)
         {
-            auto t0 = _e1.evaluate_SIMD(index);
-            auto t1 = _e2.evaluate_SIMD(index);
-            return t0.mul(t1);
-        }
-
-        UME_FORCE_INLINE SIMD_1_TYPE evaluate_scalar(int index)
-        {
-            auto t0 = _e1.evaluate_scalar(index);
-            auto t1 = _e2.evaluate_scalar(index);
+            auto t0 = _e1.template evaluate<N>(index);
+            auto t1 = _e2.template evaluate<N>(index);
             return t0.mul(t1);
         }
 

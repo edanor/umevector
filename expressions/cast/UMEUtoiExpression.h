@@ -42,10 +42,6 @@ namespace VECTOR {
     public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticUTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>
     {
 
-        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> SIMD_TYPE;
-
-        typedef typename UME::SIMD::SIMDVec<SCALAR_TYPE, 1> SIMD_1_TYPE;
-
     public:
         E1 _e1;
 
@@ -63,16 +59,11 @@ namespace VECTOR {
         UME_FORCE_INLINE ArithmeticUTOIExpression(ArithmeticUTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1> && origin) :
             _e1(std::move(origin._e1)) {}
 
-        UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index)
         {
-            auto t0 = _e1.evaluate_SIMD(index);
-            return SIMD_TYPE(t0);
-        }
-
-        UME_FORCE_INLINE SIMD_1_TYPE evaluate_scalar(int index)
-        {
-            auto t0 = _e1.evaluate_scalar(index);
-            return SIMD_1_TYPE(t0);
+            auto t0 = _e1.template evaluate<N>(index);
+            return t0;
         }
 
 

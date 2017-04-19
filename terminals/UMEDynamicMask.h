@@ -44,9 +44,6 @@ namespace VECTOR {
         int mGatherStride;
 
     public:
-        typedef UME::SIMD::SIMDVecMask<SIMD_STRIDE>  SIMD_TYPE;
-        typedef UME::SIMD::SIMDVecMask<1>       SIMD1_TYPE;
-
         UME_FORCE_INLINE int LENGTH() const { return mLength; }
         UME_FORCE_INLINE int LOOP_COUNT() const { return mLength / SIMD_STRIDE; }
         UME_FORCE_INLINE int PEEL_COUNT() const { return mLength % SIMD_STRIDE; }
@@ -68,17 +65,11 @@ namespace VECTOR {
             for (int i = 0; i < length; i++) elements[i] = value;
         }
         
-        UME_FORCE_INLINE MaskVector(int length, bool *p) : mLength(length), mGatherStride(1), ownsMemory(false)
-        {
-            elements = p;
-        }
+        UME_FORCE_INLINE MaskVector(int length, bool *p) : mLength(length), mGatherStride(1), elements(p), ownsMemory(false) {}
         
         // This is the only constructor taking 'gatherStride' parameter. There is no need for it if
         // the memory is library-managed.
-        UME_FORCE_INLINE MaskVector(int length, bool *p, int gatherStride) : mLength(length), mGatherStride(gatherStride), ownsMemory(false)
-        {
-            elements = p;
-        }
+        UME_FORCE_INLINE MaskVector(int length, bool *p, int gatherStride) : mLength(length), mGatherStride(gatherStride), elements(p), ownsMemory(false) {}
 
         UME_FORCE_INLINE MaskVector(int length) : mLength(length), mGatherStride(1)
         {
@@ -110,8 +101,9 @@ namespace VECTOR {
         // Terminal call for SIMD version of expression template expressions. 
         // Every expression evaluation starts with loading values from memory 
         // storage into proper SIMD vectors.
-        UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index) const {
-            SIMD_TYPE t0;
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVecMask<N> evaluate(int index) const {
+            UME::SIMD::SIMDVecMask<N> t0;
             if(mGatherStride == 1)
             {
                 t0.loada(&elements[index]);
@@ -123,18 +115,10 @@ namespace VECTOR {
         }
 
         // Terminal call for scalar version of expression template expressions.
-        // Every expression evaluation starts with loading values from memory
-        // storage into proper scalar equivalent.
-        UME_FORCE_INLINE SIMD1_TYPE evaluate_scalar(int index) const {
-            SIMD1_TYPE t0;
-            t0.load(&elements[index*mGatherStride]);
-            return t0;
-        }
-
-        // Terminal call for scalar version of expression template expressions.
         // Some operations require implicit assignment. This assignment needs to
         // be propagated from evaluated register, back to vector data localization.
-        UME_FORCE_INLINE void update_SIMD(SIMD_TYPE & x, int index) {
+        template<int N>
+        UME_FORCE_INLINE void update(UME::SIMD::SIMDVecMask<N> & x, int index) {
             if(mGatherStride == 1)
             {
                 x.storea(&elements[index]);
@@ -142,10 +126,6 @@ namespace VECTOR {
             else {
                 x.scatteru(&elements[index*mGatherStride], mGatherStride);
             }
-        }
-
-        UME_FORCE_INLINE void update_scalar(SIMD1_TYPE & x, int index) {
-            x.store(&elements[index*mGatherStride]);
         }
 
         template<typename E>
@@ -157,23 +137,23 @@ namespace VECTOR {
             if(mGatherStride == 1)
             {
                 for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
-                    SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                    UME::SIMD::SIMDVecMask<SIMD_STRIDE> t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
                     t0.storea(&elements[i]);
                 }
 
                 for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                    SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                    UME::SIMD::SIMDVecMask<1> t1 = reinterpret_vec.template evaluate<1>(i);
                     t1.store(&elements[i]);
                 }
             }
             else {
                 for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
-                    SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                    UME::SIMD::SIMDVecMask<SIMD_STRIDE> t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
                     t0.scatteru(&elements[i*mGatherStride], mGatherStride);
                 }
 
                 for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                    SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                    UME::SIMD::SIMDVecMask<1> t1 = reinterpret_vec.template evaluate<1>(i);
                     t1.store(&elements[i*mGatherStride]);
                 }
             }
@@ -208,23 +188,23 @@ namespace VECTOR {
             if(mGatherStride == 1)
             {
                 for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
-                    SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                    UME::SIMD::SIMDVecMask<SIMD_STRIDE> t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
                     t0.storea(&elements[i]);
                 }
 
                 for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                    SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                    UME::SIMD::SIMDVecMask<1> t1 = reinterpret_vec.template evaluate<1>(i);
                     t1.store(&elements[i]);
                 }
             }
             else {
                 for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
-                    SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                    UME::SIMD::SIMDVecMask<SIMD_STRIDE> t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
                     t0.scatteru(&elements[i*mGatherStride], mGatherStride);
                 }
 
                 for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                    SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                    UME::SIMD::SIMDVecMask<1> t1 = reinterpret_vec.template evaluate<1>(i);
                     t1.store(&elements[i*mGatherStride]);
                 }
             }
@@ -243,23 +223,23 @@ namespace VECTOR {
             E & reinterpret_vec = static_cast<E &>(vec);
             if(mGatherStride == 1) {
                 for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
-                    SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                    UME::SIMD::SIMDVecMask<SIMD_STRIDE> t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
                     t0.storea(&elements[i]);
                 }
 
                 for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                    SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                    UME::SIMD::SIMDVecMask<1> t1 = reinterpret_vec.template evaluate<1>(i);
                     t1.store(&elements[i]);
                 }
             }
             else {
                 for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
-                    SIMD_TYPE t0 = reinterpret_vec.evaluate_SIMD(i);
+                    UME::SIMD::SIMDVecMask<SIMD_STRIDE> t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
                     t0.scatteru(&elements[i*mGatherStride], mGatherStride);
                 }
 
                 for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                    SIMD1_TYPE t1 = reinterpret_vec.evaluate_scalar(i);
+                    UME::SIMD::SIMDVecMask<1> t1 = reinterpret_vec.template evaluate<1>(i);
                     t1.store(&elements[i*mGatherStride]);
                 }
             }
@@ -267,7 +247,7 @@ namespace VECTOR {
         }
 
         MaskVector& operator= (bool x) {
-            SIMD_TYPE t0(x);
+            UME::SIMD::SIMDVecMask<SIMD_STRIDE> t0(x);
             if(mGatherStride == 1) {
                 for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
                     t0.storea(&elements[i]);

@@ -301,18 +301,18 @@ public:
         //CompareExpressions<SIMD_STRIDE> cmp1(reinterpret_exp1, reinterpret_exp2);
 
         for (int i = 0; i < dst1.LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
-            UME::SIMD::SIMDVec<SCALAR_TYPE1, SIMD_STRIDE> t0 = reinterpret_exp1.evaluate_SIMD(i);
-            UME::SIMD::SIMDVec<SCALAR_TYPE2, SIMD_STRIDE> t1 = reinterpret_exp2.evaluate_SIMD(i);
-            UME::SIMD::SIMDVec<SCALAR_TYPE3, SIMD_STRIDE> t2 = reinterpret_exp3.evaluate_SIMD(i);
+            auto t0 = reinterpret_exp1.template evaluate<SIMD_STRIDE>(i);
+            auto t1 = reinterpret_exp2.template evaluate<SIMD_STRIDE>(i);
+            auto t2 = reinterpret_exp3.template evaluate<SIMD_STRIDE>(i);
             t0.store(&dst1.elements[i]);
             t1.store(&dst2.elements[i]);
             t2.store(&dst3.elements[i]);
         }
 
         for (int i = dst1.LOOP_PEEL_OFFSET(); i < dst1.LENGTH(); i++) {
-            UME::SIMD::SIMDVec<SCALAR_TYPE1, 1> t0 = reinterpret_exp1.evaluate_scalar(i);
-            UME::SIMD::SIMDVec<SCALAR_TYPE2, 1> t1 = reinterpret_exp2.evaluate_scalar(i);
-            UME::SIMD::SIMDVec<SCALAR_TYPE3, 1> t2 = reinterpret_exp3.evaluate_scalar(i);
+            auto t0 = reinterpret_exp1.template evaluate<1>(i);
+            auto t1 = reinterpret_exp2.template evaluate<1>(i);
+            auto t2 = reinterpret_exp3.template evaluate<1>(i);
             t0.store(&dst1.elements[i]);
             t1.store(&dst2.elements[i]);
             t2.store(&dst3.elements[i]);

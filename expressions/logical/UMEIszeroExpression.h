@@ -41,8 +41,6 @@ namespace VECTOR {
     class LogicalISZEROExpression :
     public LogicalExpression<SIMD_STRIDE, LogicalISZEROExpression<SIMD_STRIDE, E1>>
     {
-        typedef typename UME::SIMD::SIMDVecMask<SIMD_STRIDE> SIMD_MASK_TYPE;
-        typedef typename UME::SIMD::SIMDVecMask<1> SIMD_1_MASK_TYPE;
 
     public:
         E1 _e1;
@@ -61,13 +59,9 @@ namespace VECTOR {
         UME_FORCE_INLINE LogicalISZEROExpression(LogicalISZEROExpression<SIMD_STRIDE, E1> && origin) :
             _e1(std::move(origin._e1)) {}
 
-        UME_FORCE_INLINE SIMD_MASK_TYPE evaluate_SIMD(int index) {
-            auto t0 = _e1.evaluate_SIMD(index);
-            return t0.iszero();
-        }
-
-        UME_FORCE_INLINE SIMD_1_MASK_TYPE evaluate_scalar(int index) {
-            auto t0 = _e1.evaluate_scalar(index);
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVecMask<N> evaluate(int index) {
+            auto t0 = _e1.template evaluate<N>(index);
             return t0.iszero();
         }
     };

@@ -47,14 +47,10 @@ namespace VECTOR {
 
         UME_FORCE_INLINE static int LENGTH() { return 1; }
         
-        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> evaluate_SIMD(int index)
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index)
         {
-            return UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE>(_e1);
-        }
-
-        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, 1> evaluate_scalar(int index)
-        {
-            return UME::SIMD::SIMDVec<SCALAR_TYPE, 1>(_e1);
+            return UME::SIMD::SIMDVec<SCALAR_TYPE, N>(_e1);
         }
 
         Scalar& operator=(Scalar&& other) {
@@ -79,14 +75,10 @@ namespace VECTOR {
 
         UME_FORCE_INLINE static int LENGTH() { return 1; }
 
-        UME_FORCE_INLINE UME::SIMD::SIMDVecMask<SIMD_STRIDE> evaluate_SIMD(int index)
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVecMask<N> evaluate(int index)
         {
-            return UME::SIMD::SIMDVecMask<SIMD_STRIDE>(_e1);
-        }
-
-        UME_FORCE_INLINE UME::SIMD::SIMDVecMask<1> evaluate_scalar(int index)
-        {
-            return UME::SIMD::SIMDVecMask<1>(_e1);
+            return UME::SIMD::SIMDVecMask<N>(_e1);
         }
 
         Scalar& operator=(Scalar&& other) {
