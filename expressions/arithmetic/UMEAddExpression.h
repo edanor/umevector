@@ -48,7 +48,7 @@ namespace VECTOR {
         E1 _e1;
         E2 _e2;
 
-        UME_FORCE_INLINE int LENGTH() const { return _e1.LENGTH(); }
+        UME_FORCE_INLINE int LENGTH() const { return std::max(_e1.LENGTH(), _e2.LENGTH()); }
         UME_FORCE_INLINE int LOOP_COUNT() const { return _e1.LENGTH() / SIMD_STRIDE; }
         UME_FORCE_INLINE int PEEL_COUNT() const { return _e1.LENGTH() % SIMD_STRIDE; }
         UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*SIMD_STRIDE; }
@@ -67,6 +67,14 @@ namespace VECTOR {
         {
             auto t0 = _e1.template evaluate<N>(index);
             auto t1 = _e2.template evaluate<N>(index);
+            return t0.add(t1);
+        }
+
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(UME::SIMD::SIMDVec<uint32_t, N> & indices)
+        {
+            auto t0 = _e1.template evaluate<N>(indices);
+            auto t1 = _e2.template evaluate<N>(indices);
             return t0.add(t1);
         }
 

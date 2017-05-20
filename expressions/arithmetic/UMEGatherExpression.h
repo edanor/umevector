@@ -29,8 +29,8 @@
 //
 // ***This file has been automatically generated***
 //
-#ifndef UME_ADDA_EXPRESSION_H_
-#define UME_ADDA_EXPRESSION_H_
+#ifndef UME_GATHER_EXPRESSION_H_
+#define UME_GATHER_EXPRESSION_H_
 
 #include "../UMEVectorConversionTraits.h"
 
@@ -40,8 +40,8 @@ namespace VECTOR {
 #include "../common/UMEForwardDeclarations.h"
 
     template <typename SCALAR_TYPE, int SIMD_STRIDE, typename E1, typename E2>
-    class ArithmeticADDAExpression :
-    public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDAExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> >
+    class ArithmeticGATHERExpression :
+    public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, ArithmeticGATHERExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> >
     {
 
     public:
@@ -53,53 +53,34 @@ namespace VECTOR {
         UME_FORCE_INLINE int PEEL_COUNT() const { return _e1.LENGTH() % SIMD_STRIDE; }
         UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*SIMD_STRIDE; }
 
-        UME_FORCE_INLINE ArithmeticADDAExpression(E1 e1, E2 e2) :
+        UME_FORCE_INLINE ArithmeticGATHERExpression(E1 e1, E2 e2) :
             _e1(e1), _e2(e2) {}
 
-        UME_FORCE_INLINE ArithmeticADDAExpression(ArithmeticADDAExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> & origin) :
+        UME_FORCE_INLINE ArithmeticGATHERExpression(ArithmeticGATHERExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> & origin) :
             _e1(origin._e1), _e2(origin._e2) {}
 
-        UME_FORCE_INLINE ArithmeticADDAExpression(ArithmeticADDAExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> && origin) :
+        UME_FORCE_INLINE ArithmeticGATHERExpression(ArithmeticGATHERExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> && origin) :
             _e1(std::move(origin._e1)), _e2(std::move(origin._e2)) {}
 
         template<int N>
         UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index)
         {
-            auto t0 = _e1.template evaluate<N>(index);
-            auto t1 = _e2.template evaluate<N>(index);
-            t0.adda(t1);
-            _e1.template update<N>(t0, index);
-            return t0;
+            alignas(64) SCALAR_TYPE raw[N];
+            alignas(64) uint32_t raw_index[N];
+
+            // Evaluate indexing vector at a given offset
+            auto t0 = _e2.template evaluate<N>(index);
+            // Use the calculated vector to evaluate the expression
+            auto t1 = _e1.template evaluate<N>(t0);
+            return t1;
         }
 
-        template<int N>
-        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(UME::SIMD::SIMDVec<uint32_t, N> & indices)
-        {
-            auto t0 = _e1.template evaluate<N>(indices);
-            auto t1 = _e2.template evaluate<N>(indices);
-            t0.adda(t1);
-            _e1.template update<N>(t0, indices);
-            return t0;
-        }
-
-        template<int N>
-        UME_FORCE_INLINE void update(UME::SIMD::SIMDVec<SCALAR_TYPE, N> & value, int index)
-        {
-            _e1.template update<N>(value, index);
-        }
-
-        template<int N>
-        UME_FORCE_INLINE void update(UME::SIMD::SIMDVec<SCALAR_TYPE, N> & value, UME::SIMD::SIMDVec<uint32_t, N> & indices)
-        {
-            _e1.template update<N>(value, indices);
-        }
-
-        typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDAExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
-        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDAExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
-        typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDAExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE ITOU_EXPRESSION_TYPE;
-        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDAExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
-        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDAExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
-        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDAExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
+        typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticGATHERExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
+        typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticGATHERExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE UTOF_EXPRESSION_TYPE;
+        typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticGATHERExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE ITOU_EXPRESSION_TYPE;
+        typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticGATHERExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
+        typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticGATHERExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
+        typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticGATHERExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
 
         UME_FORCE_INLINE UTOI_EXPRESSION_TYPE utoi() {
             return UTOI_EXPRESSION_TYPE(*this);
@@ -120,8 +101,6 @@ namespace VECTOR {
             return FTOI_EXPRESSION_TYPE(*this);
         }
     };
-
-
 }
 }
 

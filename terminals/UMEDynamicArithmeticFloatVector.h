@@ -59,10 +59,14 @@ namespace VECTOR {
 
         SCALAR_TYPE* elements;
         
-        bool ownsMemory;
-        
+        bool ownsMemory;        // Used to designate whether the vector allocated a buffer.
+
         UME_FORCE_INLINE int gatherStride() const { return mGatherStride; }
-        
+
+        // Used when dealing with linearly spaced vectors
+        bool mIsLinearlySpaced;    // vector is linearly spaced (e.g. [1, 3, 5, 7...])
+        SCALAR_TYPE mLinearInitValue;
+        SCALAR_TYPE mLinearIncrementValue;
     private:
         // Prohibit invalid initialization
         UME_FORCE_INLINE FloatVector() {}
@@ -70,24 +74,39 @@ namespace VECTOR {
     public:
         // pointer should be properly aligned!
         UME_FORCE_INLINE FloatVector(int length, SCALAR_TYPE *values) :
-            mLength(length), mGatherStride(1), elements(values), ownsMemory(false) {
-        }
+            mLength(length), 
+            mGatherStride(1), 
+            elements(values), 
+            ownsMemory(false), 
+            mIsLinearlySpaced(false)
+        {}
         
         UME_FORCE_INLINE FloatVector(int length, SCALAR_TYPE *values, int gatherStride) :
-            mLength(length), mGatherStride(gatherStride), elements(values), ownsMemory(false) {        
-        }
+            mLength(length),
+            mGatherStride(gatherStride),
+            elements(values),
+            ownsMemory(false),
+            mIsLinearlySpaced(false)
+        {}
 
         UME_FORCE_INLINE FloatVector(int length) :
-            mLength(length), mGatherStride(1), ownsMemory(true)
+            mLength(length),
+            mGatherStride(1),
+            ownsMemory(true),
+            mIsLinearlySpaced(false)
         {
             Allocator alloc;
             elements = alloc.allocate(sizeof(SCALAR_TYPE)*length);
         }
-        UME_FORCE_INLINE FloatVector(FloatVector & origin) {
+        UME_FORCE_INLINE FloatVector(FloatVector & origin) 
+        {
             elements = origin.elements;
             mLength = origin.mLength;
             ownsMemory = false;
             mGatherStride = origin.mGatherStride;
+            mIsLinearlySpaced = origin.mIsLinearlySpaced;
+            mLinearInitValue = origin.mLinearInitValue;
+            mLinearIncrementValue = origin.mLinearIncrementValue;
         }
 
         UME_FORCE_INLINE FloatVector(FloatVector && origin) {
@@ -96,7 +115,20 @@ namespace VECTOR {
             origin.elements = NULL;
             ownsMemory = true;
             mGatherStride = origin.mGatherStride;
+            mIsLinearlySpaced = origin.mIsLinearlySpaced;
+            mLinearInitValue = origin.mLinearInitValue;
+            mLinearIncrementValue = origin.mLinearIncrementValue;
         }
+
+        // Constructor to populate vector with incremented values.
+        UME_FORCE_INLINE FloatVector(int length, SCALAR_TYPE firstValue, SCALAR_TYPE increment) : 
+            elements(nullptr), // This constructor does not require any allocated memory
+            mLength(length),
+            mGatherStride(1),
+            mIsLinearlySpaced(true),
+            mLinearInitValue(firstValue),
+            mLinearIncrementValue(increment)
+        {}
 
         UME_FORCE_INLINE ~FloatVector() {
             if(ownsMemory) {
@@ -111,13 +143,33 @@ namespace VECTOR {
         template<int N>
         UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index) const {
             UME::SIMD::SIMDVec<SCALAR_TYPE, N> t0;
-            if(mGatherStride == 1)
-            {
-                t0.load(&elements[index]);
+            if (mIsLinearlySpaced) {
+
+                assert(mIsLinearlySpaced);
+                alignas(UME::SIMD::SIMDVec<SCALAR_TYPE, N>::alignment()) SCALAR_TYPE raw[N];
+                for (int i = 0; i < N; i++) {
+                    raw[i] = SCALAR_TYPE(i)*mLinearIncrementValue;
+                }
+                t0.loada(raw);
+                t0.adda(SCALAR_TYPE(index)*mLinearIncrementValue + mLinearInitValue);
             }
             else {
-                t0.gatheru(&elements[index*mGatherStride], mGatherStride);
+                if (mGatherStride == 1)
+                {
+                    t0.load(&elements[index]);
+                }
+                else {
+                    t0.gatheru(&elements[index*mGatherStride], mGatherStride);
+                }
             }
+            return t0;
+        }
+
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(UME::SIMD::SIMDVec<uint32_t, N> & indices) {
+            assert(!mIsLinearlySpaced);
+            UME::SIMD::SIMDVec<SCALAR_TYPE, N> t0;
+            t0.gather(&elements[0], indices);
             return t0;
         }
 
@@ -126,6 +178,7 @@ namespace VECTOR {
         // be propagated from evaluated register, back to vector data localization.
         template<int N>
         UME_FORCE_INLINE void update(UME::SIMD::SIMDVec<SCALAR_TYPE, N> & x, int index) {
+            assert(!mIsLinearlySpaced);
             if(mGatherStride == 1)
             {
                 x.store(&elements[index]);
@@ -133,6 +186,12 @@ namespace VECTOR {
             else {
                 x.scatteru(&elements[index*mGatherStride], mGatherStride);
             }
+        }
+
+        template<int N>
+        UME_FORCE_INLINE void update(UME::SIMD::SIMDVec<SCALAR_TYPE, N> & x, UME::SIMD::SIMDVec<uint32_t, N> & scatterVec) {
+            assert(!mIsLinearlySpaced);
+            x.scatter(&elements[0], scatterVec);
         }
 
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation

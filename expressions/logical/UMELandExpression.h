@@ -66,6 +66,13 @@ namespace VECTOR {
             auto t1 = _e2.template evaluate<N>(index);
             return t0.land(t1);
         }
+
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVecMask<N> evaluate(UME::SIMD::SIMDVec<uint32_t, N> indices) {
+            auto t0 = _e1.template evaluate<N>(indices);
+            auto t1 = _e2.template evaluate<N>(indices);
+            return t0.land(t1);
+        }
     };
 
     // Operators to handle "Exp1 && Exp2" expressions.

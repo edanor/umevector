@@ -64,6 +64,12 @@ namespace VECTOR {
             auto t0 = _e1.template evaluate<N>(index);
             return t0.lnot();
         }
+
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVecMask<N> evaluate(UME::SIMD::SIMDVec<uint32_t, N> & indices) {
+            auto t0 = _e1.template evaluate<N>(indices);
+            return t0.lnot();
+        }
     };
 
 }

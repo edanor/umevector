@@ -66,6 +66,13 @@ namespace VECTOR {
             return t0;
         }
 
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(UME::SIMD::SIMDVec<uint32_t, N> & indices)
+        {
+            auto t0 = _e1.template evaluate<N>(indices);
+            return t0;
+        }
+
 
         typedef typename UTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE UTOI_EXPRESSION_TYPE;
         typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticFTOIExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE UTOF_EXPRESSION_TYPE;

@@ -68,6 +68,15 @@ namespace VECTOR {
             return t1;
         }
 
+        template<int N>
+        inline UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(UME::SIMD::SIMDVec<uint32_t, N> & indices)
+        {
+            auto t0 = _e1.template evaluate<N>(indices);
+            auto t1 = t0.postinc();
+            _e1.template update<N>(t0, indices); // For postinc expression, the _e1 operand should be a proper lvalue.
+            return t1;
+        }
+
         typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTDECExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE ITOF_EXPRESSION_TYPE;
         typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTDECExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
         typedef typename UTOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticPOSTDECExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE UTOF_EXPRESSION_TYPE;

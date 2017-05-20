@@ -34,7 +34,11 @@ namespace UME {
 namespace VECTOR {
 
     /* Static vector template. This template*/
-    template<typename SCALAR_TYPE, int VEC_LEN = UME_DYNAMIC_LENGTH, int SIMD_STRIDE = UME_DEFAULT_SIMD_STRIDE, class Allocator=UME::AlignedAllocator<SCALAR_TYPE, SIMD_STRIDE>>
+    template<
+        typename SCALAR_TYPE, 
+        int VEC_LEN = UME_DYNAMIC_LENGTH, 
+        int SIMD_STRIDE = UME_DEFAULT_SIMD_STRIDE, 
+        class Allocator=UME::AlignedAllocator<SCALAR_TYPE, SIMD_STRIDE>>
     class UintVector : 
         public UintExpressionInterface<
             UintVector<SCALAR_TYPE, VEC_LEN, SIMD_STRIDE>,

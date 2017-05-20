@@ -717,6 +717,20 @@ namespace VECTOR {
         }
 
         template<typename T2>
+        UME_FORCE_INLINE ArithmeticGATHERExpression<
+            SCALAR_TYPE,
+            SIMD_STRIDE,
+            DERIVED_EXPRESSION, // this expression
+            T2> gather(T2 srcB)
+        {
+            return ArithmeticGATHERExpression<
+                SCALAR_TYPE,
+                SIMD_STRIDE,
+                DERIVED_EXPRESSION,
+                T2> (*this, srcB);
+        }
+
+        template<typename T2>
         UME_FORCE_INLINE ArithmeticADDAExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
