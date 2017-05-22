@@ -50,7 +50,7 @@ public:
     {
         EXP_T & reinterpret_exp = static_cast<EXP_T &>(exp);
 
-        UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_exp.template evaluate<1>(0);
+        UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t1 = reinterpret_exp.template evaluate<SIMD_STRIDE>(0);
         *dst = t1[0];
     }
 
@@ -98,7 +98,9 @@ public:
             auto t1 = reinterpret_indices.template evaluate<1>(i);
             dst.update<1>(t0, t1);
         }
-    }    // Evaluate with a comuted scatter indices
+    }
+
+    // Evaluate with computed scatter indices
     template<
         typename SCALAR_TYPE,
         int SIMD_STRIDE,
