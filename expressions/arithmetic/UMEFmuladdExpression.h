@@ -47,7 +47,7 @@ namespace VECTOR {
         E2 _e2;
         E3 _e3;
 
-        UME_FORCE_INLINE int LENGTH() const { return _e1.LENGTH(); }
+        UME_FORCE_INLINE int LENGTH() const { return std::max(std::max(_e1.LENGTH(), _e2.LENGTH()), _e3.LENGTH()); }
         UME_FORCE_INLINE int LOOP_COUNT() const { return _e1.LENGTH() / SIMD_STRIDE; }
         UME_FORCE_INLINE int PEEL_COUNT() const { return _e1.LENGTH() % SIMD_STRIDE; }
         UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*SIMD_STRIDE; }

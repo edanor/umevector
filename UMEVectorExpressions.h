@@ -105,8 +105,6 @@ namespace VECTOR {
 #include "expressions/arithmetic/UMERolExpression.h"
 #include "expressions/arithmetic/UMERorExpression.h"
 
-#include "expressions/arithmetic/UMEGatherExpression.h"
-
 #include "expressions/arithmetic/UMEAddaExpression.h"
 
 #include "expressions/arithmetic/UMEBlendExpression.h"
@@ -149,6 +147,8 @@ namespace VECTOR {
 #include "expressions/cast/UMEFtouExpression.h"
 #include "expressions/cast/UMEItouExpression.h"
 #include "expressions/cast/UMEUtoiExpression.h"
+
+#include "expressions/gather/UMEGatherExpression.h"
 
 #include "expressions/UMEUintExpressionInterface.h"
 #include "expressions/UMEIntExpressionInterface.h"

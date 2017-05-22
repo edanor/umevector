@@ -78,7 +78,7 @@ namespace VECTOR {
                 _value = A.hmax();
                 for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
                     auto t1 = _e1.template evaluate<1>(i);
-                    _value = std::max(t1.hmax(), _value);
+                    _value = t1.hmax(_value);
                 }
                 _evaluated = true;
             }
@@ -96,7 +96,7 @@ namespace VECTOR {
             SCALAR_TYPE B = A.hmax();
             for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
                 auto t1 = _e1.template evaluate<1>(i);
-                B = std::max(B, t1.hmax());
+                B = t1.hmax(B);
             }
             return B;
         }

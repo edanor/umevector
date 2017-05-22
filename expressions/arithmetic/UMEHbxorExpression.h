@@ -56,13 +56,13 @@ namespace VECTOR {
         SCALAR_TYPE _value; // This value is correct only if 'evaluated == true'
 
         UME_FORCE_INLINE ArithmeticHBXORExpression(E1 e1) :
-            _e1(e1) {}
+            _e1(e1), _evaluated(false) {}
 
         UME_FORCE_INLINE ArithmeticHBXORExpression(ArithmeticHBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1> & origin) :
-            _e1(origin._e1) {}
+            _e1(origin._e1), _evaluated(origin._evaluated) {}
 
         UME_FORCE_INLINE ArithmeticHBXORExpression(ArithmeticHBXORExpression<SCALAR_TYPE, SIMD_STRIDE, E1> && origin) :
-            _e1(std::move(origin._e1)) {}
+            _e1(std::move(origin._e1)), _evaluated(std::move(origin._evaluated)) {}
 
         // First reduce to scalar and then return
         template<int N>

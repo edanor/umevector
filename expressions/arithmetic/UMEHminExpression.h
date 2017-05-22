@@ -56,13 +56,13 @@ namespace VECTOR {
         SCALAR_TYPE _value; // This value is correct only if 'evaluated == true'
 
         UME_FORCE_INLINE ArithmeticHMINExpression(E1 e1) :
-            _e1(e1) {}
+            _e1(e1), _evaluated(false) {}
 
         UME_FORCE_INLINE ArithmeticHMINExpression(ArithmeticHMINExpression<SCALAR_TYPE, SIMD_STRIDE, E1> & origin) :
-            _e1(origin._e1) {}
+            _e1(origin._e1), _evaluated(origin._evaluated) {}
 
         UME_FORCE_INLINE ArithmeticHMINExpression(ArithmeticHMINExpression<SCALAR_TYPE, SIMD_STRIDE, E1> && origin) :
-            _e1(std::move(origin._e1)) {}
+            _e1(std::move(origin._e1)), _evaluated(std::move(origin._evaluated)) {}
 
         // First reduce to scalar and then return
         template<int N>
@@ -78,7 +78,7 @@ namespace VECTOR {
                 _value = A.hmin();
                 for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
                     auto t1 = _e1.template evaluate<1>(i);
-                    _value = t1.hmin();
+                    _value = t1.hmin(_value);
                 }
                 _evaluated = true;
             }
@@ -96,7 +96,7 @@ namespace VECTOR {
             SCALAR_TYPE B = A.hmin();
             for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
                 auto t1 = _e1.template evaluate<1>(i);
-                B = t1.hmin();
+                B = t1.hmin(B);
             }
             return B;
         }

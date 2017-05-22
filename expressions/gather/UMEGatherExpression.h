@@ -48,7 +48,7 @@ namespace VECTOR {
         E1 _e1;
         E2 _e2;
 
-        UME_FORCE_INLINE int LENGTH() const { return _e1.LENGTH(); }
+        UME_FORCE_INLINE int LENGTH() const { return std::max(_e1.LENGTH(), _e2.LENGTH()); }
         UME_FORCE_INLINE int LOOP_COUNT() const { return _e1.LENGTH() / SIMD_STRIDE; }
         UME_FORCE_INLINE int PEEL_COUNT() const { return _e1.LENGTH() % SIMD_STRIDE; }
         UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*SIMD_STRIDE; }
@@ -65,12 +65,19 @@ namespace VECTOR {
         template<int N>
         UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index)
         {
-            alignas(64) SCALAR_TYPE raw[N];
-            alignas(64) uint32_t raw_index[N];
-
             // Evaluate indexing vector at a given offset
             auto t0 = _e2.template evaluate<N>(index);
             // Use the calculated vector to evaluate the expression
+            auto t1 = _e1.template evaluate<N>(t0);
+            return t1;
+        }
+
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(UME::SIMD::SIMDVec<uint32_t, N> & indices)
+        {
+            // Evaluate indexing vector at given offsets
+            // This allows for nested gathers
+            auto t0 = _e2.template evaluate<N>(indices);
             auto t1 = _e1.template evaluate<N>(t0);
             return t1;
         }
