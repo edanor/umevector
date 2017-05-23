@@ -76,6 +76,8 @@ namespace VECTOR {
                     A.adda(t0);
                 }
                 _value = A.hadd();
+                //std::cout << "HADD: (" << index << ") " << _value << std::endl;
+                //std::cout << "HADD: _e1.LENGTH(): " << _e1.LENGTH() << std::endl;
                 for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
                     auto t1 = _e1.template evaluate<1>(i);
                     _value += t1[0];
@@ -99,6 +101,24 @@ namespace VECTOR {
                 B += t1[0];
             }
             return B;
+        }
+        
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> accumulate(int index, UME::SIMD::SIMDVec<SCALAR_TYPE, N> const & acc)
+        {
+            auto t0 = _e1.template evaluate<N>(index);
+            return t0.add(acc);
+        }
+        
+        template<int N>
+        UME_FORCE_INLINE SCALAR_TYPE reduce(UME::SIMD::SIMDVec<SCALAR_TYPE, N> & acc) {
+            auto t0 = acc.hadd();
+            return t0;
+        }
+        
+        template<int N>
+        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> neutral_element() {
+            return UME::SIMD::SIMDVec<SCALAR_TYPE, N> (SCALAR_TYPE(0));
         }
 
         typedef typename ITOFTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticHADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1>>::CAST_TYPE ITOF_EXPRESSION_TYPE;

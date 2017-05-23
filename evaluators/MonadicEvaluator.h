@@ -19,7 +19,7 @@ public:
         int VEC_LEN,
         int SIMD_STRIDE,
         typename EXP_T>
-        inline MonadicEvaluator(
+        UME_FORCE_INLINE MonadicEvaluator(
         UME::VECTOR::Vector<SCALAR_TYPE, VEC_LEN, SIMD_STRIDE> & dst,
         UME::VECTOR::ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, EXP_T> & exp)
     {
@@ -44,7 +44,7 @@ public:
         typename SCALAR_TYPE,
         int SIMD_STRIDE,
         typename EXP_T>
-        inline MonadicEvaluator(
+        UME_FORCE_INLINE MonadicEvaluator(
             SCALAR_TYPE * dst,
             UME::VECTOR::ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, EXP_T> & exp)
     {
@@ -59,7 +59,7 @@ public:
         typename SCALAR_TYPE,
         int SIMD_STRIDE,
         typename EXP_T>
-        inline MonadicEvaluator(
+        UME_FORCE_INLINE MonadicEvaluator(
             UME::VECTOR::ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, EXP_T> & exp)
     {
         // Need to reinterpret vec to E to propagate to proper expression
@@ -81,7 +81,7 @@ public:
         int SIMD_STRIDE,
         typename EXP_T,
         typename EXP_INDICES>
-        inline MonadicEvaluator(
+        UME_FORCE_INLINE MonadicEvaluator(
             UME::VECTOR::Vector<SCALAR_TYPE, VEC_LEN, SIMD_STRIDE> & dst,
             UME::VECTOR::ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, EXP_T> & exp,
             UME::VECTOR::ArithmeticExpression<uint32_t, SIMD_STRIDE, EXP_INDICES> & exp_indices)
@@ -106,7 +106,7 @@ public:
         int SIMD_STRIDE,
         typename EXP_T,
         typename EXP_INDICES>
-        inline MonadicEvaluator(
+        UME_FORCE_INLINE MonadicEvaluator(
             UME::VECTOR::Vector<SCALAR_TYPE, UME_DYNAMIC_LENGTH, SIMD_STRIDE> & dst,
             UME::VECTOR::ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, EXP_T> & exp,
             UME::VECTOR::ArithmeticExpression<uint32_t, SIMD_STRIDE, EXP_INDICES> & exp_indices)

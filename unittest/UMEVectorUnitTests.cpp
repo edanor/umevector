@@ -34,6 +34,10 @@
 
 #include "../UMEVector.h"
 
+#include "../evaluators/MonadicEvaluator.h"
+#include "../evaluators/DyadicEvaluator.h"
+#include "../evaluators/TriadicEvaluator.h"
+
 extern int g_totalTests;
 extern int g_totalFailed;
 extern int g_testMaxId;
@@ -821,6 +825,51 @@ void testHADD_random_static()
         bool inRange = valueInRange(result, b, 0.01f);
         check_condition(inRange, std::string("HADD"));
     }
+    {
+        SCALAR_TYPE raw_a[VEC_LEN], raw_b[VEC_LEN], raw_c[VEC_LEN], result[VEC_LEN];
+
+        SCALAR_TYPE t0 = 0;
+        for (int i = 0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<SCALAR_TYPE>(gen);
+            t0 += raw_a[i];
+        }
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            raw_b[i] = randomValue<SCALAR_TYPE>(gen);
+            result[i] = raw_b[i] + t0;
+        }
+
+        VEC_TYPE A(raw_a), B(raw_b);
+        VEC_TYPE C(raw_c);
+
+        C = B + A.hadd();
+
+        bool inRange = valueInRange(result, raw_c, 0.01f);
+        check_condition(inRange, std::string("HADD 2"));
+    }
+    {
+        SCALAR_TYPE raw_a[VEC_LEN], raw_b[VEC_LEN];
+        SCALAR_TYPE result1 = SCALAR_TYPE(0), result2 = SCALAR_TYPE(0);
+
+        for (int i = 0; i < VEC_LEN; i++) {
+            raw_a[i] = randomValue<SCALAR_TYPE>(gen);
+            raw_b[i] = randomValue<SCALAR_TYPE>(gen);
+            result1 += raw_a[i];
+            result2 += raw_a[i] * raw_b[i];
+        }
+
+        VEC_TYPE A(raw_a), B(raw_b);
+        SCALAR_TYPE b, c;
+
+        auto t0 = A.hadd();
+        auto t1 = (A * B).hadd();
+
+        UME::VECTOR::DyadicEvaluator eval(&b, t0, &c, t1);
+
+        bool inRange1 = valueInRange(result1, b, 0.01f);
+        bool inRange2 = valueInRange(result2, c, 0.01f);
+        check_condition(inRange1 && inRange2, std::string("HADD dyadic"));
+    }
 }
 
 template<typename VEC_TYPE, typename SCALAR_TYPE, int VEC_LEN, int SIMD_STRIDE>
@@ -1449,4 +1498,17 @@ int main() {
         // Trigger the evaluation
         UME::VECTOR::MonadicEvaluator eval(t0);
     }
+    {
+        float rawA[100], rawB[100], rawC[100], rawD[100];
+
+        UME::VECTOR::Vector<float, 100, 4> A(rawA);
+        UME::VECTOR::Vector<float, 100, 4> B(rawB);
+        UME::VECTOR::Vector<float, 100, 4> C(rawC);
+        UME::VECTOR::Vector<float, 100, 4> D(rawD);
+
+        auto t0 = A.add((B*C).hadd());
+
+        D = t0;
+    }
+    return 0;
 }
