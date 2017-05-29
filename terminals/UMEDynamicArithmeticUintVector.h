@@ -54,25 +54,25 @@ namespace VECTOR {
         SCALAR_TYPE mLinearInitValue;
         SCALAR_TYPE mLinearIncrementValue;
     public:
-        UME_FORCE_INLINE int LENGTH() const { return mLength; }
-        UME_FORCE_INLINE int LOOP_COUNT() const { return mLength / SIMD_STRIDE; }
-        UME_FORCE_INLINE int PEEL_COUNT() const { return mLength % SIMD_STRIDE; }
-        UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*SIMD_STRIDE; }
-        //UME_FORCE_INLINE int SIMD_STRIDE() const { return STRIDE; }
+        UME_FUNC_ATTRIB int LENGTH() const { return mLength; }
+        UME_FUNC_ATTRIB int LOOP_COUNT() const { return mLength / SIMD_STRIDE; }
+        UME_FUNC_ATTRIB int PEEL_COUNT() const { return mLength % SIMD_STRIDE; }
+        UME_FUNC_ATTRIB int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*SIMD_STRIDE; }
+        //UME_FUNC_ATTRIB int SIMD_STRIDE() const { return STRIDE; }
 
         SCALAR_TYPE* elements;
 
         bool ownsMemory;
 
-        UME_FORCE_INLINE int gatherStride() const { return mGatherStride; }
+        UME_FUNC_ATTRIB int gatherStride() const { return mGatherStride; }
 
     private:
         // Vector class should be intialized with proper user-managed memory buffer.
-        UME_FORCE_INLINE UintVector() {}
+        UME_FUNC_ATTRIB UintVector() {}
 
     public:
         // pointer should be properly aligned!
-        UME_FORCE_INLINE UintVector(int length, SCALAR_TYPE *values) :
+        UME_FUNC_ATTRIB UintVector(int length, SCALAR_TYPE *values) :
             mLength(length),
             mGatherStride(1),
             elements(values),
@@ -80,7 +80,7 @@ namespace VECTOR {
             mIsLinearlySpaced(false)
         {}
         
-        UME_FORCE_INLINE UintVector(int length, SCALAR_TYPE *values, int gatherStride) :
+        UME_FUNC_ATTRIB UintVector(int length, SCALAR_TYPE *values, int gatherStride) :
             mLength(length),
             mGatherStride(gatherStride),
             elements(values),
@@ -88,7 +88,7 @@ namespace VECTOR {
             mIsLinearlySpaced(false)
         {}
 
-        UME_FORCE_INLINE UintVector(int length) :
+        UME_FUNC_ATTRIB UintVector(int length) :
             mLength(length),
             mGatherStride(1),
             ownsMemory(true),
@@ -98,7 +98,7 @@ namespace VECTOR {
             alloc.allocate(sizeof(SCALAR_TYPE)*length);
         }
 
-        UME_FORCE_INLINE UintVector(UintVector & origin) :
+        UME_FUNC_ATTRIB UintVector(UintVector & origin) :
             elements(origin.elements),
             mLength(origin.mLength),
             ownsMemory(false),
@@ -108,7 +108,7 @@ namespace VECTOR {
             mLinearIncrementValue(origin.mLinearIncrementValue)
         {}
 
-        UME_FORCE_INLINE UintVector(UintVector && origin) :
+        UME_FUNC_ATTRIB UintVector(UintVector && origin) :
             elements(origin.elements),
             mLength(origin.mLength),
             ownsMemory(true),
@@ -121,7 +121,7 @@ namespace VECTOR {
         }
 
         // Constructor to populate vector with incremented values.
-        UME_FORCE_INLINE UintVector(int length, SCALAR_TYPE firstValue, SCALAR_TYPE increment) :
+        UME_FUNC_ATTRIB UintVector(int length, SCALAR_TYPE firstValue, SCALAR_TYPE increment) :
             elements(nullptr), // This constructor does not require any allocated memory
             mLength(length),
             mGatherStride(1),
@@ -130,7 +130,7 @@ namespace VECTOR {
             mLinearIncrementValue(increment)
         {}
 
-        UME_FORCE_INLINE ~UintVector() {
+        UME_FUNC_ATTRIB ~UintVector() {
             if(ownsMemory) {
                 Allocator alloc;
                 alloc.deallocate(elements, sizeof(SCALAR_TYPE)*mLength);
@@ -141,7 +141,7 @@ namespace VECTOR {
         // Every expression evaluation starts with loading values from memory 
         // storage into proper SIMD vectors.
         template<int N>
-        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index) const {
+        UME_FUNC_ATTRIB UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index) const {
             UME::SIMD::SIMDVec<SCALAR_TYPE, N> t0;
             if (mIsLinearlySpaced) {
 
@@ -166,7 +166,7 @@ namespace VECTOR {
         }
 
         template<int N>
-        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(UME::SIMD::SIMDVec<uint32_t, N> & indices) const {
+        UME_FUNC_ATTRIB UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(UME::SIMD::SIMDVec<uint32_t, N> & indices) const {
             assert(!mIsLinearlySpaced);
             UME::SIMD::SIMDVec<SCALAR_TYPE, N> t0;
             t0.gather(&elements[0], indices);
@@ -177,7 +177,7 @@ namespace VECTOR {
         // Some operations require implicit assignment. This assignment needs to
         // be propagated from evaluated register, back to vector data localization.
         template<int N>
-        UME_FORCE_INLINE void update(UME::SIMD::SIMDVec<SCALAR_TYPE, N> & x, int index) {
+        UME_FUNC_ATTRIB void update(UME::SIMD::SIMDVec<SCALAR_TYPE, N> & x, int index) {
             assert(!mIsLinearlySpaced);
             if(mGatherStride == 1) {
                 x.store(&elements[index]);
@@ -188,13 +188,13 @@ namespace VECTOR {
         }
 
         template<int N>
-        UME_FORCE_INLINE void update(UME::SIMD::SIMDVec<SCALAR_TYPE, N> & x, UME::SIMD::SIMDVec<uint32_t, N> & scatterVec) {
+        UME_FUNC_ATTRIB void update(UME::SIMD::SIMDVec<SCALAR_TYPE, N> & x, UME::SIMD::SIMDVec<uint32_t, N> & scatterVec) {
             assert(!mIsLinearlySpaced);
             x.scatter(&elements[0], scatterVec);
         }
 
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
-        UME_FORCE_INLINE UintVector& operator= (UintVector & origin) {
+        UME_FUNC_ATTRIB UintVector& operator= (UintVector & origin) {
             assert(!mIsLinearlySpaced);
             if (mGatherStride == 1) {
                 for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
@@ -205,7 +205,7 @@ namespace VECTOR {
             return *this;
         }
 
-        UME_FORCE_INLINE UintVector& operator= (UintVector&& origin) {
+        UME_FUNC_ATTRIB UintVector& operator= (UintVector&& origin) {
             assert(!mIsLinearlySpaced);
             if (mGatherStride == 1) {
                 for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
@@ -218,7 +218,7 @@ namespace VECTOR {
 
         // Initialize with expression template evaluation
         template<typename E>
-        UME_FORCE_INLINE UintVector<SCALAR_TYPE, UME_DYNAMIC_LENGTH, SIMD_STRIDE> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> & vec)
+        UME_FUNC_ATTRIB UintVector<SCALAR_TYPE, UME_DYNAMIC_LENGTH, SIMD_STRIDE> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> & vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -248,7 +248,7 @@ namespace VECTOR {
             return *this;
         }
         template<typename E>
-        UME_FORCE_INLINE UintVector<SCALAR_TYPE, UME_DYNAMIC_LENGTH, SIMD_STRIDE> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
+        UME_FUNC_ATTRIB UintVector<SCALAR_TYPE, UME_DYNAMIC_LENGTH, SIMD_STRIDE> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -278,7 +278,7 @@ namespace VECTOR {
             return *this;
         }
 
-        UME_FORCE_INLINE UintVector& operator= (SCALAR_TYPE x) {
+        UME_FUNC_ATTRIB UintVector& operator= (SCALAR_TYPE x) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
             if(mGatherStride == 1) {
                 for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {

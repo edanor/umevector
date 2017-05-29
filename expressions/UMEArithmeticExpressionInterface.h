@@ -40,16 +40,16 @@ namespace VECTOR {
     template <typename SCALAR_TYPE, int SIMD_STRIDE, typename DERIVED_EXPRESSION>
     class ArithmeticExpression {
     public:
-        int LOOP_COUNT() { return static_cast<DERIVED_EXPRESSION&>(*this).LOOP_COUNT(); }
+        UME_FUNC_ATTRIB int LOOP_COUNT() { return static_cast<DERIVED_EXPRESSION&>(*this).LOOP_COUNT(); }
 
-        static constexpr int GET_SIMD_STRIDE() { return SIMD_STRIDE; }
+        UME_FUNC_ATTRIB static constexpr int GET_SIMD_STRIDE() { return SIMD_STRIDE; }
 
-        operator DERIVED_EXPRESSION&() { return static_cast<DERIVED_EXPRESSION&>(*this); }
-        operator DERIVED_EXPRESSION const&() const { return static_cast<const DERIVED_EXPRESSION&>(*this); }
+        UME_FUNC_ATTRIB operator DERIVED_EXPRESSION&() { return static_cast<DERIVED_EXPRESSION&>(*this); }
+        UME_FUNC_ATTRIB operator DERIVED_EXPRESSION const&() const { return static_cast<const DERIVED_EXPRESSION&>(*this); }
 
         void dispose() {}
 
-        UME_FORCE_INLINE ArithmeticRCPExpression<
+        UME_FUNC_ATTRIB ArithmeticRCPExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -62,7 +62,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticNEGExpression<
+        UME_FUNC_ATTRIB ArithmeticNEGExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -75,7 +75,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticABSExpression<
+        UME_FUNC_ATTRIB ArithmeticABSExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -88,7 +88,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticSQRTExpression<
+        UME_FUNC_ATTRIB ArithmeticSQRTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -101,7 +101,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticROUNDExpression<
+        UME_FUNC_ATTRIB ArithmeticROUNDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -114,7 +114,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticFLOORExpression<
+        UME_FUNC_ATTRIB ArithmeticFLOORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -127,7 +127,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticCEILExpression<
+        UME_FUNC_ATTRIB ArithmeticCEILExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -140,7 +140,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticEXPExpression<
+        UME_FUNC_ATTRIB ArithmeticEXPExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -153,7 +153,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticLOGExpression<
+        UME_FUNC_ATTRIB ArithmeticLOGExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -166,7 +166,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticLOG10Expression<
+        UME_FUNC_ATTRIB ArithmeticLOG10Expression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -179,7 +179,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticLOG2Expression<
+        UME_FUNC_ATTRIB ArithmeticLOG2Expression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -192,7 +192,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticSINExpression<
+        UME_FUNC_ATTRIB ArithmeticSINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -205,7 +205,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticCOSExpression<
+        UME_FUNC_ATTRIB ArithmeticCOSExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -218,7 +218,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticTANExpression<
+        UME_FUNC_ATTRIB ArithmeticTANExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -231,7 +231,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticATANExpression<
+        UME_FUNC_ATTRIB ArithmeticATANExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -244,7 +244,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticBNOTExpression<
+        UME_FUNC_ATTRIB ArithmeticBNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -258,7 +258,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticADDExpression<
+        UME_FUNC_ATTRIB ArithmeticADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -271,7 +271,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticADDExpression<
+        UME_FUNC_ATTRIB ArithmeticADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -285,7 +285,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticSADDExpression<
+        UME_FUNC_ATTRIB ArithmeticSADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -298,7 +298,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticSADDExpression<
+        UME_FUNC_ATTRIB ArithmeticSADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -312,7 +312,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticMULExpression<
+        UME_FUNC_ATTRIB ArithmeticMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -325,7 +325,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticMULExpression<
+        UME_FUNC_ATTRIB ArithmeticMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -339,7 +339,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticDIVExpression<
+        UME_FUNC_ATTRIB ArithmeticDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -352,7 +352,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticDIVExpression<
+        UME_FUNC_ATTRIB ArithmeticDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -366,7 +366,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticSUBExpression<
+        UME_FUNC_ATTRIB ArithmeticSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -379,7 +379,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticSUBExpression<
+        UME_FUNC_ATTRIB ArithmeticSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -393,7 +393,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticSSUBExpression<
+        UME_FUNC_ATTRIB ArithmeticSSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -406,7 +406,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticSSUBExpression<
+        UME_FUNC_ATTRIB ArithmeticSSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -420,7 +420,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticMAXExpression<
+        UME_FUNC_ATTRIB ArithmeticMAXExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -433,7 +433,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticMAXExpression<
+        UME_FUNC_ATTRIB ArithmeticMAXExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -447,7 +447,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticMINExpression<
+        UME_FUNC_ATTRIB ArithmeticMINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -460,7 +460,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticMINExpression<
+        UME_FUNC_ATTRIB ArithmeticMINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -474,7 +474,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticBANDExpression<
+        UME_FUNC_ATTRIB ArithmeticBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -487,7 +487,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticBANDExpression<
+        UME_FUNC_ATTRIB ArithmeticBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -501,7 +501,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticBORExpression<
+        UME_FUNC_ATTRIB ArithmeticBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -514,7 +514,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticBORExpression<
+        UME_FUNC_ATTRIB ArithmeticBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -528,7 +528,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticBXORExpression<
+        UME_FUNC_ATTRIB ArithmeticBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -541,7 +541,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticBXORExpression<
+        UME_FUNC_ATTRIB ArithmeticBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -555,7 +555,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticBANDNOTExpression<
+        UME_FUNC_ATTRIB ArithmeticBANDNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -568,7 +568,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticBANDNOTExpression<
+        UME_FUNC_ATTRIB ArithmeticBANDNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -582,7 +582,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticREMExpression<
+        UME_FUNC_ATTRIB ArithmeticREMExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -595,7 +595,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticREMExpression<
+        UME_FUNC_ATTRIB ArithmeticREMExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -609,7 +609,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticLSHExpression<
+        UME_FUNC_ATTRIB ArithmeticLSHExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -622,7 +622,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticLSHExpression<
+        UME_FUNC_ATTRIB ArithmeticLSHExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -636,7 +636,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticRSHExpression<
+        UME_FUNC_ATTRIB ArithmeticRSHExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -649,7 +649,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticRSHExpression<
+        UME_FUNC_ATTRIB ArithmeticRSHExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -663,7 +663,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticROLExpression<
+        UME_FUNC_ATTRIB ArithmeticROLExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -676,7 +676,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticROLExpression<
+        UME_FUNC_ATTRIB ArithmeticROLExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -690,7 +690,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticRORExpression<
+        UME_FUNC_ATTRIB ArithmeticRORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -703,7 +703,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticRORExpression<
+        UME_FUNC_ATTRIB ArithmeticRORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -717,7 +717,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticADDAExpression<
+        UME_FUNC_ATTRIB ArithmeticADDAExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -730,7 +730,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE ArithmeticADDAExpression<
+        UME_FUNC_ATTRIB ArithmeticADDAExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -744,7 +744,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticBLENDExpression<
+        UME_FUNC_ATTRIB ArithmeticBLENDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -760,7 +760,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticBLENDExpression<
+        UME_FUNC_ATTRIB ArithmeticBLENDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -776,7 +776,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMADDExpression<
+        UME_FUNC_ATTRIB ArithmeticMADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -792,7 +792,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMADDExpression<
+        UME_FUNC_ATTRIB ArithmeticMADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -808,7 +808,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMSADDExpression<
+        UME_FUNC_ATTRIB ArithmeticMSADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -824,7 +824,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMSADDExpression<
+        UME_FUNC_ATTRIB ArithmeticMSADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -840,7 +840,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMMULExpression<
+        UME_FUNC_ATTRIB ArithmeticMMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -856,7 +856,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMMULExpression<
+        UME_FUNC_ATTRIB ArithmeticMMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -872,7 +872,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMDIVExpression<
+        UME_FUNC_ATTRIB ArithmeticMDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -888,7 +888,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMDIVExpression<
+        UME_FUNC_ATTRIB ArithmeticMDIVExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -904,7 +904,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMSUBExpression<
+        UME_FUNC_ATTRIB ArithmeticMSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -920,7 +920,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMSUBExpression<
+        UME_FUNC_ATTRIB ArithmeticMSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -936,7 +936,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMSSUBExpression<
+        UME_FUNC_ATTRIB ArithmeticMSSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -952,7 +952,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMSSUBExpression<
+        UME_FUNC_ATTRIB ArithmeticMSSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -968,7 +968,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMMAXExpression<
+        UME_FUNC_ATTRIB ArithmeticMMAXExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -984,7 +984,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMMAXExpression<
+        UME_FUNC_ATTRIB ArithmeticMMAXExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1000,7 +1000,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMMINExpression<
+        UME_FUNC_ATTRIB ArithmeticMMINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1016,7 +1016,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMMINExpression<
+        UME_FUNC_ATTRIB ArithmeticMMINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1032,7 +1032,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMBANDExpression<
+        UME_FUNC_ATTRIB ArithmeticMBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1048,7 +1048,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMBANDExpression<
+        UME_FUNC_ATTRIB ArithmeticMBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1064,7 +1064,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMBORExpression<
+        UME_FUNC_ATTRIB ArithmeticMBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1080,7 +1080,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMBORExpression<
+        UME_FUNC_ATTRIB ArithmeticMBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1096,7 +1096,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMBXORExpression<
+        UME_FUNC_ATTRIB ArithmeticMBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1112,7 +1112,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMBXORExpression<
+        UME_FUNC_ATTRIB ArithmeticMBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1128,7 +1128,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMBANDNOTExpression<
+        UME_FUNC_ATTRIB ArithmeticMBANDNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1144,7 +1144,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMBANDNOTExpression<
+        UME_FUNC_ATTRIB ArithmeticMBANDNOTExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1160,7 +1160,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMLSHExpression<
+        UME_FUNC_ATTRIB ArithmeticMLSHExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1176,7 +1176,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMLSHExpression<
+        UME_FUNC_ATTRIB ArithmeticMLSHExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1192,7 +1192,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMRSHExpression<
+        UME_FUNC_ATTRIB ArithmeticMRSHExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1208,7 +1208,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMRSHExpression<
+        UME_FUNC_ATTRIB ArithmeticMRSHExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1224,7 +1224,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMROLExpression<
+        UME_FUNC_ATTRIB ArithmeticMROLExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1240,7 +1240,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMROLExpression<
+        UME_FUNC_ATTRIB ArithmeticMROLExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1256,7 +1256,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK, typename T2>
-        UME_FORCE_INLINE ArithmeticMRORExpression<
+        UME_FUNC_ATTRIB ArithmeticMRORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1272,7 +1272,7 @@ namespace VECTOR {
         }
 
         template<typename T_MASK>
-        UME_FORCE_INLINE ArithmeticMRORExpression<
+        UME_FUNC_ATTRIB ArithmeticMRORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1288,7 +1288,7 @@ namespace VECTOR {
         }
 
         template<typename T2, typename T3>
-        UME_FORCE_INLINE ArithmeticFMULADDExpression<
+        UME_FUNC_ATTRIB ArithmeticFMULADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1304,7 +1304,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticFMULADDExpression<
+        UME_FUNC_ATTRIB ArithmeticFMULADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1320,7 +1320,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticFMULADDExpression<
+        UME_FUNC_ATTRIB ArithmeticFMULADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1335,7 +1335,7 @@ namespace VECTOR {
                 T2> (*this, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB), srcC);
         }
 
-        UME_FORCE_INLINE ArithmeticFMULADDExpression<
+        UME_FUNC_ATTRIB ArithmeticFMULADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1351,7 +1351,7 @@ namespace VECTOR {
         }
 
         template<typename T2, typename T3>
-        UME_FORCE_INLINE ArithmeticFMULSUBExpression<
+        UME_FUNC_ATTRIB ArithmeticFMULSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1367,7 +1367,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticFMULSUBExpression<
+        UME_FUNC_ATTRIB ArithmeticFMULSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1383,7 +1383,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticFMULSUBExpression<
+        UME_FUNC_ATTRIB ArithmeticFMULSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1398,7 +1398,7 @@ namespace VECTOR {
                 T2> (*this, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB), srcC);
         }
 
-        UME_FORCE_INLINE ArithmeticFMULSUBExpression<
+        UME_FUNC_ATTRIB ArithmeticFMULSUBExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1414,7 +1414,7 @@ namespace VECTOR {
         }
 
         template<typename T2, typename T3>
-        UME_FORCE_INLINE ArithmeticFADDMULExpression<
+        UME_FUNC_ATTRIB ArithmeticFADDMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1430,7 +1430,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticFADDMULExpression<
+        UME_FUNC_ATTRIB ArithmeticFADDMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1446,7 +1446,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticFADDMULExpression<
+        UME_FUNC_ATTRIB ArithmeticFADDMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1461,7 +1461,7 @@ namespace VECTOR {
                 T2> (*this, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB), srcC);
         }
 
-        UME_FORCE_INLINE ArithmeticFADDMULExpression<
+        UME_FUNC_ATTRIB ArithmeticFADDMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1477,7 +1477,7 @@ namespace VECTOR {
         }
 
         template<typename T2, typename T3>
-        UME_FORCE_INLINE ArithmeticFSUBMULExpression<
+        UME_FUNC_ATTRIB ArithmeticFSUBMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1493,7 +1493,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticFSUBMULExpression<
+        UME_FUNC_ATTRIB ArithmeticFSUBMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1509,7 +1509,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticFSUBMULExpression<
+        UME_FUNC_ATTRIB ArithmeticFSUBMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1524,7 +1524,7 @@ namespace VECTOR {
                 T2> (*this, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB), srcC);
         }
 
-        UME_FORCE_INLINE ArithmeticFSUBMULExpression<
+        UME_FUNC_ATTRIB ArithmeticFSUBMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
@@ -1539,7 +1539,7 @@ namespace VECTOR {
                 Scalar<SCALAR_TYPE, SIMD_STRIDE>> (*this, Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB), Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcC));
         }
 
-        UME_FORCE_INLINE ArithmeticHADDExpression<
+        UME_FUNC_ATTRIB ArithmeticHADDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -1552,7 +1552,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticHMULExpression<
+        UME_FUNC_ATTRIB ArithmeticHMULExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -1565,7 +1565,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticHBANDExpression<
+        UME_FUNC_ATTRIB ArithmeticHBANDExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -1578,7 +1578,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticHBORExpression<
+        UME_FUNC_ATTRIB ArithmeticHBORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -1591,7 +1591,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticHBXORExpression<
+        UME_FUNC_ATTRIB ArithmeticHBXORExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -1604,7 +1604,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticHMAXExpression<
+        UME_FUNC_ATTRIB ArithmeticHMAXExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -1617,7 +1617,7 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE ArithmeticHMINExpression<
+        UME_FUNC_ATTRIB ArithmeticHMINExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
@@ -1631,7 +1631,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE LogicalCMPGTExpression<
+        UME_FUNC_ATTRIB LogicalCMPGTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
             T2> cmpgt(T2 srcB)
@@ -1642,7 +1642,7 @@ namespace VECTOR {
                 T2>((*this), srcB);
         }
 
-        UME_FORCE_INLINE LogicalCMPGTExpression<
+        UME_FUNC_ATTRIB LogicalCMPGTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
             Scalar<bool, SIMD_STRIDE>> cmpgt(SCALAR_TYPE srcB)
@@ -1654,7 +1654,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE LogicalCMPLTExpression<
+        UME_FUNC_ATTRIB LogicalCMPLTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
             T2> cmplt(T2 srcB)
@@ -1665,7 +1665,7 @@ namespace VECTOR {
                 T2>((*this), srcB);
         }
 
-        UME_FORCE_INLINE LogicalCMPLTExpression<
+        UME_FUNC_ATTRIB LogicalCMPLTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
             Scalar<bool, SIMD_STRIDE>> cmplt(SCALAR_TYPE srcB)
@@ -1677,7 +1677,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE LogicalCMPGEExpression<
+        UME_FUNC_ATTRIB LogicalCMPGEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
             T2> cmpge(T2 srcB)
@@ -1688,7 +1688,7 @@ namespace VECTOR {
                 T2>((*this), srcB);
         }
 
-        UME_FORCE_INLINE LogicalCMPGEExpression<
+        UME_FUNC_ATTRIB LogicalCMPGEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
             Scalar<bool, SIMD_STRIDE>> cmpge(SCALAR_TYPE srcB)
@@ -1700,7 +1700,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE LogicalCMPLEExpression<
+        UME_FUNC_ATTRIB LogicalCMPLEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
             T2> cmple(T2 srcB)
@@ -1711,7 +1711,7 @@ namespace VECTOR {
                 T2>((*this), srcB);
         }
 
-        UME_FORCE_INLINE LogicalCMPLEExpression<
+        UME_FUNC_ATTRIB LogicalCMPLEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
             Scalar<bool, SIMD_STRIDE>> cmple(SCALAR_TYPE srcB)
@@ -1723,7 +1723,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE LogicalCMPEQExpression<
+        UME_FUNC_ATTRIB LogicalCMPEQExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
             T2> cmpeq(T2 srcB)
@@ -1734,7 +1734,7 @@ namespace VECTOR {
                 T2>((*this), srcB);
         }
 
-        UME_FORCE_INLINE LogicalCMPEQExpression<
+        UME_FUNC_ATTRIB LogicalCMPEQExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
             Scalar<bool, SIMD_STRIDE>> cmpeq(SCALAR_TYPE srcB)
@@ -1746,7 +1746,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE LogicalCMPNEExpression<
+        UME_FUNC_ATTRIB LogicalCMPNEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
             T2> cmpne(T2 srcB)
@@ -1757,7 +1757,7 @@ namespace VECTOR {
                 T2>((*this), srcB);
         }
 
-        UME_FORCE_INLINE LogicalCMPNEExpression<
+        UME_FUNC_ATTRIB LogicalCMPNEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
             Scalar<bool, SIMD_STRIDE>> cmpne(SCALAR_TYPE srcB)
@@ -1769,7 +1769,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE ArithmeticGATHERExpression<
+        UME_FUNC_ATTRIB ArithmeticGATHERExpression<
             SCALAR_TYPE,
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression

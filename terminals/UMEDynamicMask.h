@@ -44,10 +44,10 @@ namespace VECTOR {
         int mGatherStride;
 
     public:
-        UME_FORCE_INLINE int LENGTH() const { return mLength; }
-        UME_FORCE_INLINE int LOOP_COUNT() const { return mLength / SIMD_STRIDE; }
-        UME_FORCE_INLINE int PEEL_COUNT() const { return mLength % SIMD_STRIDE; }
-        UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT() * SIMD_STRIDE; }
+        UME_FUNC_ATTRIB int LENGTH() const { return mLength; }
+        UME_FUNC_ATTRIB int LOOP_COUNT() const { return mLength / SIMD_STRIDE; }
+        UME_FUNC_ATTRIB int PEEL_COUNT() const { return mLength % SIMD_STRIDE; }
+        UME_FUNC_ATTRIB int LOOP_PEEL_OFFSET() const { return LOOP_COUNT() * SIMD_STRIDE; }
 
         bool* elements;
 
@@ -55,43 +55,43 @@ namespace VECTOR {
         bool ownsMemory;
 
     private:
-        UME_FORCE_INLINE MaskVector() {}
+        UME_FUNC_ATTRIB MaskVector() {}
 
     public:
-        UME_FORCE_INLINE MaskVector(int length, bool value) : mLength(length), mGatherStride(1), ownsMemory(true)
+        UME_FUNC_ATTRIB MaskVector(int length, bool value) : mLength(length), mGatherStride(1), ownsMemory(true)
         {
             Allocator alloc;
             elements = alloc.allocate(sizeof(bool)*mLength);
             for (int i = 0; i < length; i++) elements[i] = value;
         }
         
-        UME_FORCE_INLINE MaskVector(int length, bool *p) : mLength(length), mGatherStride(1), elements(p), ownsMemory(false) {}
+        UME_FUNC_ATTRIB MaskVector(int length, bool *p) : mLength(length), mGatherStride(1), elements(p), ownsMemory(false) {}
         
         // This is the only constructor taking 'gatherStride' parameter. There is no need for it if
         // the memory is library-managed.
-        UME_FORCE_INLINE MaskVector(int length, bool *p, int gatherStride) : mLength(length), mGatherStride(gatherStride), elements(p), ownsMemory(false) {}
+        UME_FUNC_ATTRIB MaskVector(int length, bool *p, int gatherStride) : mLength(length), mGatherStride(gatherStride), elements(p), ownsMemory(false) {}
 
-        UME_FORCE_INLINE MaskVector(int length) : mLength(length), mGatherStride(1)
+        UME_FUNC_ATTRIB MaskVector(int length) : mLength(length), mGatherStride(1)
         {
             Allocator alloc;
             elements = alloc.allocate(sizeof(bool)*length);
         }
 
-        UME_FORCE_INLINE MaskVector(MaskVector & origin) {
+        UME_FUNC_ATTRIB MaskVector(MaskVector & origin) {
             elements = origin.elements;
             mLength = origin.mLength;
             mGatherStride = origin.mGatherStride;
             ownsMemory = false;
         }
 
-        UME_FORCE_INLINE MaskVector(MaskVector && origin) {
+        UME_FUNC_ATTRIB MaskVector(MaskVector && origin) {
             elements = origin.elements;
             mLength = origin.mLength;
             mGatherStride = origin.mGatherStride;
-            ownsMemory(true);
+            ownsMemory = true;
         }
 
-        UME_FORCE_INLINE ~MaskVector() {
+        UME_FUNC_ATTRIB ~MaskVector() {
             if(ownsMemory) {
                 Allocator alloc;
                 alloc.deallocate(elements, sizeof(bool)*mLength);
@@ -102,7 +102,7 @@ namespace VECTOR {
         // Every expression evaluation starts with loading values from memory 
         // storage into proper SIMD vectors.
         template<int N>
-        UME_FORCE_INLINE UME::SIMD::SIMDVecMask<N> evaluate(int index) const {
+        UME_FUNC_ATTRIB UME::SIMD::SIMDVecMask<N> evaluate(int index) const {
             UME::SIMD::SIMDVecMask<N> t0;
             if(mGatherStride == 1)
             {
@@ -118,7 +118,7 @@ namespace VECTOR {
         // Some operations require implicit assignment. This assignment needs to
         // be propagated from evaluated register, back to vector data localization.
         template<int N>
-        UME_FORCE_INLINE void update(UME::SIMD::SIMDVecMask<N> & x, int index) {
+        UME_FUNC_ATTRIB void update(UME::SIMD::SIMDVecMask<N> & x, int index) {
             if(mGatherStride == 1)
             {
                 x.storea(&elements[index]);
@@ -129,7 +129,7 @@ namespace VECTOR {
         }
 
         template<typename E>
-        UME_FORCE_INLINE MaskVector<UME_DYNAMIC_LENGTH, SIMD_STRIDE, Allocator>(LogicalExpression<SIMD_STRIDE, E> && vec)   
+        UME_FUNC_ATTRIB MaskVector<UME_DYNAMIC_LENGTH, SIMD_STRIDE, Allocator>(LogicalExpression<SIMD_STRIDE, E> && vec)   
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -164,14 +164,14 @@ namespace VECTOR {
         // Cast operator to convert from static to dynamic form. Because of
         // different allocation method, the data needs to be copied from stack-organized
         // to heap-organized. 
-        UME_FORCE_INLINE operator MaskVector<UME_DYNAMIC_LENGTH, SIMD_STRIDE>() {
+        UME_FUNC_ATTRIB operator MaskVector<UME_DYNAMIC_LENGTH, SIMD_STRIDE>() {
             // Create dynamic Row vector, and copy data
             MaskVector<UME_DYNAMIC_LENGTH, SIMD_STRIDE> temp(LENGTH());
             for (int i = 0; i < LENGTH();i++) temp.elements[i] = elements[i*mGatherStride];
             return temp;
         }
 
-        MaskVector& operator= (MaskVector & origin) {
+        inline UME_ENV_FUNC_ATTRIB MaskVector& operator= (MaskVector & origin) {
             for (int i = 0; i < LENGTH(); i++) elements[i*mGatherStride] = origin.elements[i*origin.mGatherStride];
             return *this;
         }
@@ -179,7 +179,7 @@ namespace VECTOR {
         // Initialize with expression template evaluation
         template<typename E>
         //Vector(ArithmeticExpression<E> & vec) {
-        MaskVector& operator= (LogicalExpression<SIMD_STRIDE, E> && vec)
+        inline UME_ENV_FUNC_ATTRIB MaskVector& operator= (LogicalExpression<SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -216,7 +216,7 @@ namespace VECTOR {
         // Initialize with expression template evaluation
         template<typename E>
         //Vector(ArithmeticExpression<E> & vec) {
-        MaskVector& operator= (LogicalExpression<SIMD_STRIDE, E> & vec)
+        inline UME_ENV_FUNC_ATTRIB MaskVector& operator= (LogicalExpression<SIMD_STRIDE, E> & vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -246,7 +246,7 @@ namespace VECTOR {
             return *this;
         }
 
-        MaskVector& operator= (bool x) {
+        inline UME_ENV_FUNC_ATTRIB MaskVector& operator= (bool x) {
             UME::SIMD::SIMDVecMask<SIMD_STRIDE> t0(x);
             if(mGatherStride == 1) {
                 for (int i = 0; i < LOOP_COUNT(); i += SIMD_STRIDE) {
@@ -269,7 +269,7 @@ namespace VECTOR {
             return *this;
         }
 
-        MaskVector& operator= (bool* x) {
+        inline UME_ENV_FUNC_ATTRIB MaskVector& operator= (bool* x) {
             if(mGatherStride == 1) {
                 for (int i = 0; i < LENGTH(); i++) {
                     elements[i] = x[i];

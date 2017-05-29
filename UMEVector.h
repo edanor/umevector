@@ -143,6 +143,12 @@ namespace UME {
 }
 
 
+#ifdef __NVCC__
+#include "evaluators/MonadicEvaluator.cuh"
+#else
 #include "evaluators/MonadicEvaluator.h"
+#include "evaluators/DyadicEvaluator.h"
+#include "evaluators/TriadicEvaluator.h"
+#endif
 
 #endif

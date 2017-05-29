@@ -43,18 +43,18 @@ namespace VECTOR {
         //SCALAR_TYPE * _e1;
 
     public:
-        UME_FORCE_INLINE SIMDTerminal(SIMD_TYPE & value) : _e1(value) {}
-        UME_FORCE_INLINE SIMDTerminal(SIMD_TYPE && value) : _e1(value) {}
+        UME_SIMD_FUNC_ATTRIB SIMDTerminal(SIMD_TYPE & value) : _e1(value) {}
+        UME_SIMD_FUNC_ATTRIB SIMDTerminal(SIMD_TYPE && value) : _e1(value) {}
 
-        UME_FORCE_INLINE SIMDTerminal(SIMDTerminal && other) : _e1(other._e1) { } //: _e1(value._e1) {}
-        UME_FORCE_INLINE SIMDTerminal(const SIMDTerminal & other) : _e1(other._e1) { }
+        UME_SIMD_FUNC_ATTRIB SIMDTerminal(SIMDTerminal && other) : _e1(other._e1) { } //: _e1(value._e1) {}
+        UME_SIMD_FUNC_ATTRIB SIMDTerminal(const SIMDTerminal & other) : _e1(other._e1) { }
 
-        UME_FORCE_INLINE SIMD_TYPE evaluate_SIMD(int index)
+        UME_SIMD_FUNC_ATTRIB SIMD_TYPE evaluate_SIMD(int index)
         {
             return _e1;
         }
 
-        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, 1> evaluate_scalar(int index)
+        UME_SIMD_FUNC_ATTRIB UME::SIMD::SIMDVec<SCALAR_TYPE, 1> evaluate_scalar(int index)
         {
             alignas(SIMD_TYPE::ALIGNMENT()) SCALAR_TYPE raw[SIMD_STRIDE];
             _e1.storea(raw);
@@ -76,18 +76,18 @@ namespace VECTOR {
         //SCALAR_TYPE * _e1;
 
     public:
-        UME_FORCE_INLINE SIMDTerminal<bool, SIMD_STRIDE>(bool & value) : _e1(value) {}
-        UME_FORCE_INLINE SIMDTerminal<bool, SIMD_STRIDE>(bool && value) : _e1(value) {}
+        UME_SIMD_FUNC_ATTRIB SIMDTerminal<bool, SIMD_STRIDE>(bool & value) : _e1(value) {}
+        UME_SIMD_FUNC_ATTRIB SIMDTerminal<bool, SIMD_STRIDE>(bool && value) : _e1(value) {}
 
-        UME_FORCE_INLINE SIMDTerminal<bool, SIMD_STRIDE>(SIMDTerminal<bool, SIMD_STRIDE> && other) : _e1(other._e1) { } //: _e1(value._e1) {}
-        UME_FORCE_INLINE SIMDTerminal<bool, SIMD_STRIDE>(const SIMDTerminal<bool, SIMD_STRIDE> & other) : _e1(other._e1) { }
+        UME_SIMD_FUNC_ATTRIB SIMDTerminal<bool, SIMD_STRIDE>(SIMDTerminal<bool, SIMD_STRIDE> && other) : _e1(other._e1) { } //: _e1(value._e1) {}
+        UME_SIMD_FUNC_ATTRIB SIMDTerminal<bool, SIMD_STRIDE>(const SIMDTerminal<bool, SIMD_STRIDE> & other) : _e1(other._e1) { }
 
-        UME_FORCE_INLINE MASK_TYPE evaluate_SIMD(int index)
+        UME_SIMD_FUNC_ATTRIB MASK_TYPE evaluate_SIMD(int index)
         {
             return _e1;
         }
 
-        UME_FORCE_INLINE UME::SIMD::SIMDVecMask<1> evaluate_scalar(int index)
+        UME_SIMD_FUNC_ATTRIB UME::SIMD::SIMDVecMask<1> evaluate_scalar(int index)
         {
             bool raw[SIMD_STRIDE];
             _e1.store(raw);

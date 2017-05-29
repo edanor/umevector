@@ -78,7 +78,7 @@ namespace VECTOR {
                 _value = A.hmax();
                 for (int i = _e1.LOOP_PEEL_OFFSET(); i < _e1.LENGTH(); i++) {
                     auto t1 = _e1.template evaluate<1>(i);
-                    _value = t1.hmax(_value);
+                    _value = t1.hmax(SCALAR_TYPE(_value));
                 }
                 _evaluated = true;
             }

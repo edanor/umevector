@@ -48,22 +48,22 @@ namespace VECTOR {
         E1 _e1;
         E2 _e2;
 
-        UME_FORCE_INLINE int LENGTH() const { return std::max(_e1.LENGTH(), _e2.LENGTH()); }
-        UME_FORCE_INLINE int LOOP_COUNT() const { return _e1.LENGTH() / SIMD_STRIDE; }
-        UME_FORCE_INLINE int PEEL_COUNT() const { return _e1.LENGTH() % SIMD_STRIDE; }
-        UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*SIMD_STRIDE; }
+        UME_FUNC_ATTRIB int LENGTH() const { return _e1.LENGTH() > _e2.LENGTH() ? _e1.LENGTH() : _e2.LENGTH(); }
+        UME_FUNC_ATTRIB int LOOP_COUNT() const { return _e1.LENGTH() / SIMD_STRIDE; }
+        UME_FUNC_ATTRIB int PEEL_COUNT() const { return _e1.LENGTH() % SIMD_STRIDE; }
+        UME_FUNC_ATTRIB int LOOP_PEEL_OFFSET() const { return LOOP_COUNT()*SIMD_STRIDE; }
 
-        UME_FORCE_INLINE ArithmeticADDExpression(E1 e1, E2 e2) :
+        UME_FUNC_ATTRIB ArithmeticADDExpression(E1 e1, E2 e2) :
             _e1(e1), _e2(e2) {}
 
-        UME_FORCE_INLINE ArithmeticADDExpression(ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> & origin) :
+        UME_FUNC_ATTRIB ArithmeticADDExpression(ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> & origin) :
             _e1(origin._e1), _e2(origin._e2) {}
 
-        UME_FORCE_INLINE ArithmeticADDExpression(ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> && origin) :
+        UME_FUNC_ATTRIB ArithmeticADDExpression(ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2> && origin) :
             _e1(std::move(origin._e1)), _e2(std::move(origin._e2)) {}
 
         template<int N>
-        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index)
+        UME_FUNC_ATTRIB UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index)
         {
             auto t0 = _e1.template evaluate<N>(index);
             auto t1 = _e2.template evaluate<N>(index);
@@ -71,7 +71,7 @@ namespace VECTOR {
         }
 
         template<int N>
-        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(UME::SIMD::SIMDVec<uint32_t, N> & indices)
+        UME_FUNC_ATTRIB UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(UME::SIMD::SIMDVec<uint32_t, N> & indices)
         {
             auto t0 = _e1.template evaluate<N>(indices);
             auto t1 = _e2.template evaluate<N>(indices);
@@ -85,29 +85,29 @@ namespace VECTOR {
         typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE FTOU_EXPRESSION_TYPE;
         typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, ArithmeticADDExpression<SCALAR_TYPE, SIMD_STRIDE, E1, E2>>::CAST_TYPE FTOI_EXPRESSION_TYPE;
 
-        UME_FORCE_INLINE UTOI_EXPRESSION_TYPE utoi() {
+        UME_FUNC_ATTRIB UTOI_EXPRESSION_TYPE utoi() {
             return UTOI_EXPRESSION_TYPE(*this);
         }
-        UME_FORCE_INLINE UTOF_EXPRESSION_TYPE utof() {
+        UME_FUNC_ATTRIB UTOF_EXPRESSION_TYPE utof() {
             return UTOF_EXPRESSION_TYPE(*this);
         }
-        UME_FORCE_INLINE ITOU_EXPRESSION_TYPE itou() {
+        UME_FUNC_ATTRIB ITOU_EXPRESSION_TYPE itou() {
             return ITOU_EXPRESSION_TYPE(*this);
         }
-        UME_FORCE_INLINE ITOF_EXPRESSION_TYPE itof() {
+        UME_FUNC_ATTRIB ITOF_EXPRESSION_TYPE itof() {
             return ITOF_EXPRESSION_TYPE(*this);
         }
-        UME_FORCE_INLINE FTOU_EXPRESSION_TYPE ftou() {
+        UME_FUNC_ATTRIB FTOU_EXPRESSION_TYPE ftou() {
             return FTOU_EXPRESSION_TYPE(*this);
         }
-        UME_FORCE_INLINE FTOI_EXPRESSION_TYPE ftoi() {
+        UME_FUNC_ATTRIB FTOI_EXPRESSION_TYPE ftoi() {
             return FTOI_EXPRESSION_TYPE(*this);
         }
     };
 
     // Operators to handle "Exp1 + Exp2" expressions.
     template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2> operator+ (
+    UME_FUNC_ATTRIB ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2> operator+ (
         ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> & srcA,
         ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
     {
@@ -116,7 +116,7 @@ namespace VECTOR {
 
     // Operators to handle "Exp1 + RVALUE Exp2" expressions.
     template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2> operator+ (
+    UME_FUNC_ATTRIB ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2> operator+ (
         ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> & srcA,
         ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> && srcB)
     {
@@ -125,7 +125,7 @@ namespace VECTOR {
 
     // Operators to handle "RVALUE Exp1 + Exp2" expressions.
     template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2> operator+ (
+    UME_FUNC_ATTRIB ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2> operator+ (
         ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> && srcA,
         ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
     {
@@ -134,7 +134,7 @@ namespace VECTOR {
 
     // Operators to handle "RVALUE Exp1 + RVALUE Exp2" expressions.
     template<typename SCALAR_TYPE, typename E1, typename E2>
-    UME_FORCE_INLINE ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2> operator+ (
+    UME_FUNC_ATTRIB ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1, E2> operator+ (
         ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E1> && srcA,
         ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> && srcB)
     {
@@ -143,7 +143,7 @@ namespace VECTOR {
 
     // Operators to handle "Exp1 + scalar" expressions.
     template<typename SCALAR_TYPE, typename E1>
-    UME_FORCE_INLINE ArithmeticADDExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE(), E1, Scalar<SCALAR_TYPE, E1::GET_SIMD_STRIDE()> > operator+ (
+    UME_FUNC_ATTRIB ArithmeticADDExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE(), E1, Scalar<SCALAR_TYPE, E1::GET_SIMD_STRIDE()> > operator+ (
         ArithmeticExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE(), E1> & srcA,
         SCALAR_TYPE srcB)
     {
@@ -154,7 +154,7 @@ namespace VECTOR {
 
     // Operators to handle "RVALUE Exp1 + scalar" expressions.
     template<typename SCALAR_TYPE, typename E1>
-    UME_FORCE_INLINE ArithmeticADDExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE(), E1, Scalar<SCALAR_TYPE, E1::GET_SIMD_STRIDE()> > operator+ (
+    UME_FUNC_ATTRIB ArithmeticADDExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE(), E1, Scalar<SCALAR_TYPE, E1::GET_SIMD_STRIDE()> > operator+ (
         ArithmeticExpression<SCALAR_TYPE, E1::GET_SIMD_STRIDE(), E1> && srcA,
         SCALAR_TYPE srcB)
     {
@@ -165,7 +165,7 @@ namespace VECTOR {
 
     // Operators to handle "scalar + Exp1" expressions.
     template<typename SCALAR_TYPE, typename E2>
-    UME_FORCE_INLINE ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), Scalar<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2> operator+ (
+    UME_FUNC_ATTRIB ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), Scalar<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2> operator+ (
         SCALAR_TYPE srcA,
         ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> & srcB)
     {
@@ -176,7 +176,7 @@ namespace VECTOR {
 
     // Operators to handle "scalar + RVALUE Exp1" expressions.
     template<typename SCALAR_TYPE, typename E2>
-    UME_FORCE_INLINE ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), Scalar<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2> operator+ (
+    UME_FUNC_ATTRIB ArithmeticADDExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), Scalar<SCALAR_TYPE, E2::GET_SIMD_STRIDE()>, E2> operator+ (
         SCALAR_TYPE srcA,
         ArithmeticExpression<SCALAR_TYPE, E2::GET_SIMD_STRIDE(), E2> && srcB)
     {

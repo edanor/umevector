@@ -46,7 +46,7 @@ namespace VECTOR {
     class FloatExpressionInterface :
         public ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE> {
     protected:
-        ~FloatExpressionInterface() {}
+        UME_FUNC_ATTRIB ~FloatExpressionInterface() {}
 
     public:
         // Can we make this private?

@@ -22,7 +22,7 @@ public:
         typename DST_T_2,
         typename EXP_T_1,
         typename EXP_T_2>
-    UME_FORCE_INLINE DyadicEvaluator(
+    inline DyadicEvaluator(
         DST_T_1 & dst1,
         ArithmeticExpression<SCALAR_T_1, SIMD_STRIDE, EXP_T_1> & exp1,
         DST_T_2 & dst2,
@@ -54,7 +54,7 @@ public:
         int SIMD_STRIDE,
         typename EXP_T_1,
         typename EXP_T_2>
-    UME_FORCE_INLINE DyadicEvaluator(
+    inline DyadicEvaluator(
             SCALAR_T_1 * dst1,
             ArithmeticExpression<SCALAR_T_1, SIMD_STRIDE, EXP_T_1> & exp1,
             SCALAR_T_2 * dst2,
@@ -101,7 +101,7 @@ public:
         typename DST_T_1,
         typename EXP_T_1,
         typename EXP_T_2>
-    UME_FORCE_INLINE DyadicEvaluator(
+    inline DyadicEvaluator(
             DST_T_1 & dst1,
             ArithmeticExpression<SCALAR_T_1, SIMD_STRIDE, EXP_T_1> & exp1,
             SCALAR_T_2 * dst2,

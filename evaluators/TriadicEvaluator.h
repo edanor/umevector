@@ -25,7 +25,7 @@ public:
     template<typename E1>
     UME_FORCE_INLINE ExpressionDepth(E1 & exp) {
         assert(false);
-        static_assert(false, "Error");
+        //static_assert(false, "Error");
     }
 
     UME_FORCE_INLINE ExpressionDepth(UME::VECTOR::Scalar<SCALAR_TYPE, SIMD_STRIDE> & exp) {
@@ -139,7 +139,7 @@ public:
         value = false;
     }
 
-    template<typename SCALAR_TYPE, int VEC_LEN>
+    template<typename SCALAR_TYPE>
     UME_FORCE_INLINE CompareExpressions(Scalar<SCALAR_TYPE, SIMD_STRIDE> & exp1, Scalar<SCALAR_TYPE, SIMD_STRIDE> & exp2) {
         value = exp1._e1 == exp2._e1;
     }
@@ -220,7 +220,7 @@ public:
     }
 
     // CMPLT
-    template<typename SCALAR_TYPE, typename E1, typename E2>
+    template<typename E1, typename E2>
     UME_FORCE_INLINE CompareExpressions(
         LogicalCMPLTExpression<SIMD_STRIDE, E1, E2> & exp1,
         LogicalCMPLTExpression<SIMD_STRIDE, E1, E2> & exp2)
@@ -232,7 +232,7 @@ public:
     }
 
     // CMPGE
-    template<typename SCALAR_TYPE, typename E1, typename E2>
+    template<typename E1, typename E2>
     UME_FORCE_INLINE CompareExpressions(
         LogicalCMPGEExpression<SIMD_STRIDE, E1, E2> & exp1,
         LogicalCMPGEExpression<SIMD_STRIDE, E1, E2> & exp2)
@@ -251,7 +251,7 @@ public:
     {
         CompareExpressions comp1(exp1._e1, exp2._e1);
         CompareExpressions comp2(exp1._e2, exp2._e2);
-        CompareExpressions comp2(exp1._e3, exp2._e3);
+        CompareExpressions comp3(exp1._e3, exp2._e3);
 
         value = comp1.value && comp2.value && comp3.value;
     }
@@ -271,7 +271,7 @@ public:
         typename EXP1,
         typename EXP2,
         typename EXP3>
-    UME_FORCE_INLINE TriadicEvaluator (
+    inline TriadicEvaluator (
         VEC1_T & dst1,
         UME::VECTOR::ArithmeticExpression<SCALAR_TYPE1, SIMD_STRIDE, EXP1> & exp1,
         VEC2_T & dst2,

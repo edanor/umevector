@@ -45,11 +45,11 @@ namespace VECTOR {
         int mGatherStride;
 
     public:
-        UME_FORCE_INLINE int LENGTH() const { return VEC_LEN; }
-        UME_FORCE_INLINE int LOOP_COUNT() const { return VEC_LEN / SIMD_STRIDE; }
-        UME_FORCE_INLINE int PEEL_COUNT() const { return VEC_LEN % SIMD_STRIDE; }
-        UME_FORCE_INLINE int LOOP_PEEL_OFFSET() const { return LOOP_COUNT() * SIMD_STRIDE; }
-        //UME_FORCE_INLINE int SIMD_STRIDE() const { return SIMD_STRIDE; }
+        UME_FUNC_ATTRIB int LENGTH() const { return VEC_LEN; }
+        UME_FUNC_ATTRIB int LOOP_COUNT() const { return VEC_LEN / SIMD_STRIDE; }
+        UME_FUNC_ATTRIB int PEEL_COUNT() const { return VEC_LEN % SIMD_STRIDE; }
+        UME_FUNC_ATTRIB int LOOP_PEEL_OFFSET() const { return LOOP_COUNT() * SIMD_STRIDE; }
+        //UME_FUNC_ATTRIB int SIMD_STRIDE() const { return SIMD_STRIDE; }
 
         SCALAR_TYPE *elements;
 
@@ -58,43 +58,43 @@ namespace VECTOR {
 
     public:
         // pointer should be properly aligned!
-        UME_FORCE_INLINE IntVector(SCALAR_TYPE *p) : mGatherStride(1), elements(p), ownsMemory(false) {
+        UME_FUNC_ATTRIB IntVector(SCALAR_TYPE *p) : mGatherStride(1), elements(p), ownsMemory(false) {
         }
 
-        UME_FORCE_INLINE IntVector(SCALAR_TYPE *p, int gatherStride) : mGatherStride(gatherStride), elements(p), ownsMemory(false) {
+        UME_FUNC_ATTRIB IntVector(SCALAR_TYPE *p, int gatherStride) : mGatherStride(gatherStride), elements(p), ownsMemory(false) {
         }
 
-        UME_FORCE_INLINE IntVector() :  mGatherStride(1), ownsMemory(true){
+        UME_FUNC_ATTRIB IntVector() :  mGatherStride(1), ownsMemory(true){
             Allocator alloc;
             elements = alloc.allocate(sizeof(SCALAR_TYPE)*VEC_LEN);
         }
 
-        UME_FORCE_INLINE IntVector(IntVector & origin) {
+        UME_FUNC_ATTRIB IntVector(IntVector & origin) {
             elements = origin.elements;
             // TODO: we need a reference counter to manage memory properly in this case!
             ownsMemory = false;
             mGatherStride = origin.mGatherStride;
         }
 
-        UME_FORCE_INLINE IntVector(IntVector && origin) {
+        UME_FUNC_ATTRIB IntVector(IntVector && origin) {
             elements = origin.elements;
             ownsMemory = origin.ownsMemory;
             mGatherStride = origin.mGatherStride;
         }
         
-        UME_FORCE_INLINE ~IntVector() {
+        UME_FUNC_ATTRIB ~IntVector() {
             if(ownsMemory) {
                 Allocator alloc;
                 alloc.deallocate(elements, sizeof(SCALAR_TYPE)*VEC_LEN);
             }
         }
 /*
-        UME_FORCE_INLINE IntVector(IntVector && origin) {
+        UME_FUNC_ATTRIB IntVector(IntVector && origin) {
             for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
         }*/
 
         template<typename E>
-        UME_FORCE_INLINE IntVector(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
+        UME_FUNC_ATTRIB IntVector(ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -127,7 +127,7 @@ namespace VECTOR {
         // Every expression evaluation starts with loading values from memory 
         // storage into proper SIMD vectors.
         template<int N>
-        UME_FORCE_INLINE UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index) const {
+        UME_FUNC_ATTRIB UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index) const {
             UME::SIMD::SIMDVec<SCALAR_TYPE, N> t0;
             if(mGatherStride == 1) {
                 t0.load(&elements[index]);
@@ -142,7 +142,7 @@ namespace VECTOR {
         // Some operations require implicit assignment. This assignment needs to
         // be propagated from evaluated register, back to vector data localization.
         template<int N>
-        UME_FORCE_INLINE void update(UME::SIMD::SIMDVec<SCALAR_TYPE, N> & x, int index) {
+        UME_FUNC_ATTRIB void update(UME::SIMD::SIMDVec<SCALAR_TYPE, N> & x, int index) {
             if(mGatherStride == 1) {
                 x.store(&elements[index]);
             }
@@ -154,7 +154,7 @@ namespace VECTOR {
         // Cast operator to convert from static to dynamic form. Because of
         // different allocation method, the data needs to be copied from stack-organized
         // to heap-organized. 
-        UME_FORCE_INLINE operator IntVector<SCALAR_TYPE, UME_DYNAMIC_LENGTH, SIMD_STRIDE>() {
+        UME_FUNC_ATTRIB operator IntVector<SCALAR_TYPE, UME_DYNAMIC_LENGTH, SIMD_STRIDE>() {
             // TODO:
             // Create dynamic Row vector, and copy data
             IntVector<SCALAR_TYPE, UME_DYNAMIC_LENGTH, SIMD_STRIDE> temp(LENGTH());
@@ -163,18 +163,18 @@ namespace VECTOR {
         }
 
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
-        UME_FORCE_INLINE IntVector& operator= (IntVector & origin) {
+        UME_FUNC_ATTRIB IntVector& operator= (IntVector & origin) {
             for (int i = 0; i < LENGTH(); i++) elements[i*mGatherStride] = origin.elements[i*origin.mGatherStride];
             return *this;
         }
 
-        UME_FORCE_INLINE IntVector& operator= (IntVector && origin) {
+        UME_FUNC_ATTRIB IntVector& operator= (IntVector && origin) {
             for (int i = 0; i < LENGTH(); i++) elements[i*mGatherStride] = origin.elements[i*origin.mGatherStride];
             return *this;
         }
 
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
-        UME_FORCE_INLINE IntVector& operator= (IntVector<SCALAR_TYPE, UME_DYNAMIC_LENGTH, SIMD_STRIDE> & origin) {
+        UME_FUNC_ATTRIB IntVector& operator= (IntVector<SCALAR_TYPE, UME_DYNAMIC_LENGTH, SIMD_STRIDE> & origin) {
             assert(LENGTH() == origin.LENGTH()); // Cannot re-allocate static
             for (int i = 0; i < LENGTH(); i++) elements[i*mGatherStride] = origin.elements[i*origin.gatherStride()];
             return *this;
@@ -183,7 +183,7 @@ namespace VECTOR {
         // Initialize with expression template evaluation. This is necessary for using
         // RVALUE expressions on the right hand of assignment operator.
         template<typename E>
-        UME_FORCE_INLINE IntVector& operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
+        UME_FUNC_ATTRIB IntVector& operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -217,7 +217,7 @@ namespace VECTOR {
         // Initialize with expression template evaluation. This is necessary for using
         // 'auto' variable on the right hand of assignment operator.
         template<typename E>
-        UME_FORCE_INLINE IntVector& operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> & vec)
+        UME_FUNC_ATTRIB IntVector& operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> & vec)
         {
             // Need to reinterpret vec to E to propagate to proper expression
             // evaluator.
@@ -246,7 +246,7 @@ namespace VECTOR {
 
         // Broadcast scalar value to all elements of the vector.
         // TODO: also should be done using lazy evaluation
-        UME_FORCE_INLINE IntVector& operator= (SCALAR_TYPE x) {
+        UME_FUNC_ATTRIB IntVector& operator= (SCALAR_TYPE x) {
             UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0(x);
             if(mGatherStride == 1) {
                 for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
@@ -268,7 +268,7 @@ namespace VECTOR {
 
         // Copy values from memory location
         // TODO: can this be done using lazy evaluation?
-        UME_FORCE_INLINE IntVector& operator= (SCALAR_TYPE* x) {
+        UME_FUNC_ATTRIB IntVector& operator= (SCALAR_TYPE* x) {
             for (int i = 0; i < LENGTH(); i++) {
                 elements[i*mGatherStride] = x[i];
             }
