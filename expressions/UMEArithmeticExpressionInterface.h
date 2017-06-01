@@ -1645,12 +1645,12 @@ namespace VECTOR {
         UME_FUNC_ATTRIB LogicalCMPGTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            Scalar<bool, SIMD_STRIDE>> cmpgt(SCALAR_TYPE srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> cmpgt(SCALAR_TYPE srcB)
         {
             return LogicalCMPGTExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                Scalar<bool, SIMD_STRIDE>>((*this), Scalar<bool, SIMD_STRIDE>(srcB));
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>>((*this), Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>
@@ -1668,12 +1668,12 @@ namespace VECTOR {
         UME_FUNC_ATTRIB LogicalCMPLTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            Scalar<bool, SIMD_STRIDE>> cmplt(SCALAR_TYPE srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> cmplt(SCALAR_TYPE srcB)
         {
             return LogicalCMPLTExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                Scalar<bool, SIMD_STRIDE>>((*this), Scalar<bool, SIMD_STRIDE>(srcB));
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>>((*this), Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>
@@ -1691,12 +1691,12 @@ namespace VECTOR {
         UME_FUNC_ATTRIB LogicalCMPGEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            Scalar<bool, SIMD_STRIDE>> cmpge(SCALAR_TYPE srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> cmpge(SCALAR_TYPE srcB)
         {
             return LogicalCMPGEExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                Scalar<bool, SIMD_STRIDE>>((*this), Scalar<bool, SIMD_STRIDE>(srcB));
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>>((*this), Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>
@@ -1714,12 +1714,12 @@ namespace VECTOR {
         UME_FUNC_ATTRIB LogicalCMPLEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            Scalar<bool, SIMD_STRIDE>> cmple(SCALAR_TYPE srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> cmple(SCALAR_TYPE srcB)
         {
             return LogicalCMPLEExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                Scalar<bool, SIMD_STRIDE>>((*this), Scalar<bool, SIMD_STRIDE>(srcB));
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>>((*this), Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>
@@ -1737,12 +1737,12 @@ namespace VECTOR {
         UME_FUNC_ATTRIB LogicalCMPEQExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            Scalar<bool, SIMD_STRIDE>> cmpeq(SCALAR_TYPE srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> cmpeq(SCALAR_TYPE srcB)
         {
             return LogicalCMPEQExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                Scalar<bool, SIMD_STRIDE>>((*this), Scalar<bool, SIMD_STRIDE>(srcB));
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>>((*this), Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>
@@ -1760,12 +1760,12 @@ namespace VECTOR {
         UME_FUNC_ATTRIB LogicalCMPNEExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION,
-            Scalar<bool, SIMD_STRIDE>> cmpne(SCALAR_TYPE srcB)
+            Scalar<SCALAR_TYPE, SIMD_STRIDE>> cmpne(SCALAR_TYPE srcB)
         {
             return LogicalCMPNEExpression<
                 SIMD_STRIDE,
                 DERIVED_EXPRESSION,
-                Scalar<bool, SIMD_STRIDE>>((*this), Scalar<bool, SIMD_STRIDE>(srcB));
+                Scalar<SCALAR_TYPE, SIMD_STRIDE>>((*this), Scalar<SCALAR_TYPE, SIMD_STRIDE>(srcB));
         }
 
         template<typename T2>

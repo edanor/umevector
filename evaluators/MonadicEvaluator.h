@@ -25,12 +25,12 @@ namespace VECTOR {
 
             for (int i = 0; i < reinterpret_exp.LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 auto t0 = reinterpret_exp.template evaluate<SIMD_STRIDE>(i);
-                dst.update<SIMD_STRIDE>(t0, i);
+                dst.template update<SIMD_STRIDE>(t0, i);
             }
 
             for (int i = reinterpret_exp.LOOP_PEEL_OFFSET(); i < reinterpret_exp.LENGTH(); i++) {
                 auto t1 = reinterpret_exp.template evaluate<1>(i);
-                dst.update<1>(t1, i);
+                dst.template update<1>(t1, i);
             }
 
             // Dispose of the expression and release all temporary storage.
@@ -89,15 +89,14 @@ namespace VECTOR {
             for (int i = 0; i < reinterpret_exp.LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
                 auto t0 = reinterpret_exp.template evaluate<SIMD_STRIDE>(i);
                 auto t1 = reinterpret_indices.template evaluate<SIMD_STRIDE>(i);
-                dst.update<SIMD_STRIDE>(t0, t1);
+                dst.template update<SIMD_STRIDE>(t0, t1);
             }
             for (int i = reinterpret_indices.LOOP_PEEL_OFFSET(); i < reinterpret_indices.LENGTH(); i += 1) {
                 auto t0 = reinterpret_exp.template evaluate<1>(i);
                 auto t1 = reinterpret_indices.template evaluate<1>(i);
-                dst.update<1>(t0, t1);
+                dst.template <update<1>(t0, t1);
             }
         }
     };
-
 }
 }

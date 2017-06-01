@@ -54,7 +54,7 @@ namespace VECTOR {
         typedef UME::SIMD::SIMDVec<SCALAR_TYPE, 1>      SIMD1_TYPE;
         typedef UME::SIMD::SIMDVecMask<SIMD_STRIDE>          MASK_TYPE;
         typedef UME::SIMD::SIMDVecMask<1>               MASK1_TYPE;
-        typedef typename UME::SIMD::SIMDTraits<SIMD_TYPE>::SCALAR_FLOAT_T SCALAR_FLOAT_TYPE;
+        //typedef typename UME::SIMD::SIMDTraits<SIMD_TYPE>::SCALAR_FLOAT_T SCALAR_FLOAT_TYPE;
 
 
         typedef typename ITOUTrait<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>::CAST_TYPE ITOU_EXPRESSION_TYPE;

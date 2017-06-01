@@ -48,7 +48,7 @@ namespace VECTOR {
         void dispose() {}
 
 
-        UME_FORCE_INLINE LogicalLNOTExpression<
+        UME_FUNC_ATTRIB LogicalLNOTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION // this expression
             > lnot()
@@ -59,96 +59,8 @@ namespace VECTOR {
                 > (*this);
         }
 
-        UME_FORCE_INLINE LogicalISFINExpression<
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION // this expression
-            > isfin()
-        {
-            return LogicalISFINExpression<
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION
-                > (*this);
-        }
-
-        UME_FORCE_INLINE LogicalISINFExpression<
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION // this expression
-            > isinf()
-        {
-            return LogicalISINFExpression<
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION
-                > (*this);
-        }
-
-        UME_FORCE_INLINE LogicalISANExpression<
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION // this expression
-            > isan()
-        {
-            return LogicalISANExpression<
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION
-                > (*this);
-        }
-
-        UME_FORCE_INLINE LogicalISNANExpression<
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION // this expression
-            > isnan()
-        {
-            return LogicalISNANExpression<
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION
-                > (*this);
-        }
-
-        UME_FORCE_INLINE LogicalISNORMExpression<
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION // this expression
-            > isnorm()
-        {
-            return LogicalISNORMExpression<
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION
-                > (*this);
-        }
-
-        UME_FORCE_INLINE LogicalISSUBExpression<
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION // this expression
-            > issub()
-        {
-            return LogicalISSUBExpression<
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION
-                > (*this);
-        }
-
-        UME_FORCE_INLINE LogicalISZEROExpression<
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION // this expression
-            > iszero()
-        {
-            return LogicalISZEROExpression<
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION
-                > (*this);
-        }
-
-        UME_FORCE_INLINE LogicalISZEROSUBExpression<
-            SIMD_STRIDE,
-            DERIVED_EXPRESSION // this expression
-            > iszerosub()
-        {
-            return LogicalISZEROSUBExpression<
-                SIMD_STRIDE,
-                DERIVED_EXPRESSION
-                > (*this);
-        }
-
         template<typename T2>
-        UME_FORCE_INLINE LogicalLANDExpression<
+        UME_FUNC_ATTRIB LogicalLANDExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T2> land(T2 srcB)
@@ -159,7 +71,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE LogicalLANDExpression<
+        UME_FUNC_ATTRIB LogicalLANDExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             Scalar<bool, SIMD_STRIDE>> land(bool srcB)
@@ -171,7 +83,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE LogicalLORExpression<
+        UME_FUNC_ATTRIB LogicalLORExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T2> lor(T2 srcB)
@@ -182,7 +94,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE LogicalLORExpression<
+        UME_FUNC_ATTRIB LogicalLORExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             Scalar<bool, SIMD_STRIDE>> lor(bool srcB)
@@ -194,7 +106,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE LogicalLXORExpression<
+        UME_FUNC_ATTRIB LogicalLXORExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T2> lxor(T2 srcB)
@@ -205,7 +117,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE LogicalLXORExpression<
+        UME_FUNC_ATTRIB LogicalLXORExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             Scalar<bool, SIMD_STRIDE>> lxor(bool srcB)
@@ -217,7 +129,7 @@ namespace VECTOR {
         }
 
         template<typename T2>
-        UME_FORCE_INLINE LogicalLANDNOTExpression<
+        UME_FUNC_ATTRIB LogicalLANDNOTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             T2> landnot(T2 srcB)
@@ -228,7 +140,7 @@ namespace VECTOR {
                 T2> (*this, srcB);
         }
 
-        UME_FORCE_INLINE LogicalLANDNOTExpression<
+        UME_FUNC_ATTRIB LogicalLANDNOTExpression<
             SIMD_STRIDE,
             DERIVED_EXPRESSION, // this expression
             Scalar<bool, SIMD_STRIDE>> landnot(bool srcB)

@@ -62,6 +62,11 @@ namespace VECTOR {
 
         UME_FUNC_ATTRIB int gatherStride() const { return mGatherStride; }
 
+        // Used when dealing with linearly spaced vectors
+        bool mIsLinearlySpaced;    // vector is linearly spaced (e.g. [1, 3, 5, 7...])
+        SCALAR_TYPE mLinearInitValue;
+        SCALAR_TYPE mLinearIncrementValue;
+
     private:
         // Prohibit invalid initialization.
         UME_FUNC_ATTRIB IntVector() {} 
@@ -69,14 +74,27 @@ namespace VECTOR {
     public:
         // p should be properly aligned!
         UME_FUNC_ATTRIB IntVector(int length, SCALAR_TYPE *values) :
-            mLength(length), mGatherStride(1), elements(values), ownsMemory(false) {
-        }
+            mLength(length), 
+            mGatherStride(1),
+            elements(values),
+            ownsMemory(false),
+            mIsLinearlySpaced(false)
+        {}
 
         UME_FUNC_ATTRIB IntVector(int length, SCALAR_TYPE *values, int gatherStride) :
-            mLength(length), mGatherStride(gatherStride), elements(values), ownsMemory(false) {
-        }
+            mLength(length),
+            mGatherStride(gatherStride),
+            elements(values),
+            ownsMemory(false),
+            mIsLinearlySpaced(false)
+        {}
 
-        UME_FUNC_ATTRIB IntVector(int length) : mLength(length), mGatherStride(1), ownsMemory(true) {
+        UME_FUNC_ATTRIB IntVector(int length) :
+            mLength(length),
+            mGatherStride(1),
+            ownsMemory(true),
+            mIsLinearlySpaced(false)
+        {
             Allocator alloc;
             elements = alloc.allocate(sizeof(SCALAR_TYPE)*length);
         }
@@ -86,6 +104,9 @@ namespace VECTOR {
             mLength = origin.mLength;
             ownsMemory = false;
             mGatherStride = origin.mGatherStride;
+            mIsLinearlySpaced = origin.mIsLinearlySpaced;
+            mLinearInitValue = origin.mLinearInitValue;
+            mLinearIncrementValue = origin.mLinearIncrementValue;
         }
 
         UME_FUNC_ATTRIB IntVector(IntVector && origin) {
@@ -94,7 +115,20 @@ namespace VECTOR {
             origin.elements = NULL;
             ownsMemory = origin.ownsMemory;
             mGatherStride = origin.mGatherStride;
+            mIsLinearlySpaced = origin.mIsLinearlySpaced;
+            mLinearInitValue = origin.mLinearInitValue;
+            mLinearIncrementValue = origin.mLinearIncrementValue;
         }
+
+        // Constructor to populate vector with incremented values.
+        UME_FUNC_ATTRIB IntVector(int length, SCALAR_TYPE firstValue, SCALAR_TYPE increment) : 
+            elements(nullptr), // This constructor does not require any allocated memory
+            mLength(length),
+            mGatherStride(1),
+            mIsLinearlySpaced(true),
+            mLinearInitValue(firstValue),
+            mLinearIncrementValue(increment)
+        {}
 
         UME_FUNC_ATTRIB ~IntVector() {
             if(ownsMemory)
@@ -110,12 +144,33 @@ namespace VECTOR {
         template<int N>
         UME_FUNC_ATTRIB UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(int index) const {
             UME::SIMD::SIMDVec<SCALAR_TYPE, N> t0;
-            if(mGatherStride == 1) {
-                t0.load(&elements[index]);
+            if (mIsLinearlySpaced) {
+
+                assert(mIsLinearlySpaced);
+                alignas(UME::SIMD::SIMDVec<SCALAR_TYPE, N>::alignment()) SCALAR_TYPE raw[N];
+                for (int i = 0; i < N; i++) {
+                    raw[i] = SCALAR_TYPE(i)*mLinearIncrementValue;
+                }
+                t0.loada(raw);
+                t0.adda(SCALAR_TYPE(index)*mLinearIncrementValue + mLinearInitValue);
             }
             else {
-                t0.gatheru(&elements[index*mGatherStride], mGatherStride);
+                if (mGatherStride == 1)
+                {
+                    t0.load(&elements[index]);
+                }
+                else {
+                    t0.gatheru(&elements[index*mGatherStride], mGatherStride);
+                }
             }
+            return t0;
+        }
+
+        template<int N>
+        UME_FUNC_ATTRIB UME::SIMD::SIMDVec<SCALAR_TYPE, N> evaluate(UME::SIMD::SIMDVec<uint32_t, N> & indices) {
+            assert(!mIsLinearlySpaced);
+            UME::SIMD::SIMDVec<SCALAR_TYPE, N> t0;
+            t0.gather(&elements[0], indices);
             return t0;
         }
 
@@ -132,14 +187,30 @@ namespace VECTOR {
             }
         }
 
+        template<int N>
+        UME_FUNC_ATTRIB void update(UME::SIMD::SIMDVec<SCALAR_TYPE, N> & x, UME::SIMD::SIMDVec<uint32_t, N> & scatterVec) {
+            assert(!mIsLinearlySpaced);
+            x.scatter(&elements[0], scatterVec);
+        }
+
         // TODO: assignment should generate an ASSIGN expression to do lazy evaluation
         UME_FUNC_ATTRIB IntVector& operator= (IntVector & origin) {
-            for (int i = 0; i < LENGTH(); i++) elements[i*mGatherStride] = origin.elements[i*origin.mGatherStride];
+            if(mGatherStride == 1) {
+                for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
+            }
+            else {
+                for (int i = 0; i < LENGTH(); i++) elements[i*mGatherStride] = origin.elements[i*origin.mGatherStride];
+            }
             return *this;
         }
 
         UME_FUNC_ATTRIB IntVector& operator= (IntVector&& origin) {
-            for (int i = 0; i < LENGTH(); i++) elements[i*mGatherStride] = origin.elements[i*origin.mGatherStride];
+            if(mGatherStride == 1) {
+                for (int i = 0; i < LENGTH(); i++) elements[i] = origin.elements[i];
+            }
+            else {
+                for (int i = 0; i < LENGTH(); i++) elements[i*mGatherStride] = origin.elements[i*origin.mGatherStride];
+            }
             return *this;
         }
 
@@ -152,28 +223,29 @@ namespace VECTOR {
             E & reinterpret_vec = static_cast<E &>(vec);
             if(mGatherStride == 1) {
                 for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
-                    UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
+                    auto t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
                     t0.store(&elements[i]);
                 }
 
                 for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                    UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.template evaluate<1>(i);
+                    auto t1 = reinterpret_vec.template evaluate<1>(i);
                     t1.store(&elements[i]);
                 }
             }
             else {
                 for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
-                    UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
+                    auto t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
                     t0.scatteru(&elements[i*mGatherStride], mGatherStride);
                 }
 
                 for (int i = LOOP_PEEL_OFFSET(); i < LENGTH(); i++) {
-                    UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.template evaluate<1>(i);
+                    auto t1 = reinterpret_vec.template evaluate<1>(i);
                     t1.store(&elements[i*mGatherStride]);
                 }
             }
             return *this;
         }
+
         template<typename E>
         UME_FUNC_ATTRIB IntVector<SCALAR_TYPE, UME_DYNAMIC_LENGTH, SIMD_STRIDE> & operator= (ArithmeticExpression<SCALAR_TYPE, SIMD_STRIDE, E> && vec)
         {
@@ -183,23 +255,23 @@ namespace VECTOR {
             if(mGatherStride == 1)
             {
                 for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
-                    UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
+                    auto t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
                     t0.store(&elements[i]);
                 }
 
                 for (int i = LOOP_PEEL_OFFSET(); i < mLength; i++) {
-                    UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.template evaluate<1>(i);
+                    auto t1 = reinterpret_vec.template evaluate<1>(i);
                     t1.store(&elements[i]);
                 }
             }
             else {
                 for (int i = 0; i < LOOP_PEEL_OFFSET(); i += SIMD_STRIDE) {
-                    UME::SIMD::SIMDVec<SCALAR_TYPE, SIMD_STRIDE> t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
+                    auto t0 = reinterpret_vec.template evaluate<SIMD_STRIDE>(i);
                     t0.scatteru(&elements[i*mGatherStride], mGatherStride);
                 }
 
                 for (int i = LOOP_PEEL_OFFSET(); i < mLength; i++) {
-                    UME::SIMD::SIMDVec<SCALAR_TYPE, 1> t1 = reinterpret_vec.template evaluate<1>(i);
+                    auto t1 = reinterpret_vec.template evaluate<1>(i);
                     t1.store(&elements[i*mGatherStride]);
                 }
             }

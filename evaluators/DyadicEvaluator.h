@@ -142,6 +142,64 @@ public:
         *dst2 = acc2_SIMD_1[0];
     }
 
+    // Evaluate two expressions:
+    //  - first expression with scatter indices and
+    //  - second expression with horizontal reduction
+    template<
+        typename SCALAR_T_1,
+        typename SCALAR_T_2,
+        int SIMD_STRIDE,
+        typename DST_T_1,
+        typename EXP_T_1,
+        typename EXP_T_1_INDICES,
+        typename EXP_T_2>
+    inline DyadicEvaluator(
+        DST_T_1 & dst1,
+	UME::VECTOR::ArithmeticExpression<SCALAR_T_1, SIMD_STRIDE, EXP_T_1> & exp1,
+	UME::VECTOR::ArithmeticExpression<uint32_t, SIMD_STRIDE, EXP_T_1_INDICES> & exp1_indices,
+	SCALAR_T_2 * dst2,
+	UME::VECTOR::ArithmeticExpression<SCALAR_T_2, SIMD_STRIDE, EXP_T_2> & exp2)
+    {
+        EXP_T_1 & reinterpret_exp_1 = static_cast<EXP_T_1 &>(exp1);
+        EXP_T_1_INDICES & reinterpret_indices_1 = static_cast<EXP_T_1_INDICES &>(exp1_indices);
+
+        EXP_T_2 & reinterpret_exp_2 = static_cast<EXP_T_2 &>(exp2);
+        UME::SIMD::SIMDVec<SCALAR_T_1, SIMD_STRIDE> acc2_SIMD_N = reinterpret_exp_2.template neutral_element<SIMD_STRIDE>();
+
+
+        // Cannot compute using this scheme if the expressions have different lengths.
+        // Use monadic evaluation scheme to calculate each of them separately.
+        assert(reinterpret_indices_1.LENGTH() == reinterpret_exp_2.LENGTH());
+
+
+        const int LOOP_PEEL_OFFSET = reinterpret_indices_1.LOOP_PEEL_OFFSET();
+        for (int i = 0; i < LOOP_PEEL_OFFSET; i += SIMD_STRIDE) {
+            auto t0 = reinterpret_exp_1.template evaluate<SIMD_STRIDE>(i);
+            auto t1 = reinterpret_indices_1.template evaluate<SIMD_STRIDE>(i);
+
+	    acc2_SIMD_N = reinterpret_exp_2.template accumulate<SIMD_STRIDE>(i, acc2_SIMD_N);
+
+            // Partial update after partial evaluation
+            dst1.template update<SIMD_STRIDE>(t0, t1);
+        }
+
+        // Accumulate valued from remainder loop
+        UME::SIMD::SIMDVec<SCALAR_T_1, 1> acc2_SIMD_1 = reinterpret_exp_2.template reduce<SIMD_STRIDE>(acc2_SIMD_N);
+        for (int i = reinterpret_exp_1.LOOP_PEEL_OFFSET(); i < reinterpret_exp_1.LENGTH(); i++) {
+            auto t0 = reinterpret_exp_1.template evaluate<1>(i);
+            auto t1 = reinterpret_indices_1.template evaluate<1>(i);
+
+            acc2_SIMD_1 = reinterpret_exp_2.template accumulate<1>(i, acc2_SIMD_1);
+
+            // Partial update after partial evaluation
+            dst1.template update<1>(t0, t1);
+        }
+
+        // Perform final reduction of the second operand
+        *dst2 = acc2_SIMD_1[0];
+    }
+ 
+
 };
 
 

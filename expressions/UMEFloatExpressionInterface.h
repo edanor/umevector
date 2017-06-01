@@ -58,6 +58,96 @@ namespace VECTOR {
         typedef typename FTOUTrait<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>::CAST_TYPE FTOU_EXPRESSION_TYPE;
         typedef typename FTOITrait<SCALAR_TYPE, SIMD_STRIDE, DERIVED_VECTOR_TYPE>::CAST_TYPE FTOI_EXPRESSION_TYPE;
 
+
+        UME_FUNC_ATTRIB LogicalISFINExpression<
+            SIMD_STRIDE,
+            DERIVED_VECTOR_TYPE // this expression
+            > isfin()
+        {
+            return LogicalISFINExpression<
+                SIMD_STRIDE,
+                DERIVED_VECTOR_TYPE
+                > (*this);
+        }
+
+        UME_FUNC_ATTRIB LogicalISINFExpression<
+            SIMD_STRIDE,
+            DERIVED_VECTOR_TYPE // this expression
+            > isinf()
+        {
+            return LogicalISINFExpression<
+                SIMD_STRIDE,
+                DERIVED_VECTOR_TYPE
+                > (*this);
+        }
+
+        UME_FUNC_ATTRIB LogicalISANExpression<
+            SIMD_STRIDE,
+            DERIVED_VECTOR_TYPE // this expression
+            > isan()
+        {
+            return LogicalISANExpression<
+                SIMD_STRIDE,
+                DERIVED_VECTOR_TYPE
+                > (*this);
+        }
+
+        UME_FUNC_ATTRIB LogicalISNANExpression<
+            SIMD_STRIDE,
+            DERIVED_VECTOR_TYPE // this expression
+            > isnan()
+        {
+            return LogicalISNANExpression<
+                SIMD_STRIDE,
+                DERIVED_VECTOR_TYPE
+                > (*this);
+        }
+
+        UME_FUNC_ATTRIB LogicalISNORMExpression<
+            SIMD_STRIDE,
+            DERIVED_VECTOR_TYPE // this expression
+            > isnorm()
+        {
+            return LogicalISNORMExpression<
+                SIMD_STRIDE,
+                DERIVED_VECTOR_TYPE
+                > (*this);
+        }
+
+        UME_FUNC_ATTRIB LogicalISSUBExpression<
+            SIMD_STRIDE,
+            DERIVED_VECTOR_TYPE // this expression
+            > issub()
+        {
+            return LogicalISSUBExpression<
+                SIMD_STRIDE,
+                DERIVED_VECTOR_TYPE
+                > (*this);
+        }
+
+        UME_FUNC_ATTRIB LogicalISZEROExpression<
+            SIMD_STRIDE,
+            DERIVED_VECTOR_TYPE // this expression
+            > iszero()
+        {
+            return LogicalISZEROExpression<
+                SIMD_STRIDE,
+                DERIVED_VECTOR_TYPE
+                > (*this);
+        }
+
+        UME_FUNC_ATTRIB LogicalISZEROSUBExpression<
+            SIMD_STRIDE,
+            DERIVED_VECTOR_TYPE // this expression
+            > iszerosub()
+        {
+            return LogicalISZEROSUBExpression<
+                SIMD_STRIDE,
+                DERIVED_VECTOR_TYPE
+                > (*this);
+        }
+
+
         UME_FORCE_INLINE FTOU_EXPRESSION_TYPE ftou() {
             return FTOU_EXPRESSION_TYPE(*this);
         }
