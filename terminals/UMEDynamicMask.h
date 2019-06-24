@@ -282,6 +282,15 @@ namespace VECTOR {
             }
             return *this;
         }
+
+        UME_FUNC_ATTRIB bool get(int index) {
+            return elements[index];
+        }
+
+        UME_FUNC_ATTRIB MaskVector& set(int index, bool value) {
+            elements[index] = value;
+            return *this;
+        }
     };
 
 }

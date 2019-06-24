@@ -94,7 +94,7 @@ namespace VECTOR {
             for (int i = reinterpret_indices.LOOP_PEEL_OFFSET(); i < reinterpret_indices.LENGTH(); i += 1) {
                 auto t0 = reinterpret_exp.template evaluate<1>(i);
                 auto t1 = reinterpret_indices.template evaluate<1>(i);
-                dst.template <update<1>(t0, t1);
+                dst.template update<1>(t0, t1);
             }
         }
     };

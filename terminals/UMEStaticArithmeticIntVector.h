@@ -274,6 +274,15 @@ namespace VECTOR {
             }
             return *this;
         }
+
+        UME_FUNC_ATTRIB SCALAR_TYPE get(int index) {
+            return elements[index];
+        }
+
+        UME_FUNC_ATTRIB IntVector& set(int index, SCALAR_TYPE value) {
+            elements[index] = value;
+            return *this;
+        }
     };
 
 }
